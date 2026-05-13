@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Filament\Resources\Coupons\Schemas;
+
+use App\Enums\CouponType;
+use App\Models\Site;
+use App\Models\User;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Unique;
+
+class CouponForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return $schema
+            ->components([
+                Select::make('site_id')
+                    ->label('Sitio')
+                    ->required()
+                    ->searchable()
+                    ->options(function () use ($user): array {
+                        $query = Site::query()->orderBy('name');
+
+                        if ($user instanceof User && ! $user->isSuperAdmin()) {
+                            $query->whereIn('id', $user->sites()->select('sites.id'));
+                        }
+
+                        return $query->pluck('name', 'id')->all();
+                    }),
+                TextInput::make('code')
+                    ->required()
+                    ->maxLength(255)
+                    ->dehydrateStateUsing(fn (string $state): string => strtoupper(trim($state)))
+                    ->unique(
+                        ignoreRecord: true,
+                        modifyRuleUsing: fn (Unique $rule, Get $get): Unique => $rule->where('site_id', $get('site_id')),
+                    ),
+                Select::make('type')
+                    ->required()
+                    ->options(CouponType::options())
+                    ->default(CouponType::Percentage->value),
+                TextInput::make('value')
+                    ->required()
+                    ->numeric()
+                    ->minValue(0.01),
+                TextInput::make('max_uses')
+                    ->nullable()
+                    ->integer()
+                    ->minValue(1),
+                TextInput::make('used_count')
+                    ->required()
+                    ->integer()
+                    ->minValue(0)
+                    ->default(0),
+                DateTimePicker::make('valid_from')
+                    ->nullable(),
+                DateTimePicker::make('valid_to')
+                    ->nullable()
+                    ->afterOrEqual('valid_from'),
+                Toggle::make('is_active')
+                    ->required()
+                    ->default(true),
+            ]);
+    }
+}

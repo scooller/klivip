@@ -1,0 +1,525 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap');
+
+:root {
+    --casino-bg: #04072a;
+    --casino-surface: #090f3c;
+    --casino-surface-soft: #111a5b;
+    --casino-gold: #e0b33b;
+    --casino-gold-soft: #ffd76c;
+    --casino-text: #f5f6ff;
+    --casino-muted: #b8bddb;
+    --casino-line: rgba(224, 179, 59, 0.3);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Rajdhani', sans-serif;
+    background:
+        radial-gradient(circle at 85% 5%, rgba(102, 45, 184, 0.36), transparent 28%),
+        radial-gradient(circle at 18% 20%, rgba(20, 91, 214, 0.34), transparent 36%),
+        linear-gradient(180deg, #070426 0%, #02041e 100%);
+    color: var(--casino-text);
+}
+
+.casino-layout {
+    min-height: 100vh;
+    background: transparent;
+}
+
+.casino-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    min-height: 82px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 20px;
+    padding: 12px clamp(14px, 3.2vw, 34px);
+    background: rgba(2, 4, 22, 0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(224, 179, 59, 0.28);
+
+    .ant-anchor {
+        background: transparent;
+    }
+}
+
+.brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .ant-typography {
+        margin: 0;
+        color: var(--casino-text);
+        line-height: 1;
+    }
+
+    h3 {
+        font-family: 'Sora', sans-serif;
+        font-size: clamp(18px, 2vw, 24px);
+    }
+
+    .ant-typography:last-child {
+        color: var(--casino-muted);
+        font-size: 13px;
+        margin-top: 4px;
+    }
+}
+
+.brand-mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    color: #1e1437;
+    background: radial-gradient(circle at 28% 24%, #ffe48f 0%, #e0b33b 58%, #a87307 100%);
+    box-shadow: 0 0 22px rgba(224, 179, 59, 0.38);
+}
+
+.desktop-nav {
+    justify-self: center;
+    display: flex;
+    align-items: center;
+
+    .ant-anchor {
+        display: flex;
+        gap: 8px;
+    }
+
+    .ant-anchor-link {
+        padding-block: 0;
+    }
+
+    .ant-anchor-link-title {
+        color: #d6dbff;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .ant-anchor-link-title:hover,
+    .ant-anchor-link-active > .ant-anchor-link-title {
+        color: var(--casino-gold);
+    }
+
+    .ant-anchor-ink {
+        display: none;
+    }
+}
+
+.mobile-menu-button {
+    display: none;
+}
+
+.casino-content {
+    width: min(1300px, 100%);
+    margin: 0 auto;
+    padding: 16px;
+    display: grid;
+    gap: 18px;
+}
+
+#section-inicio,
+#section-promociones,
+#section-eventos,
+#section-juegos,
+#section-sala,
+#section-soporte {
+    scroll-margin-top: 104px;
+}
+
+.hero-section,
+.program-section,
+.vegas-section,
+.games-section,
+.bottom-cta,
+.casino-footer {
+    border: 1px solid var(--casino-line);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(9, 15, 60, 0.88), rgba(6, 11, 42, 0.86));
+}
+
+.hero-section {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+    padding: clamp(18px, 4vw, 34px);
+}
+
+.hero-copy {
+    display: grid;
+    align-content: center;
+    gap: 14px;
+
+    .hero-kicker {
+        color: var(--casino-gold-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.13em;
+        font-weight: 700;
+    }
+
+    h1 {
+        margin: 0;
+        color: var(--casino-gold);
+        font-family: 'Sora', sans-serif;
+        font-size: clamp(32px, 5vw, 58px);
+        line-height: 1.05;
+    }
+
+    .ant-typography {
+        color: var(--casino-muted);
+        font-size: clamp(17px, 2vw, 22px);
+    }
+
+    .ant-space {
+        margin-top: 6px;
+    }
+}
+
+.hero-art {
+    position: relative;
+    min-height: 300px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 70% 12%, rgba(255, 216, 97, 0.5), transparent 38%),
+        linear-gradient(145deg, #22104f 0%, #0f1552 50%, #080f37 100%);
+    border: 1px solid rgba(224, 179, 59, 0.42);
+
+    .coin {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 50px;
+        font-weight: 700;
+        color: #2a1f06;
+        background: radial-gradient(circle at 28% 24%, #fff0ab 0%, #e0b33b 62%, #8f6204 100%);
+        box-shadow: 0 0 28px rgba(224, 179, 59, 0.5);
+    }
+
+    .coin-a {
+        top: 14%;
+        left: 20%;
+    }
+
+    .coin-b {
+        bottom: 12%;
+        right: 18%;
+    }
+}
+
+.hero-glow {
+    position: absolute;
+    inset: 20% 18% 16%;
+    border-radius: 44px;
+    background: radial-gradient(circle, rgba(85, 154, 255, 0.4), rgba(42, 41, 132, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.program-section,
+.games-section {
+    padding: 18px;
+
+    h2 {
+        color: #fff;
+        margin-bottom: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    > .ant-typography {
+        color: var(--casino-gold);
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        display: block;
+    }
+}
+
+.program-card {
+    height: 100%;
+    border: 1px solid rgba(224, 179, 59, 0.36);
+    background: linear-gradient(180deg, rgba(15, 24, 83, 0.86), rgba(9, 14, 47, 0.88));
+
+    .day-label {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #dfe2ff;
+        font-weight: 700;
+    }
+
+    .day-icon {
+        display: inline-grid;
+        margin: 10px 0 8px;
+        font-size: 34px;
+    }
+
+    h4 {
+        color: var(--casino-gold);
+        margin: 0;
+    }
+
+    .ant-typography {
+        color: #c4caee;
+        font-size: 17px;
+    }
+}
+
+.vegas-section {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 18px;
+    padding: clamp(18px, 4vw, 28px);
+    align-items: center;
+}
+
+.vegas-logo {
+    min-height: 210px;
+    border-radius: 18px;
+    border: 1px solid rgba(224, 179, 59, 0.42);
+    display: grid;
+    place-items: center;
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(28px, 3.2vw, 42px);
+    color: var(--casino-gold);
+    text-transform: uppercase;
+    background:
+        radial-gradient(circle at center, rgba(106, 48, 214, 0.42), rgba(6, 8, 39, 0.95)),
+        linear-gradient(150deg, #1b1559, #081030);
+}
+
+.vegas-copy {
+    display: grid;
+    gap: 8px;
+
+    h1 {
+        margin: 0;
+        color: var(--casino-gold);
+        font-family: 'Sora', sans-serif;
+    }
+
+    .ant-typography {
+        color: var(--casino-muted);
+        font-size: 20px;
+    }
+}
+
+.feature-list {
+    margin: 8px 0 14px;
+    background: transparent;
+
+    .ant-list-item {
+        border-block-end: none;
+        padding: 4px 0;
+    }
+
+    .ant-space {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ant-typography {
+        color: #ecefff;
+        font-size: 19px;
+    }
+
+    svg {
+        color: var(--casino-gold);
+    }
+}
+
+.game-card {
+    height: 100%;
+    min-height: 140px;
+    display: grid;
+    align-content: end;
+    gap: 6px;
+    border: 1px solid rgba(224, 179, 59, 0.38);
+    background:
+        radial-gradient(circle at 70% 8%, rgba(245, 103, 88, 0.24), transparent 38%),
+        linear-gradient(150deg, #1a1d58 0%, #0a0f34 100%);
+
+    span {
+        color: var(--casino-gold-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+    }
+
+    h5 {
+        margin: 0;
+        font-size: 24px;
+        color: #fff;
+        line-height: 1.05;
+    }
+
+    .ant-typography {
+        color: #c4caee;
+        font-size: 17px;
+        margin: 0;
+    }
+}
+
+.games-carousel {
+    margin-top: 6px;
+
+    .slick-list {
+        margin: 0 -6px;
+    }
+
+    .slick-slide > div {
+        padding: 0 6px;
+    }
+
+    .slick-dots li button {
+        background: rgba(224, 179, 59, 0.4);
+    }
+
+    .slick-dots li.slick-active button {
+        background: var(--casino-gold);
+    }
+}
+
+.game-slide {
+    padding: 4px 0 10px;
+}
+
+.game-card.is-featured {
+    border-color: rgba(255, 216, 108, 0.9);
+    box-shadow: 0 0 22px rgba(224, 179, 59, 0.28);
+}
+
+.games-section {
+    .ant-carousel {
+        margin-top: 6px;
+    }
+}
+
+.bottom-cta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 20px;
+    background: linear-gradient(120deg, rgba(31, 19, 89, 0.94) 0%, rgba(8, 14, 44, 0.96) 100%);
+
+    h3 {
+        margin: 0;
+        text-transform: uppercase;
+        color: #fff;
+    }
+
+    .ant-typography {
+        color: var(--casino-muted);
+        font-size: 19px;
+    }
+}
+
+.casino-footer {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .ant-typography,
+    .anticon {
+        color: #c7ccef;
+        font-weight: 600;
+        font-size: 17px;
+    }
+
+    .ant-space .anticon {
+        color: var(--casino-gold);
+        font-size: 20px;
+    }
+}
+
+.casino-drawer {
+    .ant-drawer-header {
+        background: #070426;
+
+        .ant-drawer-title,
+        .anticon {
+            color: #fff;
+        }
+    }
+
+    .ant-drawer-body {
+        background: #0b103b;
+    }
+
+    .ant-anchor {
+        background: transparent;
+        display: grid;
+        gap: 2px;
+    }
+
+    .ant-anchor-link {
+        padding-block: 8px;
+    }
+
+    .ant-anchor-link-title {
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .ant-anchor-link-active > .ant-anchor-link-title {
+        color: var(--casino-gold);
+    }
+
+    .ant-anchor-ink {
+        display: none;
+    }
+}
+
+@media (max-width: 1090px) {
+    .casino-header {
+        grid-template-columns: 1fr auto;
+    }
+
+    .desktop-nav {
+        display: none;
+    }
+
+    .mobile-menu-button {
+        display: inline-flex;
+    }
+
+    .hero-section,
+    .vegas-section {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-art {
+        min-height: 220px;
+    }
+
+    .bottom-cta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .brand-lockup .ant-typography:last-child {
+        display: none;
+    }
+
+    .casino-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
