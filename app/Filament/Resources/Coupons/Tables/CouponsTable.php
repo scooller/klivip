@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Coupons\Tables;
 
 use App\Enums\CouponType;
+use App\Filament\Actions\ShowCouponQrCodeAction;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -46,6 +47,10 @@ class CouponsTable
                 TextColumn::make('used_count')
                     ->label('Usos')
                     ->sortable(),
+                IconColumn::make('qr_enabled')
+                    ->label('QR')
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('valid_to')
                     ->label('Válido hasta')
                     ->dateTime()
@@ -70,6 +75,7 @@ class CouponsTable
             ])
             ->recordActions([
                 ViewAction::make(),
+                ShowCouponQrCodeAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

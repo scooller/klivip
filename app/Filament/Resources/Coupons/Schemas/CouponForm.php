@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\Coupons\Schemas;
 
 use App\Enums\CouponType;
+use App\Models\Coupon;
 use App\Models\Site;
 use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -69,6 +71,19 @@ class CouponForm
                 Toggle::make('is_active')
                     ->required()
                     ->default(true),
+                Toggle::make('qr_enabled')
+                    ->label('Habilitar cobro por QR')
+                    ->default(false)
+                    ->live(),
+                Placeholder::make('qr_redeem_url')
+                    ->label('URL de cobro QR')
+                    ->content(function (?Coupon $record, Get $get): string {
+                        if (! $get('qr_enabled')) {
+                            return 'Activa el QR para generar un enlace de cobro.';
+                        }
+
+                        return $record?->qr_redeem_url ?? 'Guarda el cupon para generar el enlace QR.';
+                    }),
             ]);
     }
 }

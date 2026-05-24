@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Coupons\Pages;
 
+use App\Filament\Actions\ShowCouponQrCodeAction;
 use App\Filament\Resources\Coupons\CouponResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
@@ -14,6 +15,7 @@ class EditCoupon extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            ShowCouponQrCodeAction::make(),
             ViewAction::make(),
             DeleteAction::make(),
         ];

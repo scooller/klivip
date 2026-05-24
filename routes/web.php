@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Front\CouponQrRedeemController;
 use App\Http\Controllers\Front\CustomerSessionController;
-use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Front\PrincipalController;
+use App\Http\Controllers\Front\ScheduleController;
 use App\Http\Controllers\Front\UserController;
+use App\Http\Controllers\Front\UserCouponsController;
 use App\Http\Middleware\ResolveSiteFromHost;
 use Illuminate\Support\Facades\Route;
 
@@ -14,20 +17,45 @@ $publicBaseDomains = [
 foreach ($publicBaseDomains as $baseDomain) {
     $routeNamePrefix = $baseDomain === 'klivip.test'
         ? 'front.user'
-        : 'front.user.' . str_replace('.', '_', $baseDomain);
+        : 'front.user.'.str_replace('.', '_', $baseDomain);
 
-    Route::domain('{site}.' . $baseDomain)
+    Route::domain('{site}.'.$baseDomain)
         ->where(['site' => '[A-Za-z0-9-]+'])
         ->middleware([ResolveSiteFromHost::class])
         ->group(function () use ($routeNamePrefix): void {
-            Route::get('/', HomeController::class);
+            Route::get('/', UserController::class);
+            Route::get('/principal', PrincipalController::class)
+                ->middleware('auth:customer')
+                ->name($routeNamePrefix.'.principal');
+            Route::get('/programacion', ScheduleController::class)
+                ->middleware('auth:customer')
+                ->name($routeNamePrefix.'.schedule');
             Route::get('/usuario', UserController::class)->name($routeNamePrefix);
+            Route::get('/cupones/qr/{token}', CouponQrRedeemController::class)
+                ->where('token', '[A-Za-z0-9]+')
+                ->name($routeNamePrefix.'.coupons.qr-redeem');
+            Route::post('/usuario/perfil', [UserController::class, 'updateProfile'])
+                ->middleware('auth:customer')
+                ->name($routeNamePrefix.'.profile.update');
+            Route::get('/usuario/cupones', [UserCouponsController::class, 'index'])
+                ->middleware('auth:customer')
+                ->name($routeNamePrefix.'.coupons.index');
+            Route::get('/usuario/cupones/{couponId}', [UserCouponsController::class, 'show'])
+                ->middleware('auth:customer')
+                ->whereNumber('couponId')
+                ->name($routeNamePrefix.'.coupons.show');
             Route::post('/usuario/login', [CustomerSessionController::class, 'store'])
                 ->middleware('guest:customer')
-                ->name($routeNamePrefix . '.login');
+                ->name($routeNamePrefix.'.login');
+            Route::post('/usuario/register', [CustomerSessionController::class, 'register'])
+                ->middleware('guest:customer')
+                ->name($routeNamePrefix.'.register');
+            Route::post('/usuario/login/verify', [CustomerSessionController::class, 'verify'])
+                ->middleware('guest:customer')
+                ->name($routeNamePrefix.'.login.verify');
             Route::post('/usuario/logout', [CustomerSessionController::class, 'destroy'])
                 ->middleware('auth:customer')
-                ->name($routeNamePrefix . '.logout');
+                ->name($routeNamePrefix.'.logout');
         });
 }
 

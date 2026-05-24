@@ -70,31 +70,52 @@ class TestDataSeeder extends Seeder
         $manager->sites()->sync([$siteOne->id]);
         $user->sites()->sync([$siteOne->id]);
 
-        Coupon::query()->updateOrCreate(
-            ['site_id' => $siteOne->id, 'code' => 'PIZZA10'],
-            [
-                'type' => CouponType::Percentage,
-                'value' => 10,
-                'max_uses' => 200,
-                'used_count' => 15,
-                'valid_from' => now()->subDays(3),
-                'valid_to' => now()->addDays(30),
-                'is_active' => true,
-            ],
-        );
+        $siteOneCoupons = [
+            ['code' => 'PIZZA10', 'type' => CouponType::Percentage, 'value' => 10, 'max_uses' => 200, 'used_count' => 15, 'valid_days' => 30],
+            ['code' => 'SORTEO001', 'type' => CouponType::Fixed, 'value' => 20, 'max_uses' => 300, 'used_count' => 4, 'valid_days' => 20],
+            ['code' => 'SORTEO002', 'type' => CouponType::Fixed, 'value' => 25, 'max_uses' => 300, 'used_count' => 6, 'valid_days' => 18],
+            ['code' => 'SORTEO003', 'type' => CouponType::Percentage, 'value' => 15, 'max_uses' => 450, 'used_count' => 11, 'valid_days' => 14],
+            ['code' => 'SORTEO004', 'type' => CouponType::Fixed, 'value' => 30, 'max_uses' => 500, 'used_count' => 20, 'valid_days' => 25],
+            ['code' => 'SORTEO005', 'type' => CouponType::Percentage, 'value' => 12, 'max_uses' => 350, 'used_count' => 10, 'valid_days' => 17],
+            ['code' => 'SORTEO006', 'type' => CouponType::Fixed, 'value' => 35, 'max_uses' => 400, 'used_count' => 8, 'valid_days' => 22],
+            ['code' => 'SORTEO007', 'type' => CouponType::Percentage, 'value' => 18, 'max_uses' => 600, 'used_count' => 42, 'valid_days' => 28],
+        ];
 
-        Coupon::query()->updateOrCreate(
-            ['site_id' => $siteTwo->id, 'code' => '2X1VIERNES'],
-            [
-                'type' => CouponType::Fixed,
-                'value' => 20,
-                'max_uses' => 120,
-                'used_count' => 3,
-                'valid_from' => now()->subDay(),
-                'valid_to' => now()->addDays(10),
-                'is_active' => true,
-            ],
-        );
+        foreach ($siteOneCoupons as $couponData) {
+            Coupon::query()->updateOrCreate(
+                ['site_id' => $siteOne->id, 'code' => $couponData['code']],
+                [
+                    'type' => $couponData['type'],
+                    'value' => $couponData['value'],
+                    'max_uses' => $couponData['max_uses'],
+                    'used_count' => $couponData['used_count'],
+                    'valid_from' => now()->subDays(3),
+                    'valid_to' => now()->addDays($couponData['valid_days']),
+                    'is_active' => true,
+                ],
+            );
+        }
+
+        $siteTwoCoupons = [
+            ['code' => '2X1VIERNES', 'type' => CouponType::Fixed, 'value' => 20, 'max_uses' => 120, 'used_count' => 3, 'valid_days' => 10],
+            ['code' => 'SORTEO008', 'type' => CouponType::Percentage, 'value' => 10, 'max_uses' => 220, 'used_count' => 13, 'valid_days' => 12],
+            ['code' => 'SORTEO009', 'type' => CouponType::Fixed, 'value' => 28, 'max_uses' => 260, 'used_count' => 14, 'valid_days' => 16],
+        ];
+
+        foreach ($siteTwoCoupons as $couponData) {
+            Coupon::query()->updateOrCreate(
+                ['site_id' => $siteTwo->id, 'code' => $couponData['code']],
+                [
+                    'type' => $couponData['type'],
+                    'value' => $couponData['value'],
+                    'max_uses' => $couponData['max_uses'],
+                    'used_count' => $couponData['used_count'],
+                    'valid_from' => now()->subDay(),
+                    'valid_to' => now()->addDays($couponData['valid_days']),
+                    'is_active' => true,
+                ],
+            );
+        }
 
         Promotion::query()->updateOrCreate(
             ['title' => 'Jueves de Pizza', 'site_id' => $siteOne->id],

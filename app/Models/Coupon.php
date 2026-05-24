@@ -7,6 +7,7 @@ use Database\Factories\CouponFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Coupon extends Model
 {
@@ -26,6 +27,8 @@ class Coupon extends Model
         'valid_from',
         'valid_to',
         'is_active',
+        'qr_enabled',
+        'qr_token',
     ];
 
     /**
@@ -39,7 +42,23 @@ class Coupon extends Model
             'valid_from' => 'datetime',
             'valid_to' => 'datetime',
             'is_active' => 'boolean',
+            'qr_enabled' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Coupon $coupon): void {
+            if (! $coupon->qr_enabled) {
+                $coupon->qr_token = null;
+
+                return;
+            }
+
+            if (! is_string($coupon->qr_token) || $coupon->qr_token === '') {
+                $coupon->qr_token = Str::lower(Str::random(48));
+            }
+        });
     }
 
     public function site(): BelongsTo
@@ -66,5 +85,14 @@ class Coupon extends Model
         }
 
         return true;
+    }
+
+    public function getQrRedeemUrlAttribute(): ?string
+    {
+        if (! $this->qr_enabled || ! is_string($this->qr_token) || $this->qr_token === '' || ! $this->site) {
+            return null;
+        }
+
+        return rtrim($this->site->url, '/').'/cupones/qr/'.$this->qr_token;
     }
 }

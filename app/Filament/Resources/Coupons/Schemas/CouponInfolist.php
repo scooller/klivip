@@ -29,6 +29,14 @@ class CouponInfolist
                     ->label('Usos'),
                 TextEntry::make('max_uses')
                     ->label('Límite de usos'),
+                IconEntry::make('qr_enabled')
+                    ->label('QR habilitado')
+                    ->boolean(),
+                TextEntry::make('qr_token')
+                    ->label('Token QR'),
+                TextEntry::make('qr_redeem_url')
+                    ->label('URL de cobro QR')
+                    ->state(fn ($record): string => $record->qr_redeem_url ?? '-'),
                 TextEntry::make('valid_from')
                     ->dateTime(),
                 TextEntry::make('valid_to')

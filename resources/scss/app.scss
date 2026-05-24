@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Rajdhani:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap');
 
 :root {
     --casino-bg: #04072a;
@@ -18,6 +18,7 @@
 body {
     margin: 0;
     font-family: 'Rajdhani', sans-serif;
+    line-height: 1.45;
     background:
         radial-gradient(circle at 85% 5%, rgba(102, 45, 184, 0.36), transparent 28%),
         radial-gradient(circle at 18% 20%, rgba(20, 91, 214, 0.34), transparent 36%),
@@ -25,106 +26,643 @@ body {
     color: var(--casino-text);
 }
 
-.casino-layout {
+.home-entry-page {
+    position: relative;
     min-height: 100vh;
-    background: transparent;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% -10%, rgba(112, 70, 255, 0.26), transparent 40%),
+        radial-gradient(circle at 10% 100%, rgba(91, 18, 181, 0.28), transparent 34%),
+        linear-gradient(180deg, #16083f 0%, #220d56 58%, #1b0a46 100%);
 }
 
-.casino-header {
+.home-entry-glow {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    border-radius: 999px;
+    filter: blur(90px);
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.home-entry-glow--top {
+    top: -230px;
+    left: -120px;
+    background: rgba(126, 70, 255, 0.48);
+}
+
+.home-entry-glow--bottom {
+    right: -160px;
+    bottom: -260px;
+    background: rgba(87, 30, 225, 0.54);
+}
+
+.home-entry-shell {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    width: min(450px, 100%);
+    margin: 0 auto;
+    padding: 16px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.home-entry-hour {
+    color: rgba(244, 238, 255, 0.94);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.home-entry-card {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: clamp(24px, 6vw, 40px) clamp(14px, 4.8vw, 26px) clamp(22px, 6vw, 34px);
+}
+
+.home-entry-brand {
+    text-align: center;
+    color: #f3ecff;
+    text-shadow: 0 0 24px rgba(117, 71, 255, 0.34);
+}
+
+.home-entry-brand p,
+.home-entry-brand h1 {
+    margin: 0;
+    font-family: 'Cinzel', serif;
+    line-height: 0.9;
+}
+
+.home-entry-brand p {
+    font-size: clamp(32px, 12vw, 48px);
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.home-entry-brand h1 {
+    margin-top: 2px;
+    font-size: clamp(58px, 18vw, 92px);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.home-entry-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.home-entry-form label {
+    color: rgba(233, 219, 255, 0.9);
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.home-phone-input {
+    width: 100%;
+}
+
+.home-phone-input::part(form-control-label),
+.home-phone-input::part(help-text) {
+    display: none;
+}
+
+.home-phone-input::part(base) {
+    border: 1px solid rgba(164, 121, 255, 0.86);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(58, 34, 125, 0.9), rgba(42, 24, 100, 0.9));
+    color: #f4eefe;
+    min-height: 56px;
+    box-shadow: inset 0 0 0 1px rgba(215, 195, 255, 0.16);
+}
+
+.home-phone-input::part(input) {
+    font-size: 30px;
+    text-align: center;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+}
+
+.home-entry-primary,
+.home-entry-secondary {
+    width: 100%;
+    --wa-button-font-size-large: 2rem;
+    --wa-button-font-weight: 800;
+    --wa-button-border-radius-large: 12px;
+    --wa-button-padding-block-large: 0.78rem;
+    text-transform: uppercase;
+}
+
+.home-entry-primary {
+    margin-top: 4px;
+}
+
+.home-entry-primary::part(base),
+.home-entry-secondary::part(base) {
+    border: 1px solid rgba(121, 73, 252, 0.95);
+    background:
+        linear-gradient(180deg, rgba(86, 28, 255, 0.98) 0%, rgba(58, 13, 191, 0.98) 100%);
+    box-shadow:
+        0 10px 22px rgba(20, 6, 73, 0.52),
+        inset 0 1px 0 rgba(195, 163, 255, 0.5);
+}
+
+.home-entry-primary::part(base):hover,
+.home-entry-secondary::part(base):hover {
+    filter: brightness(1.08);
+}
+
+.home-entry-primary::part(base):disabled {
+    filter: grayscale(0.2) brightness(0.85);
+}
+
+.home-entry-support-copy {
+    margin: 10px 0 2px;
+    text-align: center;
+    color: rgba(225, 211, 252, 0.88);
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.home-entry-page .casino-footer {
+    margin-top: 6px;
+    border-color: rgba(162, 120, 255, 0.32);
+    background: linear-gradient(145deg, rgba(47, 24, 106, 0.66), rgba(33, 15, 82, 0.66));
+}
+
+.home-entry-page .casino-footer p,
+.home-entry-page .social-links {
+    color: rgba(226, 215, 252, 0.88);
+}
+
+.home-entry-page .social-links svg {
+    color: #d5bbff;
+}
+
+.home-main-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 75% -15%, rgba(96, 45, 220, 0.36), transparent 34%),
+        linear-gradient(180deg, #13063a 0%, #14063a 44%, #1a0d48 100%);
+}
+
+.front-app-header {
     position: sticky;
     top: 0;
     z-index: 20;
-    min-height: 82px;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 20px;
-    padding: 12px clamp(14px, 3.2vw, 34px);
-    background: rgba(2, 4, 22, 0.88);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(224, 179, 59, 0.28);
-
-    .ant-anchor {
-        background: transparent;
-    }
+    padding: 8px 12px 10px;
+    background: linear-gradient(180deg, rgba(33, 11, 87, 0.95), rgba(29, 11, 79, 0.78));
+    border-bottom: 1px solid rgba(151, 109, 255, 0.34);
+    backdrop-filter: blur(8px);
 }
 
-.brand-lockup {
+.front-app-header-time {
+    color: rgba(245, 235, 255, 0.92);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.front-app-header-main {
+    margin-top: 8px;
     display: flex;
     align-items: center;
-    gap: 12px;
-
-    .ant-typography {
-        margin: 0;
-        color: var(--casino-text);
-        line-height: 1;
-    }
-
-    h3 {
-        font-family: 'Sora', sans-serif;
-        font-size: clamp(18px, 2vw, 24px);
-    }
-
-    .ant-typography:last-child {
-        color: var(--casino-muted);
-        font-size: 13px;
-        margin-top: 4px;
-    }
+    justify-content: space-between;
+    gap: 10px;
 }
 
-.brand-mark {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    font-weight: 800;
-    color: #1e1437;
-    background: radial-gradient(circle at 28% 24%, #ffe48f 0%, #e0b33b 58%, #a87307 100%);
-    box-shadow: 0 0 22px rgba(224, 179, 59, 0.38);
-}
-
-.desktop-nav {
-    justify-self: center;
-    display: flex;
+.front-app-header-user {
     align-items: center;
-
-    .ant-anchor {
-        display: flex;
-        gap: 8px;
-    }
-
-    .ant-anchor-link {
-        padding-block: 0;
-    }
-
-    .ant-anchor-link-title {
-        color: #d6dbff;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-    }
-
-    .ant-anchor-link-title:hover,
-    .ant-anchor-link-active > .ant-anchor-link-title {
-        color: var(--casino-gold);
-    }
-
-    .ant-anchor-ink {
-        display: none;
-    }
+    --wa-cluster-gap: 0.55rem;
+    min-height: 38px;
+    min-width: 38px;
 }
 
-.mobile-menu-button {
+.front-app-header-user-avatar::part(base) {
+    border: 1px solid rgba(209, 176, 255, 0.45);
+    background: rgba(60, 37, 128, 0.75);
+    color: #f5e7ff;
+}
+
+.front-app-header-user-copy {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.front-app-header-user-copy strong {
+    color: #f8f1ff;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.front-app-header-user-copy small {
+    color: rgba(222, 207, 255, 0.82);
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.front-app-header-back,
+.front-app-header-spacer {
+    width: 38px;
+    height: 38px;
+}
+
+.front-app-header-back {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: #f4e8ff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.125rem;
+}
+
+.front-app-header-main h1 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.front-app-header-menu {
+    --wa-button-border-radius-small: 12px;
+    --wa-button-font-size-small: 1.1rem;
+}
+
+.front-app-header-menu::part(base) {
+    min-height: 38px;
+    min-width: 38px;
+    border: 1px solid rgba(173, 141, 255, 0.42);
+    background: linear-gradient(180deg, rgba(56, 33, 125, 0.94), rgba(42, 22, 95, 0.94));
+    color: #f0e4ff;
+}
+
+.user-coupons-page .home-main-content {
+    width: min(430px, 100%);
+}
+
+.user-coupons-content {
+    justify-items: center;
+}
+
+.home-main-content {
+    width: min(760px, 100%);
+    margin: 0 auto;
+    padding: 14px 10px 20px;
+}
+
+.home-main-content.wa-stack {
+    --wa-stack-gap: 0.75rem;
+}
+
+.home-banner {
+    border-radius: 14px;
+    border: 1px solid rgba(165, 129, 255, 0.42);
+    background: linear-gradient(150deg, rgba(24, 11, 66, 0.98), rgba(15, 28, 89, 0.95));
+    padding: 12px;
+}
+
+.home-banner-carousel {
+    width: 100%;
+}
+
+.home-banner-carousel::part(base) {
+    border-radius: 12px;
+    border: 1px solid rgba(199, 170, 255, 0.3);
+    overflow: hidden;
+    background: rgba(11, 8, 35, 0.6);
+}
+
+.home-banner-carousel::part(navigation-button) {
+    border: 1px solid rgba(206, 181, 255, 0.46);
+    background: rgba(47, 26, 109, 0.9);
+    color: #f2e8ff;
+}
+
+.home-banner-carousel::part(pagination-item--active) {
+    background: #efc96b;
+}
+
+.home-banner-image {
+    display: block;
+    width: 100%;
+    height: clamp(120px, 30vw, 180px);
+    object-fit: cover;
+}
+
+.home-banner-link {
+    display: block;
+}
+
+.home-banner-slide {
     display: none;
+    gap: 8px;
+}
+
+.home-banner-slide.is-active {
+    display: block;
+}
+
+.home-banner-slide.is-active.wa-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.home-banner-slide span {
+    justify-self: start;
+    border-radius: 999px;
+    background: rgba(247, 210, 104, 0.16);
+    border: 1px solid rgba(251, 224, 144, 0.6);
+    color: #f8de9a;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+}
+
+.home-banner-slide h1,
+.home-banner-slide p {
+    margin: 0;
+}
+
+.home-banner-slide h1 {
+    font-size: clamp(20px, 5.2vw, 30px);
+    line-height: 1.05;
+    color: #ffe6a3;
+    text-transform: uppercase;
+}
+
+.home-banner-slide p {
+    color: #d2cdf0;
+    font-size: 15px;
+}
+
+.home-banner-dots {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.home-banner-dots button {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 0;
+    cursor: pointer;
+    background: rgba(214, 204, 241, 0.45);
+}
+
+.home-banner-dots button.is-active {
+    background: #f8e4ad;
+}
+
+.home-panel {
+    border-radius: 12px;
+    border: 1px solid rgba(161, 123, 255, 0.3);
+    background: linear-gradient(150deg, rgba(30, 13, 79, 0.94), rgba(20, 12, 60, 0.94));
+    padding: 12px;
+}
+
+.home-panel.wa-stack {
+    --wa-stack-gap: 0.625rem;
+}
+
+.home-panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.home-panel-heading h2,
+.home-panel-heading p {
+    margin: 0;
+}
+
+.home-panel-heading h2 {
+    color: #ffe7a8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 16px;
+}
+
+.home-panel-heading p {
+    color: #cbc0f1;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.home-draw-grid,
+.home-week-grid,
+.home-steps-grid {
+    --wa-grid-gap: 0.5rem;
+}
+
+.home-draw-grid,
+.home-week-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-draw-card,
+.home-week-card,
+.home-step-card {
+    border-radius: 10px;
+    border: 1px solid rgba(184, 148, 255, 0.32);
+    background: linear-gradient(180deg, rgba(53, 27, 126, 0.8), rgba(34, 16, 86, 0.88));
+    padding: 10px;
+}
+
+.home-draw-card span,
+.home-week-card span {
+    color: #f6d78a;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 700;
+}
+
+.home-draw-card h3,
+.home-draw-card p,
+.home-week-card h3,
+.home-week-card p,
+.home-step-card h3,
+.home-step-card p {
+    margin: 0;
+}
+
+.home-draw-card h3,
+.home-week-card h3 {
+    margin-top: 5px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.1;
+}
+
+.home-draw-card p,
+.home-week-card p {
+    margin-top: 4px;
+    color: #d4cde9;
+    font-size: 12px;
+}
+
+.home-steps-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.home-step-card {
+    text-align: center;
+}
+
+.home-step-card.wa-stack {
+    --wa-stack-gap: 0.375rem;
+    align-items: center;
+}
+
+.home-step-card svg {
+    color: #ffe094;
+    font-size: 18px;
+}
+
+.home-step-card h3 {
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.15;
+    text-transform: uppercase;
+}
+
+.home-step-card p {
+    color: #d7cce8;
+    font-size: 11px;
+}
+
+wa-drawer.home-profile-drawer {
+    --size: min(300px, 84vw);
+}
+
+.home-profile-drawer::part(base),
+.home-profile-drawer::part(panel),
+.home-profile-drawer::part(body),
+.home-profile-drawer::part(header) {
+    background: linear-gradient(180deg, #34107f 0%, #2d0f6f 100%);
+    color: #efe6ff;
+}
+
+.home-profile-drawer::part(panel) {
+    background: linear-gradient(180deg, #34107f 0%, #2d0f6f 100%);
+    border-right: 1px solid rgba(195, 166, 255, 0.42);
+    box-shadow: 16px 0 36px rgba(9, 3, 29, 0.34);
+}
+
+.home-profile-drawer .casino-drawer-content {
+    min-height: 100%;
+    padding: 0.5rem 0;
+    background: transparent;
+}
+
+.home-drawer-profile {
+    justify-items: center;
+    text-align: center;
+    padding: 8px 0 14px;
+    border-bottom: 1px solid rgba(191, 157, 255, 0.24);
+}
+
+.home-drawer-profile.wa-stack {
+    --wa-stack-gap: 0.375rem;
+    align-items: center;
+}
+
+.home-drawer-avatar {
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 232, 192, 0.55);
+    background: radial-gradient(circle at 28% 24%, #fff1cb 0%, #dab765 62%, #a57a2d 100%);
+    color: #2c135f;
+    font-size: 2.625rem;
+}
+
+.home-drawer-profile strong {
+    color: #f7f0ff;
+    font-size: 1.625rem;
+}
+
+.home-drawer-profile p {
+    margin: 0;
+    color: #d5c7f8;
+    font-size: 0.8125rem;
+}
+
+.home-drawer-nav {
+    margin-top: 10px;
+}
+
+.home-drawer-nav.wa-stack {
+    --wa-stack-gap: 0.25rem;
+}
+
+.home-drawer-nav wa-button::part(base) {
+    width: 100%;
+    justify-content: flex-start;
+    border: 0;
+    background: transparent;
+    color: #efe6ff;
+    border-radius: 0.625rem;
+    min-height: 2.75rem;
+    padding-inline: 0.5rem;
+}
+
+.home-drawer-nav wa-button::part(base):hover {
+    background: rgba(193, 163, 255, 0.14);
+}
+
+.home-drawer-nav wa-button::part(base):focus-visible {
+    outline: 2px solid #f8de9f;
+    outline-offset: 2px;
+}
+
+.home-main-page .casino-footer {
+    border-color: rgba(168, 134, 255, 0.3);
+    background: rgba(28, 13, 73, 0.72);
+}
+
+.home-main-page .casino-footer p,
+.home-main-page .social-links {
+    font-size: 13px;
+}
+
+.casino-layout {
+    min-height: 100vh;
+    background: transparent;
 }
 
 .casino-content {
     width: min(1300px, 100%);
     margin: 0 auto;
     padding: 16px;
-    display: grid;
-    gap: 18px;
+}
+
+.casino-content.wa-stack {
+    --wa-stack-gap: 1.125rem;
 }
 
 #section-inicio,
@@ -134,6 +672,118 @@ body {
 #section-sala,
 #section-soporte {
     scroll-margin-top: 104px;
+}
+
+.casino-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    min-height: 82px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 12px clamp(14px, 3.2vw, 34px);
+    background: rgba(2, 4, 22, 0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(224, 179, 59, 0.28);
+}
+
+.brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-lockup h3,
+.brand-lockup p {
+    margin: 0;
+}
+
+.brand-lockup h3 {
+    color: var(--casino-text);
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(18px, 2vw, 24px);
+    line-height: 1;
+}
+
+.brand-lockup p {
+    margin-top: 4px;
+    color: var(--casino-muted);
+    font-size: 13px;
+}
+
+.brand-mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #1e1437;
+    background: radial-gradient(circle at 28% 24%, #ffe48f 0%, #e0b33b 58%, #a87307 100%);
+    box-shadow: 0 0 22px rgba(224, 179, 59, 0.38);
+}
+
+.desktop-nav,
+.mobile-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.desktop-nav {
+    justify-self: center;
+    align-items: center;
+}
+
+.desktop-nav button,
+.mobile-nav button {
+    border: 0;
+    background: transparent;
+    color: #d6dbff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    padding: 6px 0;
+}
+
+.desktop-nav button:focus-visible,
+.mobile-nav button:focus-visible {
+    outline: 2px solid var(--casino-gold);
+    outline-offset: 4px;
+}
+
+.desktop-nav button:hover,
+.mobile-nav button:hover {
+    color: var(--casino-gold);
+}
+
+.mobile-nav {
+    flex-direction: column;
+}
+
+.mobile-nav button {
+    text-align: left;
+}
+
+.mobile-menu-button {
+    display: none;
+}
+
+.header-actions,
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-actions--left h4 {
+    margin: 0;
+    color: #fff;
+    font-size: 24px;
 }
 
 .hero-section,
@@ -148,40 +798,58 @@ body {
 }
 
 .hero-section {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
+    display: flex;
     gap: 20px;
     padding: clamp(18px, 4vw, 34px);
 }
 
 .hero-copy {
-    display: grid;
-    align-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     gap: 14px;
+}
 
-    .hero-kicker {
-        color: var(--casino-gold-soft);
-        text-transform: uppercase;
-        letter-spacing: 0.13em;
-        font-weight: 700;
-    }
+.hero-copy .hero-kicker {
+    margin: 0;
+    color: var(--casino-gold-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    font-weight: 700;
+}
 
-    h1 {
-        margin: 0;
-        color: var(--casino-gold);
-        font-family: 'Sora', sans-serif;
-        font-size: clamp(32px, 5vw, 58px);
-        line-height: 1.05;
-    }
+.hero-copy h1 {
+    margin: 0;
+    color: var(--casino-gold);
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(32px, 5vw, 58px);
+    line-height: 1.05;
+}
 
-    .ant-typography {
-        color: var(--casino-muted);
-        font-size: clamp(17px, 2vw, 22px);
-    }
+.hero-copy .hero-description {
+    margin: 0;
+    color: var(--casino-muted);
+    font-size: clamp(17px, 2vw, 22px);
+}
 
-    .ant-space {
-        margin-top: 6px;
-    }
+wa-card.casino-card::part(base) {
+    border: 1px solid var(--casino-line);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(9, 15, 60, 0.88), rgba(6, 11, 42, 0.86));
+    box-shadow: none;
+}
+
+.casino-card-title {
+    margin: 0;
+    color: #fff;
+    font-size: 24px;
+}
+
+.casino-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
 }
 
 .hero-art {
@@ -192,30 +860,31 @@ body {
         radial-gradient(circle at 70% 12%, rgba(255, 216, 97, 0.5), transparent 38%),
         linear-gradient(145deg, #22104f 0%, #0f1552 50%, #080f37 100%);
     border: 1px solid rgba(224, 179, 59, 0.42);
+}
 
-    .coin {
-        position: absolute;
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        font-size: 50px;
-        font-weight: 700;
-        color: #2a1f06;
-        background: radial-gradient(circle at 28% 24%, #fff0ab 0%, #e0b33b 62%, #8f6204 100%);
-        box-shadow: 0 0 28px rgba(224, 179, 59, 0.5);
-    }
+.coin {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    font-weight: 700;
+    color: #2a1f06;
+    background: radial-gradient(circle at 28% 24%, #fff0ab 0%, #e0b33b 62%, #8f6204 100%);
+    box-shadow: 0 0 28px rgba(224, 179, 59, 0.5);
+}
 
-    .coin-a {
-        top: 14%;
-        left: 20%;
-    }
+.coin-a {
+    top: 14%;
+    left: 20%;
+}
 
-    .coin-b {
-        bottom: 12%;
-        right: 18%;
-    }
+.coin-b {
+    bottom: 12%;
+    right: 18%;
 }
 
 .hero-glow {
@@ -229,54 +898,87 @@ body {
 .program-section,
 .games-section {
     padding: 18px;
+}
 
-    h2 {
-        color: #fff;
-        margin-bottom: 0;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
+.section-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 14px;
+}
 
-    > .ant-typography {
-        color: var(--casino-gold);
-        text-transform: uppercase;
-        margin-bottom: 14px;
-        display: block;
-    }
+.section-heading h2,
+.section-heading p {
+    margin: 0;
+}
+
+.section-heading h2 {
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.section-heading p {
+    color: var(--casino-gold);
+    text-transform: uppercase;
+}
+
+.program-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.program-grid > * {
+    flex: 1 1 170px;
 }
 
 .program-card {
     height: 100%;
     border: 1px solid rgba(224, 179, 59, 0.36);
     background: linear-gradient(180deg, rgba(15, 24, 83, 0.86), rgba(9, 14, 47, 0.88));
+}
 
-    .day-label {
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: #dfe2ff;
-        font-weight: 700;
-    }
+.day-label {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #dfe2ff;
+    font-weight: 700;
+}
 
-    .day-icon {
-        display: inline-grid;
-        margin: 10px 0 8px;
-        font-size: 34px;
-    }
+.day-icon {
+    display: inline-grid;
+    margin: 10px 0 8px;
+    font-size: 34px;
+}
 
-    h4 {
-        color: var(--casino-gold);
-        margin: 0;
-    }
+.program-card h4,
+.program-card .program-description {
+    margin: 0;
+}
 
-    .ant-typography {
-        color: #c4caee;
-        font-size: 17px;
-    }
+.program-card h4 {
+    color: var(--casino-gold);
+}
+
+.program-card .program-description {
+    color: #c4caee;
+    font-size: 17px;
+}
+
+.empty-state-callout {
+    width: 100%;
+}
+
+wa-callout.empty-state-callout::part(base),
+wa-callout.login-callout::part(base),
+wa-callout.feedback-callout::part(base) {
+    border-radius: 12px;
 }
 
 .vegas-section {
-    display: grid;
-    grid-template-columns: 0.95fr 1.05fr;
+    display: flex;
     gap: 18px;
     padding: clamp(18px, 4vw, 28px);
     align-items: center;
@@ -286,8 +988,9 @@ body {
     min-height: 210px;
     border-radius: 18px;
     border: 1px solid rgba(224, 179, 59, 0.42);
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'Sora', sans-serif;
     font-size: clamp(28px, 3.2vw, 42px);
     color: var(--casino-gold);
@@ -298,111 +1001,124 @@ body {
 }
 
 .vegas-copy {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
+}
 
-    h1 {
-        margin: 0;
-        color: var(--casino-gold);
-        font-family: 'Sora', sans-serif;
-    }
+.vegas-copy h2,
+.vegas-copy .vegas-description,
+.vegas-copy .hero-kicker {
+    margin: 0;
+}
 
-    .ant-typography {
-        color: var(--casino-muted);
-        font-size: 20px;
-    }
+.vegas-copy h2 {
+    color: var(--casino-gold);
+    font-family: 'Sora', sans-serif;
+}
+
+.vegas-copy .vegas-description {
+    color: var(--casino-muted);
+    font-size: clamp(17px, 2vw, 20px);
+}
+
+.vegas-copy .hero-kicker {
+    color: var(--casino-gold-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
 }
 
 .feature-list {
+    list-style: none;
+    padding: 0;
     margin: 8px 0 14px;
-    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-    .ant-list-item {
-        border-block-end: none;
-        padding: 4px 0;
-    }
+.feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ecefff;
+    font-size: 19px;
+}
 
-    .ant-space {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+.feature-icon {
+    color: var(--casino-gold);
+}
 
-    .ant-typography {
-        color: #ecefff;
-        font-size: 19px;
-    }
+.games-carousel-controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 8px 0 14px;
+}
 
-    svg {
-        color: var(--casino-gold);
-    }
+.games-carousel {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+}
+
+.games-carousel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.games-carousel::-webkit-scrollbar-thumb {
+    background: rgba(224, 179, 59, 0.5);
+    border-radius: 999px;
+}
+
+.game-slide {
+    min-width: 220px;
+    scroll-snap-align: start;
+    padding: 4px 0 10px;
 }
 
 .game-card {
     height: 100%;
     min-height: 140px;
-    display: grid;
-    align-content: end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     gap: 6px;
     border: 1px solid rgba(224, 179, 59, 0.38);
     background:
         radial-gradient(circle at 70% 8%, rgba(245, 103, 88, 0.24), transparent 38%),
         linear-gradient(150deg, #1a1d58 0%, #0a0f34 100%);
-
-    span {
-        color: var(--casino-gold-soft);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        font-weight: 700;
-    }
-
-    h5 {
-        margin: 0;
-        font-size: 24px;
-        color: #fff;
-        line-height: 1.05;
-    }
-
-    .ant-typography {
-        color: #c4caee;
-        font-size: 17px;
-        margin: 0;
-    }
 }
 
-.games-carousel {
-    margin-top: 6px;
-
-    .slick-list {
-        margin: 0 -6px;
-    }
-
-    .slick-slide > div {
-        padding: 0 6px;
-    }
-
-    .slick-dots li button {
-        background: rgba(224, 179, 59, 0.4);
-    }
-
-    .slick-dots li.slick-active button {
-        background: var(--casino-gold);
-    }
+.game-card span {
+    color: var(--casino-gold-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
 }
 
-.game-slide {
-    padding: 4px 0 10px;
+.game-card h5,
+.game-card p {
+    margin: 0;
+}
+
+.game-card h5 {
+    font-size: 24px;
+    color: #fff;
+    line-height: 1.05;
+}
+
+.game-card p {
+    color: #c4caee;
+    font-size: 17px;
 }
 
 .game-card.is-featured {
     border-color: rgba(255, 216, 108, 0.9);
     box-shadow: 0 0 22px rgba(224, 179, 59, 0.28);
-}
-
-.games-section {
-    .ant-carousel {
-        margin-top: 6px;
-    }
 }
 
 .bottom-cta {
@@ -412,17 +1128,21 @@ body {
     gap: 18px;
     padding: 20px;
     background: linear-gradient(120deg, rgba(31, 19, 89, 0.94) 0%, rgba(8, 14, 44, 0.96) 100%);
+}
 
-    h3 {
-        margin: 0;
-        text-transform: uppercase;
-        color: #fff;
-    }
+.bottom-cta h3,
+.bottom-cta p {
+    margin: 0;
+}
 
-    .ant-typography {
-        color: var(--casino-muted);
-        font-size: 19px;
-    }
+.bottom-cta h3 {
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.bottom-cta p {
+    color: var(--casino-muted);
+    font-size: 19px;
 }
 
 .casino-footer {
@@ -432,62 +1152,623 @@ body {
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
-
-    .ant-typography,
-    .anticon {
-        color: #c7ccef;
-        font-weight: 600;
-        font-size: 17px;
-    }
-
-    .ant-space .anticon {
-        color: var(--casino-gold);
-        font-size: 20px;
-    }
 }
 
-.casino-drawer {
-    .ant-drawer-header {
-        background: #070426;
+.casino-footer p {
+    margin: 0;
+    color: #c7ccef;
+    font-weight: 600;
+    font-size: 17px;
+}
 
-        .ant-drawer-title,
-        .anticon {
-            color: #fff;
-        }
-    }
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #c7ccef;
+    font-weight: 600;
+    font-size: 17px;
+}
 
-    .ant-drawer-body {
-        background: #0b103b;
-    }
+.social-links svg {
+    color: var(--casino-gold);
+    font-size: 20px;
+}
 
-    .ant-anchor {
-        background: transparent;
-        display: grid;
-        gap: 2px;
-    }
+.casino-drawer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-    .ant-anchor-link {
-        padding-block: 8px;
-    }
+.block-action {
+    width: 100%;
+}
 
-    .ant-anchor-link-title {
-        color: #fff;
-        text-transform: uppercase;
-        font-weight: 700;
-    }
+.hero-actions wa-button,
+.header-actions wa-button,
+.bottom-cta wa-button {
+    --wa-button-font-size-medium: 0.98rem;
+    --wa-button-font-weight: 700;
+}
 
-    .ant-anchor-link-active > .ant-anchor-link-title {
-        color: var(--casino-gold);
-    }
+.user-grid {
+    --wa-grid-gap: 1rem;
+    grid-template-columns: 1fr;
+}
 
-    .ant-anchor-ink {
-        display: none;
-    }
+.user-coupons-section {
+    justify-items: center;
+}
+
+.user-coupons-section.wa-stack {
+    --wa-stack-gap: 0.75rem;
+}
+
+.welcome-copy {
+    --wa-stack-gap: 0.5rem;
+}
+
+.welcome-copy h2,
+.welcome-copy p {
+    margin: 0;
+}
+
+.welcome-copy .muted-copy {
+    color: var(--casino-muted);
+}
+
+.active-coupons-panel {
+    border: 1px solid rgba(174, 140, 255, 0.28);
+    border-radius: 14px;
+    background: linear-gradient(160deg, rgba(33, 12, 86, 0.96), rgba(28, 12, 76, 0.94));
+    padding: 14px;
+    width: min(420px, 100%);
+}
+
+.active-coupons-panel.wa-stack {
+    --wa-stack-gap: 0.75rem;
+}
+
+.active-coupons-panel h3 {
+    margin: 0;
+    text-align: center;
+    color: #fff;
+    letter-spacing: 0.03em;
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(1.375rem, 3vw, 1.875rem);
+    text-transform: uppercase;
+}
+
+.active-coupons-list {
+    max-height: 74vh;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.active-coupons-list.wa-stack {
+    --wa-stack-gap: 0.75rem;
+}
+
+.active-coupons-list.is-detail {
+    max-height: none;
+    overflow: visible;
+}
+
+.active-coupons-list::-webkit-scrollbar {
+    width: 7px;
+}
+
+.active-coupons-list::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(244, 212, 122, 0.5);
+}
+
+.active-coupon-card.is-clickable {
+    cursor: pointer;
+}
+
+.active-coupon-card.is-clickable:focus-visible {
+    outline: 2px solid rgba(46, 25, 105, 0.8);
+    outline-offset: 2px;
+}
+
+wa-card.active-coupon-card::part(base) {
+    border: 1px solid rgba(242, 213, 127, 0.32);
+    border-radius: 0.875rem;
+    background: linear-gradient(180deg, rgba(46, 18, 110, 0.96), rgba(27, 12, 73, 0.98));
+    box-shadow: 0 10px 24px rgba(14, 4, 44, 0.22);
+}
+
+.active-coupon-card__header,
+.active-coupon-card__body,
+.active-coupon-card__footer {
+    --wa-stack-gap: 0.625rem;
+}
+
+.active-coupon-card__header {
+    justify-content: space-between;
+    align-items: start;
+}
+
+.active-coupon-card__brand,
+.active-coupon-card__meta,
+.active-coupon-card__code {
+    margin: 0;
+}
+
+.active-coupon-card__brand {
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.active-coupon-card__meta {
+    color: rgba(225, 214, 250, 0.76);
+    font-size: 0.8125rem;
+}
+
+.active-coupon-card__code {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(2rem, 6vw, 2.75rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    font-weight: 800;
+    color: #ffe6a3;
+}
+
+.active-coupon-card__tags {
+    --wa-cluster-gap: 0.5rem;
+}
+
+.active-coupon-card__footer {
+    padding-top: 0.25rem;
+}
+
+.active-coupon-card__footer wa-button::part(base) {
+    width: 100%;
+}
+
+.active-coupons-panel--detail {
+    width: min(430px, 100%);
+}
+
+.active-coupons-panel--detail .active-coupon-card__header {
+    justify-content: flex-start;
+}
+
+.active-coupons-panel--detail .active-coupon-card__code {
+    font-size: clamp(2.625rem, 8vw, 3.5rem);
+}
+
+.active-coupons-action::part(base) {
+    width: 100%;
+}
+
+.coupons-pagination {
+    width: min(420px, 100%);
+    color: #f4eafc;
+    justify-content: space-between;
+    --wa-cluster-gap: 0.625rem;
+}
+
+.coupons-pagination p {
+    margin: 0;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.coupons-pagination wa-button::part(base) {
+    min-width: 6rem;
+}
+
+.active-coupons-empty {
+    color: #f3e6cb;
+}
+
+wa-card.active-coupons-empty::part(base) {
+    border: 1px dashed rgba(238, 198, 106, 0.45);
+    border-radius: 0.875rem;
+    background: rgba(33, 12, 86, 0.4);
+}
+
+.active-coupons-empty p {
+    margin: 0;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.schedule-table-wrap {
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(181, 152, 255, 0.24);
+    background: linear-gradient(170deg, rgba(39, 21, 92, 0.92), rgba(26, 14, 64, 0.9));
+}
+
+.schedule-month-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.schedule-month-table th {
+    padding: 0.6rem 0.35rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: lowercase;
+    color: #ddd2f8;
+    border-bottom: 1px solid rgba(181, 152, 255, 0.24);
+}
+
+.schedule-month-table td {
+    border-bottom: 1px solid rgba(181, 152, 255, 0.12);
+    border-right: 1px solid rgba(181, 152, 255, 0.12);
+    padding: 0;
+}
+
+.schedule-month-table tr td:last-child {
+    border-right: 0;
+}
+
+.schedule-day-button {
+    width: 100%;
+    min-height: 56px;
+    border: 0;
+    background: transparent;
+    color: #f2eafe;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.schedule-day-button i {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #f4cd71;
+}
+
+.schedule-month-table td.is-outside-month .schedule-day-button {
+    color: rgba(195, 186, 221, 0.52);
+}
+
+.schedule-month-table td.is-selected .schedule-day-button {
+    background: rgba(186, 95, 233, 0.92);
+    box-shadow: inset 0 0 0 3px rgba(10, 5, 38, 0.9);
+    color: #f7efff;
+}
+
+.schedule-events-panel h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #f4eafc;
+}
+
+.schedule-events-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    --wa-stack-gap: 0.5rem;
+}
+
+.schedule-events-list li {
+    border: 1px solid rgba(242, 213, 127, 0.28);
+    border-radius: 0.625rem;
+    background: rgba(31, 15, 74, 0.74);
+    padding: 0.65rem 0.75rem;
+}
+
+.schedule-event-head {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.schedule-events-list p {
+    margin: 0.35rem 0 0.55rem;
+    color: rgba(233, 224, 252, 0.88);
+    font-size: 0.9rem;
+}
+
+.schedule-day-empty {
+    margin: 0.25rem 0 0;
+    color: rgba(215, 204, 240, 0.82);
+    font-size: 0.9rem;
+}
+
+.session-details {
+    margin: 0;
+    --wa-stack-gap: 0.625rem;
+}
+
+.session-details div {
+    border: 1px solid rgba(224, 179, 59, 0.24);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.session-details dt {
+    color: var(--casino-gold-soft);
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.session-details dd {
+    margin: 4px 0 0;
+    color: #fff;
+    font-size: 18px;
+}
+
+.profile-editor {
+    --wa-stack-gap: 0.7rem;
+}
+
+.profile-editor-avatar {
+    justify-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.profile-editor-avatar.wa-stack {
+    --wa-stack-gap: 0.45rem;
+}
+
+.profile-editor-avatar-image::part(base) {
+    width: 76px;
+    height: 76px;
+    border: 2px solid rgba(190, 158, 255, 0.6);
+    background: linear-gradient(160deg, rgba(95, 53, 190, 0.84), rgba(58, 28, 132, 0.9));
+    color: #f8efff;
+}
+
+.profile-editor-file {
+    display: none;
+}
+
+.profile-editor label {
+    color: rgba(240, 228, 255, 0.96);
+    font-size: 0.98rem;
+    font-weight: 700;
+}
+
+.profile-input {
+    width: 100%;
+}
+
+.profile-input::part(form-control-label),
+.profile-input::part(help-text) {
+    display: none;
+}
+
+.profile-input::part(base) {
+    border: 1px solid rgba(164, 121, 255, 0.8);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(70, 39, 150, 0.86), rgba(49, 25, 110, 0.9));
+    min-height: 50px;
+    box-shadow: inset 0 0 0 1px rgba(217, 196, 255, 0.14);
+    color: #f4eefe;
+}
+
+.profile-input::part(input) {
+    font-size: 1.02rem;
+    padding-inline: 0.8rem;
+}
+
+.user-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.user-login-form wa-input {
+    width: 100%;
+}
+
+.field-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-block label {
+    color: #f5f6ff;
+    font-weight: 600;
+}
+
+.remember-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feedback-callout p,
+.login-callout p {
+    margin: 6px 0 0;
+}
+
+.user-login-screen {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% -10%, rgba(112, 70, 255, 0.26), transparent 40%),
+        radial-gradient(circle at 10% 100%, rgba(91, 18, 181, 0.28), transparent 34%),
+        linear-gradient(180deg, #16083f 0%, #220d56 58%, #1b0a46 100%);
+}
+
+.user-login-glow {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    border-radius: 999px;
+    filter: blur(90px);
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.user-login-glow--top {
+    top: -230px;
+    left: -120px;
+    background: rgba(126, 70, 255, 0.48);
+}
+
+.user-login-glow--bottom {
+    right: -160px;
+    bottom: -260px;
+    background: rgba(87, 30, 225, 0.54);
+}
+
+.user-login-shell {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    width: min(450px, 100%);
+    margin: 0 auto;
+    padding: 16px 18px 20px;
+    align-content: center;
+}
+
+.user-login-shell.wa-stack {
+    --wa-stack-gap: 0.875rem;
+}
+
+.user-login-hour {
+    color: rgba(244, 238, 255, 0.94);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    justify-self: start;
+}
+
+.user-login-card {
+    padding: clamp(24px, 6vw, 40px) clamp(14px, 4.8vw, 26px) clamp(22px, 6vw, 34px);
+}
+
+.user-login-card.wa-stack {
+    --wa-stack-gap: 1.75rem;
+}
+
+.user-login-brand {
+    text-align: center;
+    color: #f3ecff;
+    text-shadow: 0 0 24px rgba(117, 71, 255, 0.34);
+}
+
+.user-login-brand p,
+.user-login-brand h1 {
+    margin: 0;
+    font-family: 'Cinzel', serif;
+    line-height: 0.9;
+}
+
+.user-login-brand p {
+    font-size: clamp(32px, 12vw, 48px);
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.user-login-brand h1 {
+    margin-top: 2px;
+    font-size: clamp(58px, 18vw, 92px);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.user-login-form-shell {
+    --wa-stack-gap: 0.875rem;
+}
+
+.user-login-form-shell label {
+    color: rgba(233, 219, 255, 0.9);
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.user-register-form-shell label {
+    text-align: left;
+    font-size: 1.95rem;
+    letter-spacing: 0.01em;
+}
+
+.user-phone-input {
+    width: 100%;
+}
+
+.user-phone-input::part(form-control-label),
+.user-phone-input::part(help-text) {
+    display: none;
+}
+
+.user-phone-input::part(base) {
+    border: 1px solid rgba(164, 121, 255, 0.86);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(58, 34, 125, 0.9), rgba(42, 24, 100, 0.9));
+    color: #f4eefe;
+    min-height: 56px;
+    box-shadow: inset 0 0 0 1px rgba(215, 195, 255, 0.16);
+}
+
+.user-phone-input::part(input) {
+    font-size: 30px;
+    text-align: center;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+}
+
+.user-register-input::part(input) {
+    font-size: 1.9rem;
+    text-align: left;
+    padding-inline: 0.875rem;
+}
+
+.user-login-primary,
+.user-login-secondary {
+    width: 100%;
+    --wa-button-font-size-large: 2rem;
+    --wa-button-font-weight: 800;
+    --wa-button-border-radius-large: 12px;
+    --wa-button-padding-block-large: 0.78rem;
+    text-transform: uppercase;
+}
+
+.user-login-primary {
+    margin-top: 4px;
+}
+
+.user-login-primary::part(base),
+.user-login-secondary::part(base) {
+    border: 1px solid rgba(121, 73, 252, 0.95);
+    background:
+        linear-gradient(180deg, rgba(86, 28, 255, 0.98) 0%, rgba(58, 13, 191, 0.98) 100%);
+    box-shadow:
+        0 10px 22px rgba(20, 6, 73, 0.52),
+        inset 0 1px 0 rgba(195, 163, 255, 0.5);
+}
+
+.user-login-copy {
+    margin: 10px 0 2px;
+    text-align: center;
+    color: rgba(225, 211, 252, 0.88);
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.user-access-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 @media (max-width: 1090px) {
     .casino-header {
-        grid-template-columns: 1fr auto;
+        flex-wrap: wrap;
     }
 
     .desktop-nav {
@@ -500,7 +1781,7 @@ body {
 
     .hero-section,
     .vegas-section {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 
     .hero-art {
@@ -511,15 +1792,97 @@ body {
         flex-direction: column;
         align-items: flex-start;
     }
+
+    .user-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
-    .brand-lockup .ant-typography:last-child {
+    .active-coupons-panel {
+        padding: 10px;
+    }
+
+    .active-coupon-card__brand {
+        font-size: clamp(0.9375rem, 5.2vw, 1.25rem);
+    }
+
+    .active-coupon-card__code {
+        font-size: clamp(2.125rem, 13vw, 3.25rem);
+    }
+
+    .active-coupon-card__meta {
+        font-size: 0.75rem;
+    }
+
+    .user-login-card {
+        gap: 20px;
+    }
+
+    .user-phone-input::part(input) {
+        font-size: clamp(24px, 6vw, 30px);
+    }
+
+    .user-login-primary,
+    .user-login-secondary {
+        --wa-button-font-size-large: clamp(1.3rem, 5.2vw, 2rem);
+    }
+
+    .user-login-copy {
+        font-size: clamp(1rem, 4.8vw, 1.35rem);
+    }
+
+    .home-entry-card {
+        gap: 20px;
+    }
+
+    .home-phone-input::part(input) {
+        font-size: clamp(24px, 6vw, 30px);
+    }
+
+    .home-entry-primary,
+    .home-entry-secondary {
+        --wa-button-font-size-large: clamp(1.3rem, 5.2vw, 2rem);
+    }
+
+    .home-entry-support-copy {
+        font-size: clamp(1rem, 4.8vw, 1.35rem);
+    }
+
+    .home-main-content {
+        padding: 10px 8px 14px;
+    }
+
+    .home-draw-grid,
+    .home-week-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-steps-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-draw-card,
+    .home-week-card,
+    .home-step-card {
+        padding: 9px;
+    }
+
+    .home-drawer-profile strong {
+        font-size: 1.375rem;
+    }
+
+    .brand-lockup p {
         display: none;
     }
 
     .casino-footer {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .hero-actions,
+    .header-actions {
+        flex-wrap: wrap;
     }
 }

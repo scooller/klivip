@@ -7,8 +7,10 @@ use App\Models\Game;
 use App\Models\Promotion;
 use App\Models\Site;
 use App\Models\User;
+use App\Notifications\FrontCustomerOtpNotification;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class SubdomainRoutingTest extends TestCase
@@ -87,9 +89,10 @@ class SubdomainRoutingTest extends TestCase
         $response->assertSee('Sitio Usuario');
     }
 
-    public function test_customer_can_login_on_front_using_customer_guard(): void
+    public function test_customer_can_request_and_verify_otp_login_on_front(): void
     {
         $this->withoutMiddleware(PreventRequestForgery::class);
+        Notification::fake();
 
         Site::query()->create([
             'name' => 'Sitio Login',
@@ -102,13 +105,30 @@ class SubdomainRoutingTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response = $this->post('http://sitio-login.klivip.test/usuario/login', [
+        $requestResponse = $this->from('http://sitio-login.klivip.test/usuario')->post('http://sitio-login.klivip.test/usuario/login', [
             'email' => 'customer@example.com',
-            'password' => 'password',
             'remember' => true,
         ]);
 
-        $response->assertRedirect();
+        $requestResponse->assertRedirect('http://sitio-login.klivip.test/usuario');
+
+        $otpCode = null;
+
+        Notification::assertSentTo($customer, FrontCustomerOtpNotification::class, function ($notification) use (&$otpCode): bool {
+            $otpCode = $notification->code;
+
+            return true;
+        });
+
+        $this->assertNotNull($otpCode);
+
+        $verifyResponse = $this->from('http://sitio-login.klivip.test/usuario')->post('http://sitio-login.klivip.test/usuario/login/verify', [
+            'email' => 'customer@example.com',
+            'otp_code' => $otpCode,
+            'remember' => true,
+        ]);
+
+        $verifyResponse->assertRedirect('http://sitio-login.klivip.test/usuario');
         $this->assertAuthenticatedAs($customer, 'customer');
     }
 
@@ -129,7 +149,6 @@ class SubdomainRoutingTest extends TestCase
 
         $response = $this->from('http://sitio-login.klivip.test/usuario')->post('http://sitio-login.klivip.test/usuario/login', [
             'email' => 'admin@example.com',
-            'password' => 'password',
         ]);
 
         $response->assertRedirect('http://sitio-login.klivip.test/usuario');

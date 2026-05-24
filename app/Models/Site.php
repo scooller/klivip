@@ -42,9 +42,10 @@ class Site extends Model
 
     public function getUrlAttribute(): string
     {
-        $base = config('app.url', 'http://klivip.test');
+        $base = (string) config('app.url', 'http://klivip.test');
+        $url = preg_replace('#^(https?://)#', "$1{$this->slug}.", $base);
 
-        return preg_replace('#^(https?://)#', "$1{$this->slug}.", $base);
+        return $url ?? $base;
     }
 
     public function coupons(): HasMany
@@ -55,6 +56,12 @@ class Site extends Model
     public function promotions(): HasMany
     {
         return $this->hasMany(Promotion::class);
+    }
+
+    public function banners(): BelongsToMany
+    {
+        return $this->belongsToMany(Banner::class)
+            ->withTimestamps();
     }
 
     public function games(): BelongsToMany

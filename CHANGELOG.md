@@ -37,14 +37,14 @@ Este archivo concentra el historial de cambios del proyecto.
 
 ### Changed
 - Seccion de juegos del home convertida a slider con todos los juegos y destacados visuales.
-- Navegacion landing migrada a `Anchor` de Ant Design.
-- Badges visuales migrados a `Tag` de Ant Design.
+- Navegacion landing migrada a componentes reutilizables de front.
+- Badges visuales migrados a componentes de Web Awesome.
 - Mensajeria de login cliente con copy mas profesional.
 - `README.md` actualizado con documentacion del proyecto y referencia unica a este archivo.
 
 ### Fixed
 - Normalizacion defensiva en formato de dias recurrentes de promociones para evitar error de tipos en Filament.
-- Manejo de errores de login cliente con `Alert` + `notification` en front.
+- Manejo de errores de login cliente con componentes de feedback del front.
 
 ### Notes
 - El historial futuro debe agregarse solo en este archivo.

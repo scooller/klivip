@@ -1,7 +1,7 @@
-import { Layout, Typography } from 'antd';
-
-const { Header } = Layout;
-const { Title, Text } = Typography;
+import { router, usePage } from '@inertiajs/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { WaButton } from './primitives/wa';
 
 export default function FrontHeader({
     site,
@@ -11,16 +11,18 @@ export default function FrontHeader({
     rightContent = null,
     subtitle = null,
 }) {
+    const page = usePage();
+    const customer = page.props.auth?.customer ?? null;
     const computedSubtitle = subtitle ?? (site?.slug ? `${site.slug}.klivip.test` : '');
 
     return (
-        <Header className="casino-header">
+        <header className="casino-header">
             {showBrand ? (
                 <div className="brand-lockup">
                     <span className="brand-mark">GI</span>
                     <div>
-                        <Title level={3}>{site?.name ?? 'Klivip'}</Title>
-                        <Text>{computedSubtitle}</Text>
+                        <h3>{site?.name ?? 'Klivip'}</h3>
+                        <p>{computedSubtitle}</p>
                     </div>
                 </div>
             ) : (
@@ -28,7 +30,24 @@ export default function FrontHeader({
             )}
 
             <div>{centerContent}</div>
-            <div>{rightContent}</div>
-        </Header>
+            <div className="header-actions">
+                <WaButton variant="brand" onClick={() => router.visit('/usuario')}>
+                    <FontAwesomeIcon icon={faUser} slot="start" />
+                    Registrarse
+                </WaButton>
+                {customer ? (
+                    <WaButton variant="neutral" onClick={() => router.visit('/usuario')}>
+                        <FontAwesomeIcon icon={faUser} slot="start" />
+                        Ver perfil
+                    </WaButton>
+                ) : (
+                    <WaButton variant="neutral" onClick={() => router.visit('/usuario')}>
+                        <FontAwesomeIcon icon={faUser} slot="start" />
+                        Conectarse
+                    </WaButton>
+                )}
+                {rightContent}
+            </div>
+        </header>
     );
 }

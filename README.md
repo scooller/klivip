@@ -11,7 +11,7 @@ KliVip combina un panel administrativo en Filament con un front publico por subd
 1. Gestionar contenido por sitio desde admin.
 2. Mostrar ese contenido en el front de cada subdominio.
 3. Separar autenticacion de clientes y administradores.
-4. Mantener UI del front basada en Ant Design + React + Inertia.
+4. Mantener UI del front basada en Web Awesome + React + Inertia.
 
 ## Stack Tecnico
 
@@ -26,7 +26,7 @@ KliVip combina un panel administrativo en Filament con un front publico por subd
 ### Frontend
 
 1. Inertia.js v3 + React 19
-2. Ant Design 6
+2. Web Awesome 3
 3. Vite 8
 4. Tailwind CSS 4 (entorno)
 5. Sass
@@ -95,10 +95,10 @@ Los tipos de usuario estan definidos en `app/Enums/UserRole.php`:
 
 ## Manejo De Errores En Login Cliente
 
-1. Validaciones de formulario con `Form` de Ant Design.
-2. Mensajes de error de backend reflejados en campos del formulario.
-3. `Alert` para error de autenticacion en la tarjeta de login.
-4. `notification` para feedback de inicio/cierre de sesion.
+1. Manejo de estado con `useForm` de Inertia.
+2. Mensajes de error de backend reflejados en componentes del formulario.
+3. `WaCallout` para feedback de autenticacion en login/sesion.
+4. Feedback visual de inicio/cierre de sesion desde la UI de Web Awesome.
 
 ## Datos De Prueba
 
