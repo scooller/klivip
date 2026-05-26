@@ -44,11 +44,19 @@ export default function User({ site, activeCoupons = [] }) {
     const page = usePage();
     const customer = page.props.auth?.customer ?? null;
     const adminPortal = page.props.auth?.adminPortal ?? null;
+    const security = page.props.auth?.security ?? {};
     const otpLogin = page.props.auth?.otpLogin ?? { pending: false, identifier: null, email: null };
+    const loginRequiresOtp = Boolean(security.loginRequiresOtp ?? true);
+    const profileUnlock = security.profileUnlock ?? {
+        unlocked: false,
+        otpEnabled: true,
+        magicLinkEnabled: true,
+        hideBirthDate: true,
+    };
     const [isChangingUser, setIsChangingUser] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
-    const isOtpPending = Boolean(otpLogin.pending) && !isChangingUser;
+    const isOtpPending = loginRequiresOtp && Boolean(otpLogin.pending) && !isChangingUser;
     const [feedback, setFeedback] = useState(null);
 
     const currentTime = useMemo(() => {
@@ -93,15 +101,19 @@ export default function User({ site, activeCoupons = [] }) {
             onSuccess: () => {
                 setFeedback({
                     variant: 'success',
-                    title: 'Codigo enviado',
-                    description: 'Revisa tu correo y escribe el codigo de acceso para continuar.',
+                    title: loginRequiresOtp ? 'Codigo enviado' : 'Acceso concedido',
+                    description: loginRequiresOtp
+                        ? 'Revisa tu correo y escribe el codigo de acceso para continuar.'
+                        : 'Ingresaste correctamente con tu cuenta.',
                 });
             },
             onError: () => {
                 setFeedback({
                     variant: 'danger',
-                    title: 'No se pudo enviar el codigo',
-                    description: 'Revisa tu correo e intenta nuevamente.',
+                    title: loginRequiresOtp ? 'No se pudo enviar el codigo' : 'No se pudo iniciar sesion',
+                    description: loginRequiresOtp
+                        ? 'Revisa tu correo e intenta nuevamente.'
+                        : 'Revisa tus datos e intenta nuevamente.',
                 });
             },
             onFinish: () => {
@@ -432,7 +444,7 @@ export default function User({ site, activeCoupons = [] }) {
 
                     <div className="user-grid wa-grid">
                         <div>
-                            <UserSessionCard customer={customer} onLogout={handleLogout} />
+                            <UserSessionCard customer={customer} profileUnlock={profileUnlock} onLogout={handleLogout} />
                         </div>
                     </div>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Site;
+use App\Models\SiteSetting;
 use App\Models\User;
 use App\Notifications\FrontCustomerOtpNotification;
 use Carbon\CarbonImmutable;
@@ -83,6 +84,15 @@ class CustomerSessionController extends Controller
             ]);
         }
 
+        if ((bool) SiteSetting::get('enable_home_login_without_code', false)) {
+            $this->clearOtpSession($request);
+
+            Auth::guard('customer')->login($customer, $request->boolean('remember'));
+            $request->session()->regenerate();
+
+            return redirect('/principal');
+        }
+
         $site = $this->resolveSite($request);
         $requestKey = $this->otpRequestKey($site->slug, $customer->email);
 
@@ -154,12 +164,7 @@ class CustomerSessionController extends Controller
 
         Cache::forget($cacheKey);
         RateLimiter::clear($this->otpRequestKey($site->slug, $customer->email));
-        $request->session()->forget([
-            'customer_otp_identifier',
-            'customer_otp_email',
-            'customer_otp_expires_at',
-            'customer_otp_remember',
-        ]);
+        $this->clearOtpSession($request);
 
         Auth::guard('customer')->login($customer, $request->boolean('remember'));
         $request->session()->regenerate();
@@ -223,5 +228,15 @@ class CustomerSessionController extends Controller
     private function otpRequestKey(string $siteSlug, string $email): string
     {
         return sprintf('customer-otp-request:%s:%s', $siteSlug, sha1(mb_strtolower($email)));
+    }
+
+    private function clearOtpSession(Request $request): void
+    {
+        $request->session()->forget([
+            'customer_otp_identifier',
+            'customer_otp_email',
+            'customer_otp_expires_at',
+            'customer_otp_remember',
+        ]);
     }
 }

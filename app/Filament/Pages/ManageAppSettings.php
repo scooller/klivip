@@ -71,6 +71,22 @@ class ManageAppSettings extends Page implements HasForms
                                         Toggle::make('enable_registrations')
                                             ->label('Permitir Registros de Usuarios')
                                             ->helperText('Cuando está desactivado, el registro de nuevos usuarios es bloqueado.'),
+
+                                        Toggle::make('enable_home_login_without_code')
+                                            ->label('Login home sin código')
+                                            ->helperText('Permite acceder desde home usando solo email/teléfono, sin OTP.'),
+
+                                        Toggle::make('enable_profile_unlock_otp')
+                                            ->label('Desbloqueo de perfil con código')
+                                            ->helperText('Permite solicitar un código OTP para habilitar la edición del perfil.'),
+
+                                        Toggle::make('enable_profile_unlock_magic_link')
+                                            ->label('Desbloqueo de perfil con link de un solo uso')
+                                            ->helperText('Envía un enlace temporal de un solo uso para habilitar la edición.'),
+
+                                        Toggle::make('hide_birth_date_on_profile')
+                                            ->label('Ocultar fecha de nacimiento en perfil')
+                                            ->helperText('Oculta la fecha de nacimiento en la vista de perfil de usuario.'),
                                     ])
                                     ->columns(1),
                             ]),

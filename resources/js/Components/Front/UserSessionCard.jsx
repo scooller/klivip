@@ -28,8 +28,13 @@ function formatPhone(rawValue) {
     return `+${country} ${remainder[0]} ${remainder.slice(1, 5)} ${remainder.slice(5, 9)}`;
 }
 
-export default function UserSessionCard({ customer, onLogout }) {
+export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
+    const isUnlocked = Boolean(profileUnlock?.unlocked);
+    const otpEnabled = Boolean(profileUnlock?.otpEnabled);
+    const magicLinkEnabled = Boolean(profileUnlock?.magicLinkEnabled);
+    const hideBirthDate = Boolean(profileUnlock?.hideBirthDate);
     const [avatarPreview, setAvatarPreview] = useState(null);
+    const [unlockFeedback, setUnlockFeedback] = useState(null);
     const form = useForm({
         name: customer?.name ?? '',
         email: customer?.email ?? '',
@@ -37,6 +42,9 @@ export default function UserSessionCard({ customer, onLogout }) {
         phone: customer?.phone ?? '',
         birth_date: customer?.birth_date ?? '',
         avatar: null,
+    });
+    const unlockForm = useForm({
+        otp_code: '',
     });
     const fileInputRef = useRef(null);
 
@@ -90,11 +98,146 @@ export default function UserSessionCard({ customer, onLogout }) {
         });
     };
 
+    const handleRequestUnlockOtp = () => {
+        setUnlockFeedback(null);
+        unlockForm.post('/usuario/perfil/unlock/otp/request', {
+            preserveScroll: true,
+            onSuccess: () => {
+                setUnlockFeedback({
+                    variant: 'success',
+                    title: 'Codigo enviado',
+                    description: 'Revisa tu correo e ingresa el codigo para desbloquear la edicion.',
+                });
+            },
+        });
+    };
+
+    const handleVerifyUnlockOtp = (event) => {
+        event.preventDefault();
+        setUnlockFeedback(null);
+        unlockForm.post('/usuario/perfil/unlock/otp/verify', {
+            preserveScroll: true,
+            onSuccess: () => {
+                unlockForm.reset('otp_code');
+                setUnlockFeedback({
+                    variant: 'success',
+                    title: 'Perfil desbloqueado',
+                    description: 'Ya puedes editar tus datos.',
+                });
+            },
+        });
+    };
+
+    const handleRequestUnlockLink = () => {
+        setUnlockFeedback(null);
+        unlockForm.post('/usuario/perfil/unlock/link/request', {
+            preserveScroll: true,
+            onSuccess: () => {
+                setUnlockFeedback({
+                    variant: 'success',
+                    title: 'Enlace enviado',
+                    description: 'Revisa tu correo y usa el enlace de un solo uso para desbloquear.',
+                });
+            },
+        });
+    };
+
+    const unlockErrorMessage = unlockForm.errors.profile_unlock
+        ?? unlockForm.errors.profile_unlock_otp
+        ?? null;
+
+    if (!isUnlocked) {
+        return (
+            <BaseCard
+                title={(
+                    <span>
+                        <WaBadge variant="neutral" pill>Perfil protegido</WaBadge>
+                    </span>
+                )}
+            >
+                <div className="profile-editor wa-stack">
+                    <div className="profile-editor-avatar wa-stack">
+                        <WaAvatar
+                            className="profile-editor-avatar-image"
+                            image={customer?.avatar_url ?? undefined}
+                            label={customer?.name || 'Avatar'}
+                            initials={avatarInitial}
+                        />
+                    </div>
+
+                    <label>Nombre Completo</label>
+                    <WaInput className="profile-input" type="text" value={customer?.name ?? ''} disabled />
+
+                    <label>E-mail</label>
+                    <WaInput className="profile-input" type="text" value={customer?.email ?? ''} disabled />
+
+                    <label>Numero de Telefono</label>
+                    <WaInput className="profile-input" type="text" value={customer?.phone ?? ''} disabled />
+
+                    {!hideBirthDate && customer?.birth_date ? (
+                        <>
+                            <label>Fecha de Nacimiento</label>
+                            <WaInput className="profile-input" type="text" value={customer.birth_date} disabled />
+                        </>
+                    ) : null}
+
+                    {unlockFeedback ? (
+                        <WaCallout className="feedback-callout" variant={unlockFeedback.variant}>
+                            <strong>{unlockFeedback.title}</strong>
+                            <p>{unlockFeedback.description}</p>
+                        </WaCallout>
+                    ) : null}
+
+                    {unlockErrorMessage ? (
+                        <WaCallout className="feedback-callout" variant="danger">
+                            <strong>No se pudo desbloquear</strong>
+                            <p>{unlockErrorMessage}</p>
+                        </WaCallout>
+                    ) : null}
+
+                    {otpEnabled ? (
+                        <>
+                            <WaButton className="block-action" type="button" variant="brand" onClick={handleRequestUnlockOtp}>
+                                Solicitar codigo
+                            </WaButton>
+
+                            <form className="wa-stack" onSubmit={handleVerifyUnlockOtp}>
+                                <label htmlFor="profile-unlock-otp">Codigo de desbloqueo</label>
+                                <WaInput
+                                    id="profile-unlock-otp"
+                                    className="profile-input"
+                                    type="text"
+                                    inputMode="text"
+                                    autoComplete="one-time-code"
+                                    value={unlockForm.data.otp_code}
+                                    onInput={(event) => unlockForm.setData('otp_code', event.target.value)}
+                                />
+                                <WaButton className="block-action" type="submit" variant="brand" disabled={unlockForm.processing}>
+                                    Verificar codigo
+                                </WaButton>
+                            </form>
+                        </>
+                    ) : null}
+
+                    {magicLinkEnabled ? (
+                        <WaButton className="block-action" type="button" variant="neutral" onClick={handleRequestUnlockLink}>
+                            Enviar link de un solo uso
+                        </WaButton>
+                    ) : null}
+
+                    <WaButton className="block-action" type="button" variant="danger" onClick={onLogout}>
+                        Cerrar sesion
+                    </WaButton>
+                </div>
+            </BaseCard>
+        );
+    }
+
     return (
         <BaseCard
             title={(
                 <span>
-                    <WaBadge variant="success" pill>Editar perfil</WaBadge>
+                    <WaBadge variant="success" pill>Editar perfil (desbloqueado)</WaBadge>
                 </span>
             )}
         >
@@ -158,15 +301,19 @@ export default function UserSessionCard({ customer, onLogout }) {
                     onInput={(event) => handleFieldChange('phone', formatPhone(event.target.value))}
                 />
 
-                <label htmlFor="profile-birth-date">Fecha de Nacimiento</label>
-                <WaInput
-                    id="profile-birth-date"
-                    className="profile-input"
-                    type="date"
-                    max={maxBirthDate}
-                    value={form.data.birth_date}
-                    onInput={(event) => handleFieldChange('birth_date', event.target.value)}
-                />
+                {!hideBirthDate ? (
+                    <>
+                        <label htmlFor="profile-birth-date">Fecha de Nacimiento</label>
+                        <WaInput
+                            id="profile-birth-date"
+                            className="profile-input"
+                            type="date"
+                            max={maxBirthDate}
+                            value={form.data.birth_date}
+                            onInput={(event) => handleFieldChange('birth_date', event.target.value)}
+                        />
+                    </>
+                ) : null}
 
                 {form.recentlySuccessful ? (
                     <WaCallout className="feedback-callout" variant="success">

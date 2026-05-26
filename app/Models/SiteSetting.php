@@ -28,11 +28,19 @@ class SiteSetting extends Model
         'maintenance_mode',
         'maintenance_message',
         'enable_registrations',
+        'enable_home_login_without_code',
+        'enable_profile_unlock_otp',
+        'enable_profile_unlock_magic_link',
+        'hide_birth_date_on_profile',
     ];
 
     protected $casts = [
         'maintenance_mode' => 'boolean',
         'enable_registrations' => 'boolean',
+        'enable_home_login_without_code' => 'boolean',
+        'enable_profile_unlock_otp' => 'boolean',
+        'enable_profile_unlock_magic_link' => 'boolean',
+        'hide_birth_date_on_profile' => 'boolean',
     ];
 
     public static function current(): self
@@ -43,6 +51,10 @@ class SiteSetting extends Model
                 'site_name' => config('app.name', 'Klivip'),
                 'maintenance_mode' => false,
                 'enable_registrations' => true,
+                'enable_home_login_without_code' => false,
+                'enable_profile_unlock_otp' => true,
+                'enable_profile_unlock_magic_link' => true,
+                'hide_birth_date_on_profile' => true,
             ]
         );
     }
@@ -94,6 +106,10 @@ class SiteSetting extends Model
             'maintenance_mode' => (bool) $settings->maintenance_mode,
             'maintenance_message' => $settings->maintenance_message,
             'enable_registrations' => (bool) $settings->enable_registrations,
+            'enable_home_login_without_code' => (bool) $settings->enable_home_login_without_code,
+            'enable_profile_unlock_otp' => (bool) $settings->enable_profile_unlock_otp,
+            'enable_profile_unlock_magic_link' => (bool) $settings->enable_profile_unlock_magic_link,
+            'hide_birth_date_on_profile' => (bool) $settings->hide_birth_date_on_profile,
         ];
     }
 }

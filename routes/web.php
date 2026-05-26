@@ -37,6 +37,18 @@ foreach ($publicBaseDomains as $baseDomain) {
             Route::post('/usuario/perfil', [UserController::class, 'updateProfile'])
                 ->middleware('auth:customer')
                 ->name($routeNamePrefix.'.profile.update');
+            Route::post('/usuario/perfil/unlock/otp/request', [UserController::class, 'requestProfileUnlockOtp'])
+                ->middleware('auth:customer')
+                ->name($routeNamePrefix.'.profile.unlock.otp.request');
+            Route::post('/usuario/perfil/unlock/otp/verify', [UserController::class, 'verifyProfileUnlockOtp'])
+                ->middleware('auth:customer')
+                ->name($routeNamePrefix.'.profile.unlock.otp.verify');
+            Route::post('/usuario/perfil/unlock/link/request', [UserController::class, 'requestProfileUnlockLink'])
+                ->middleware('auth:customer')
+                ->name($routeNamePrefix.'.profile.unlock.link.request');
+            Route::get('/usuario/perfil/unlock/link/{token}', [UserController::class, 'consumeProfileUnlockLink'])
+                ->middleware(['auth:customer', 'signed'])
+                ->name($routeNamePrefix.'.profile.unlock.link');
             Route::get('/usuario/cupones', [UserCouponsController::class, 'index'])
                 ->middleware('auth:customer')
                 ->name($routeNamePrefix.'.coupons.index');
