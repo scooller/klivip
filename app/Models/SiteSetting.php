@@ -9,7 +9,6 @@ class SiteSetting extends Model
     protected $fillable = [
         'site_name',
         'site_description',
-        'site_url',
         'meta_keywords',
         'meta_author',
         'tag_manager_id',
@@ -81,7 +80,6 @@ class SiteSetting extends Model
         return [
             'site_name' => $settings->site_name,
             'site_description' => $settings->site_description,
-            'site_url' => $settings->site_url,
             'seo' => [
                 'meta_keywords' => $settings->meta_keywords,
                 'meta_author' => $settings->meta_author,

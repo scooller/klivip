@@ -63,11 +63,6 @@ class ManageAppSettings extends Page implements HasForms
                                             ->rows(3)
                                             ->maxLength(500),
 
-                                        TextInput::make('site_url')
-                                            ->label('URL del Sitio')
-                                            ->url()
-                                            ->placeholder('https://klivip.test'),
-
                                         Toggle::make('enable_registrations')
                                             ->label('Permitir Registros de Usuarios')
                                             ->helperText('Cuando está desactivado, el registro de nuevos usuarios es bloqueado.'),
