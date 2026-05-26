@@ -28,7 +28,7 @@ class CustomerSessionController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email:rfc,dns', 'max:255', 'confirmed', 'unique:users,email'],
             'phone' => ['required', 'string', 'max:25'],
-            'birth_date' => ['required', 'date', 'before_or_equal:'.$adultLimitDate],
+            'birth_date' => ['required', 'date', 'before_or_equal:' . $adultLimitDate],
         ], [
             'email.confirmed' => 'El correo y la confirmacion de correo deben coincidir.',
             'birth_date.before_or_equal' => 'Debes ser mayor de 18 anos para registrarte.',
@@ -209,7 +209,7 @@ class CustomerSessionController extends Controller
             return null;
         }
 
-        return '+'.$digits;
+        return '+' . $digits;
     }
 
     private function resolveSite(Request $request): Site

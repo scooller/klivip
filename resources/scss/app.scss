@@ -9,6 +9,30 @@
     --casino-text: #f5f6ff;
     --casino-muted: #b8bddb;
     --casino-line: rgba(224, 179, 59, 0.3);
+
+    --brand-violet-950: #16083f;
+    --brand-violet-900: #220d56;
+    --brand-violet-850: #1b0a46;
+    --brand-violet-700: #5329a9;
+    --brand-violet-650: #3e2286;
+    --brand-violet-600: #5a33b2;
+    --brand-violet-500: #7949fc;
+    --brand-violet-300: #a685ff;
+    --brand-violet-200: #f4ebff;
+
+    --field-bg-start: rgba(77, 43, 165, 0.96);
+    --field-bg-end: rgba(56, 28, 126, 0.96);
+    --field-border: rgba(166, 131, 255, 0.9);
+    --field-text: #faf6ff;
+    --field-disabled-bg-start: rgba(83, 49, 171, 0.98);
+    --field-disabled-bg-end: rgba(62, 34, 134, 0.98);
+    --field-disabled-text: #f9f4ff;
+    --field-focus-border: rgba(236, 206, 116, 0.95);
+    --field-focus-ring: rgba(236, 206, 116, 0.26);
+
+    --profile-panel-bg-start: rgba(26, 17, 66, 0.94);
+    --profile-panel-bg-end: rgba(19, 13, 52, 0.94);
+    --profile-panel-border: rgba(143, 111, 226, 0.42);
 }
 
 * {
@@ -33,7 +57,7 @@ body {
     background:
         radial-gradient(circle at 50% -10%, rgba(112, 70, 255, 0.26), transparent 40%),
         radial-gradient(circle at 10% 100%, rgba(91, 18, 181, 0.28), transparent 34%),
-        linear-gradient(180deg, #16083f 0%, #220d56 58%, #1b0a46 100%);
+    linear-gradient(180deg, var(--brand-violet-950) 0%, var(--brand-violet-900) 58%, var(--brand-violet-850) 100%);
 }
 
 .home-entry-glow {
@@ -135,10 +159,10 @@ body {
 }
 
 .home-phone-input::part(base) {
-    border: 1px solid rgba(164, 121, 255, 0.86);
+    border: 1px solid var(--field-border);
     border-radius: 14px;
-    background: linear-gradient(180deg, rgba(58, 34, 125, 0.9), rgba(42, 24, 100, 0.9));
-    color: #f4eefe;
+    background: linear-gradient(180deg, var(--field-bg-start), var(--field-bg-end));
+    color: var(--field-text);
     min-height: 56px;
     box-shadow: inset 0 0 0 1px rgba(215, 195, 255, 0.16);
 }
@@ -166,7 +190,7 @@ body {
 
 .home-entry-primary::part(base),
 .home-entry-secondary::part(base) {
-    border: 1px solid rgba(121, 73, 252, 0.95);
+    border: 1px solid color-mix(in srgb, var(--brand-violet-500) 95%, transparent);
     background:
         linear-gradient(180deg, rgba(86, 28, 255, 0.98) 0%, rgba(58, 13, 191, 0.98) 100%);
     box-shadow:
@@ -1507,6 +1531,10 @@ wa-card.active-coupons-empty::part(base) {
 
 .profile-editor {
     --wa-stack-gap: 0.7rem;
+    padding: 14px;
+    border-radius: 14px;
+    background: linear-gradient(165deg, var(--profile-panel-bg-start), var(--profile-panel-bg-end));
+    border: 1px solid var(--profile-panel-border);
 }
 
 .profile-editor-avatar {
@@ -1531,9 +1559,10 @@ wa-card.active-coupons-empty::part(base) {
 }
 
 .profile-editor label {
-    color: rgba(240, 228, 255, 0.96);
+    color: var(--brand-violet-200);
     font-size: 0.98rem;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: 0.01em;
 }
 
 .profile-input {
@@ -1546,17 +1575,38 @@ wa-card.active-coupons-empty::part(base) {
 }
 
 .profile-input::part(base) {
-    border: 1px solid rgba(164, 121, 255, 0.8);
+    border: 1px solid var(--field-border);
     border-radius: 12px;
-    background: linear-gradient(180deg, rgba(70, 39, 150, 0.86), rgba(49, 25, 110, 0.9));
+    background: linear-gradient(180deg, var(--field-bg-start), var(--field-bg-end));
     min-height: 50px;
-    box-shadow: inset 0 0 0 1px rgba(217, 196, 255, 0.14);
-    color: #f4eefe;
+    box-shadow: inset 0 0 0 1px rgba(229, 214, 255, 0.2);
+    color: var(--field-text);
 }
 
 .profile-input::part(input) {
     font-size: 1.02rem;
     padding-inline: 0.8rem;
+    color: var(--field-text);
+    font-weight: 600;
+}
+
+.profile-input[disabled]::part(base) {
+    opacity: 1;
+    border-color: var(--field-border);
+    background: linear-gradient(180deg, var(--field-disabled-bg-start), var(--field-disabled-bg-end));
+}
+
+.profile-input[disabled]::part(input) {
+    opacity: 1;
+    color: var(--field-disabled-text);
+    -webkit-text-fill-color: var(--field-disabled-text);
+}
+
+.profile-input::part(base):focus-within {
+    border-color: var(--field-focus-border);
+    box-shadow:
+        0 0 0 2px var(--field-focus-ring),
+        inset 0 0 0 1px rgba(245, 232, 184, 0.24);
 }
 
 .user-login-form {
@@ -1598,7 +1648,7 @@ wa-card.active-coupons-empty::part(base) {
     background:
         radial-gradient(circle at 50% -10%, rgba(112, 70, 255, 0.26), transparent 40%),
         radial-gradient(circle at 10% 100%, rgba(91, 18, 181, 0.28), transparent 34%),
-        linear-gradient(180deg, #16083f 0%, #220d56 58%, #1b0a46 100%);
+        linear-gradient(180deg, var(--brand-violet-950) 0%, var(--brand-violet-900) 58%, var(--brand-violet-850) 100%);
 }
 
 .user-login-glow {
@@ -1707,10 +1757,10 @@ wa-card.active-coupons-empty::part(base) {
 }
 
 .user-phone-input::part(base) {
-    border: 1px solid rgba(164, 121, 255, 0.86);
+    border: 1px solid var(--field-border);
     border-radius: 14px;
-    background: linear-gradient(180deg, rgba(58, 34, 125, 0.9), rgba(42, 24, 100, 0.9));
-    color: #f4eefe;
+    background: linear-gradient(180deg, var(--field-bg-start), var(--field-bg-end));
+    color: var(--field-text);
     min-height: 56px;
     box-shadow: inset 0 0 0 1px rgba(215, 195, 255, 0.16);
 }
@@ -1744,7 +1794,7 @@ wa-card.active-coupons-empty::part(base) {
 
 .user-login-primary::part(base),
 .user-login-secondary::part(base) {
-    border: 1px solid rgba(121, 73, 252, 0.95);
+    border: 1px solid color-mix(in srgb, var(--brand-violet-500) 95%, transparent);
     background:
         linear-gradient(180deg, rgba(86, 28, 255, 0.98) 0%, rgba(58, 13, 191, 0.98) 100%);
     box-shadow:

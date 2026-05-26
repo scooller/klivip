@@ -222,7 +222,7 @@ class ManageAppSettings extends Page implements HasForms
                                                 'redo',
                                                 'undo',
                                             ])
-                                            ->visible(fn ($get) => $get('maintenance_mode'))
+                                            ->visible(fn($get) => $get('maintenance_mode'))
                                             ->columnSpanFull(),
                                     ])
                                     ->columns(1),

@@ -58,7 +58,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email:rfc,dns', 'max:255', 'confirmed', Rule::unique('users', 'email')->ignore($customer->id)],
             'phone' => ['required', 'string', 'max:25'],
-            'birth_date' => ['required', 'date', 'before_or_equal:'.$adultLimitDate],
+            'birth_date' => ['required', 'date', 'before_or_equal:' . $adultLimitDate],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ], [
             'email.confirmed' => 'El correo y la confirmacion de correo deben coincidir.',
@@ -387,7 +387,7 @@ class UserController extends Controller
             return null;
         }
 
-        return '+'.$digits;
+        return '+' . $digits;
     }
 
     private function resolveAvatarUrl(?string $avatarPath): ?string
@@ -396,7 +396,7 @@ class UserController extends Controller
             return null;
         }
 
-        return asset('storage/'.$avatarPath);
+        return asset('storage/' . $avatarPath);
     }
 
     /**
@@ -479,7 +479,7 @@ class UserController extends Controller
     private function maskEmail(string $email): string
     {
         if (! str_contains($email, '@')) {
-            return mb_substr($email, 0, 3).str_repeat('*', max(mb_strlen($email) - 3, 3));
+            return mb_substr($email, 0, 3) . str_repeat('*', max(mb_strlen($email) - 3, 3));
         }
 
         [$localPart, $domainPart] = explode('@', $email, 2);
@@ -498,6 +498,6 @@ class UserController extends Controller
         $visiblePrefix = mb_substr($phone, 0, 3);
         $hiddenLength = max(mb_strlen($phone) - 3, 0);
 
-        return $visiblePrefix.str_repeat('*', $hiddenLength);
+        return $visiblePrefix . str_repeat('*', $hiddenLength);
     }
 }
