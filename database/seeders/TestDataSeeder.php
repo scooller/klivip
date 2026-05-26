@@ -173,6 +173,7 @@ class TestDataSeeder extends Seeder
             [
                 'url' => 'https://games.example.com/ruleta-clasica',
                 'description' => 'Juego destacado para pruebas en Sitio 1.',
+                'image_path' => 'games/ruleta.svg',
                 'sort_order' => 1,
                 'is_active' => true,
                 'is_featured' => true,
@@ -184,6 +185,7 @@ class TestDataSeeder extends Seeder
             [
                 'url' => 'https://games.example.com/blackjack-pro',
                 'description' => 'Juego de cartas vinculado a la página.',
+                'image_path' => 'games/blackjack.svg',
                 'sort_order' => 2,
                 'is_active' => true,
                 'is_featured' => false,
@@ -195,6 +197,7 @@ class TestDataSeeder extends Seeder
             [
                 'url' => 'https://games.example.com/slots-neon',
                 'description' => 'Juego principal de Sitio 2.',
+                'image_path' => 'games/slots.svg',
                 'sort_order' => 3,
                 'is_active' => true,
                 'is_featured' => true,
@@ -206,6 +209,7 @@ class TestDataSeeder extends Seeder
             [
                 'url' => 'https://games.example.com/poker-texas',
                 'description' => 'Variante clásica de poker para todos los sitios.',
+                'image_path' => 'games/poker.svg',
                 'sort_order' => 4,
                 'is_active' => true,
                 'is_featured' => false,

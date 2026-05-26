@@ -19,6 +19,7 @@ class Game extends Model
         'title',
         'url',
         'description',
+        'image_path',
         'sort_order',
         'is_active',
         'is_featured',

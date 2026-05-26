@@ -153,13 +153,37 @@ class PrincipalController extends Controller
     {
         return $games
             ->map(fn (Game $game): array => [
+                'id' => $game->id,
                 'title' => $game->title,
                 'description' => $game->description,
                 'url' => $game->url,
                 'is_featured' => $game->is_featured,
+                'image_url' => $this->resolveGameImageUrl($game->image_path),
             ])
             ->values()
             ->all();
+    }
+
+    private function resolveGameImageUrl(?string $path): string
+    {
+        if ($path === null || $path === '') {
+            return asset('images/games/game-placeholder.svg');
+        }
+
+        $publicStoragePath = public_path('storage/'.$path);
+
+        if (is_file($publicStoragePath)) {
+            return asset('storage/'.$path);
+        }
+
+        $fallbackName = basename($path);
+        $fallbackPublicPath = public_path('images/games/'.$fallbackName);
+
+        if (is_file($fallbackPublicPath)) {
+            return asset('images/games/'.$fallbackName);
+        }
+
+        return asset('images/games/game-placeholder.svg');
     }
 
     private function promotionScheduleLabel(Promotion $promotion): string

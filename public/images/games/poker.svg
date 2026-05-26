@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Poker Texas Holdem</title>
+  <desc id="desc">Mesa de poker con fichas y cartas</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10251c"/>
+      <stop offset="100%" stop-color="#1f553f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bg)"/>
+  <ellipse cx="600" cy="390" rx="470" ry="210" fill="#0f7248" stroke="#d9b676" stroke-width="14"/>
+  <rect x="380" y="240" width="145" height="210" rx="12" fill="#fff"/>
+  <rect x="500" y="260" width="145" height="210" rx="12" fill="#fff"/>
+  <rect x="620" y="240" width="145" height="210" rx="12" fill="#fff"/>
+  <text x="430" y="325" fill="#cb2f2f" font-family="Georgia, serif" font-size="52" font-weight="700">A</text>
+  <text x="551" y="345" fill="#151515" font-family="Georgia, serif" font-size="52" font-weight="700">Q</text>
+  <text x="670" y="325" fill="#cb2f2f" font-family="Georgia, serif" font-size="52" font-weight="700">J</text>
+  <circle cx="860" cy="460" r="48" fill="#d14a4a"/>
+  <circle cx="930" cy="475" r="48" fill="#f1d270"/>
+  <circle cx="1000" cy="460" r="48" fill="#3c7bd6"/>
+  <text x="70" y="120" fill="#e4f8ee" font-family="Georgia, serif" font-size="64" font-weight="700">Poker Texas Holdem</text>
+</svg>

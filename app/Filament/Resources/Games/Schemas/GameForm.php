@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Games\Schemas;
 
 use App\Models\User;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -27,6 +28,13 @@ class GameForm
                     ->label('URL')
                     ->url()
                     ->maxLength(255)
+                    ->nullable(),
+                FileUpload::make('image_path')
+                    ->label('Imagen')
+                    ->image()
+                    ->directory('games')
+                    ->visibility('public')
+                    ->helperText('Imagen del juego para el slider principal.')
                     ->nullable(),
                 TextInput::make('sort_order')
                     ->label('Orden')

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Juego disponible</title>
+  <desc id="desc">Imagen de respaldo para juegos</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1238"/>
+      <stop offset="100%" stop-color="#2f1f69"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bg)"/>
+  <rect x="330" y="180" width="540" height="340" rx="24" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.28)" stroke-width="8"/>
+  <circle cx="600" cy="350" r="90" fill="rgba(244, 210, 122, 0.85)"/>
+  <path d="M560 302 L670 350 L560 398 Z" fill="#5a3f0f"/>
+  <text x="600" y="560" text-anchor="middle" fill="#efe8ff" font-family="Verdana, sans-serif" font-size="52" font-weight="700">Juego Disponible</text>
+</svg>

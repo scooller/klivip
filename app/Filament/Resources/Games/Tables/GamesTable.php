@@ -8,6 +8,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -22,6 +23,11 @@ class GamesTable
 
         return $table
             ->columns([
+                ImageColumn::make('image_path')
+                    ->label('Imagen')
+                    ->disk('public')
+                    ->circular()
+                    ->size(40),
                 TextColumn::make('title')
                     ->label('Título')
                     ->searchable()

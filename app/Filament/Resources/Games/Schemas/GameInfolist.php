@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Games\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -12,6 +13,10 @@ class GameInfolist
     {
         return $schema
             ->components([
+                ImageEntry::make('image_path')
+                    ->label('Imagen')
+                    ->disk('public')
+                    ->visibility('public'),
                 TextEntry::make('title'),
                 TextEntry::make('url')
                     ->placeholder('-')

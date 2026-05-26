@@ -11,11 +11,11 @@ import {
     faRightFromBracket,
     faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import FrontFooter from '../Components/Front/FrontFooter';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
-import { WaButton, WaCarousel, WaCarouselItem } from '../Components/Front/primitives/wa';
+import { WaButton, WaCallout, WaCarousel, WaCarouselItem } from '../Components/Front/primitives/wa';
 
 export default function Principal({ site, promotions = [], games = [], banners = [] }) {
     const page = usePage();
@@ -25,6 +25,32 @@ export default function Principal({ site, promotions = [], games = [], banners =
     const pageBanners = page.props.banners ?? banners;
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [gameSlidesPerPage, setGameSlidesPerPage] = useState(3);
+
+    useEffect(() => {
+        const resolveSlidesPerPage = () => {
+            if (window.innerWidth < 768) {
+                setGameSlidesPerPage(1);
+
+                return;
+            }
+
+            if (window.innerWidth < 1024) {
+                setGameSlidesPerPage(2);
+
+                return;
+            }
+
+            setGameSlidesPerPage(3);
+        };
+
+        resolveSlidesPerPage();
+        window.addEventListener('resize', resolveSlidesPerPage);
+
+        return () => {
+            window.removeEventListener('resize', resolveSlidesPerPage);
+        };
+    }, []);
 
     const currentTime = useMemo(() => {
         return new Intl.DateTimeFormat('es-CL', {
@@ -215,6 +241,68 @@ export default function Principal({ site, promotions = [], games = [], banners =
                                 </article>
                             ))}
                         </div>
+                    </section>
+
+                    <section className="home-panel home-games-section wa-stack" aria-label="Juegos del sitio">
+                        <div className="home-panel-heading wa-cluster">
+                            <h2>Juegos del sitio</h2>
+                            <p>Disponibles hoy en {sharedSite.name}</p>
+                        </div>
+
+                        {pageGames.length > 0 ? (
+                            <WaCarousel
+                                className="home-games-carousel"
+                                navigation
+                                pagination
+                                mouseDragging
+                                slidesPerPage={gameSlidesPerPage}
+                                slidesPerMove={1}
+                            >
+                                {pageGames.map((game, index) => (
+                                    <WaCarouselItem key={game.id ?? `site-game-${index}`} className="home-games-slide">
+                                        <article className="home-game-card">
+                                            <div className="home-game-image">
+                                                <img
+                                                    src={game.image_url}
+                                                    alt={game.title ?? `Juego ${index + 1}`}
+                                                    loading="lazy"
+                                                />
+                                                <span className="home-game-badge">
+                                                    {game.is_featured ? 'Destacado' : 'Juego'}
+                                                </span>
+                                            </div>
+
+                                            <div className="home-game-content">
+                                                <h3>{game.title}</h3>
+                                                <p>{game.description ?? 'Disponible para jugar en este sitio.'}</p>
+                                            </div>
+
+                                            <div className="home-game-actions">
+                                                <WaButton
+                                                    variant="brand"
+                                                    size="small"
+                                                    disabled={!game.url}
+                                                    onClick={() => {
+                                                        if (!game.url) {
+                                                            return;
+                                                        }
+
+                                                        window.open(game.url, '_blank', 'noopener,noreferrer');
+                                                    }}
+                                                >
+                                                    Jugar ahora
+                                                </WaButton>
+                                            </div>
+                                        </article>
+                                    </WaCarouselItem>
+                                ))}
+                            </WaCarousel>
+                        ) : (
+                            <WaCallout className="empty-state-callout" variant="warning">
+                                <strong>Sin juegos disponibles</strong>
+                                <p>Este sitio aun no tiene juegos activos.</p>
+                            </WaCallout>
+                        )}
                     </section>
 
                     <section className="home-panel wa-stack">
