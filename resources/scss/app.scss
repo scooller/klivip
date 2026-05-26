@@ -613,6 +613,8 @@ body {
 
 .home-games-carousel {
     width: 100%;
+    --aspect-ratio: 4 / 5;
+    --slide-gap: 0.75rem;
 }
 
 .home-games-carousel::part(base) {
@@ -651,7 +653,7 @@ body {
 .home-games-slide {
     display: flex;
     align-items: stretch;
-    min-height: 280px;
+    height: 100%;
 }
 
 .home-game-card {
@@ -664,6 +666,7 @@ body {
     flex-direction: column;
     width: 100%;
     height: 100%;
+    min-height: 100%;
 }
 
 .home-game-image {
@@ -2066,7 +2069,11 @@ wa-card.active-coupons-empty::part(base) {
     }
 
     .home-games-slide {
-        min-height: 240px;
+        height: 100%;
+    }
+
+    .home-games-carousel {
+        --aspect-ratio: 3 / 4;
     }
 
     .home-banner-carousel::part(navigation-button),
