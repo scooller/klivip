@@ -186,9 +186,11 @@ export default function Principal({ site, promotions = [], games = [], banners =
                             autoplay
                             autoplayInterval={4500}
                             mouseDragging
+                            slidesPerPage={1}
+                            slidesPerMove={1}
                         >
                             {bannerSlides.map((banner) => (
-                                <WaCarouselItem key={banner.id}>
+                                <WaCarouselItem key={banner.id} className="home-banner-item">
                                     {banner.href ? (
                                         <a href={banner.href} target="_blank" rel="noreferrer" className="home-banner-link">
                                             <img src={banner.src} alt={banner.alt} className="home-banner-image" />
