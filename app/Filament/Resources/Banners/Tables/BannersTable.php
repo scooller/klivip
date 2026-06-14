@@ -47,7 +47,10 @@ class BannersTable
                 TextColumn::make('sites_count')
                     ->label('Sitios')
                     ->counts('sites')
-                    ->formatStateUsing(fn ($state, $record): string => $record->isGlobal() ? 'Global' : (string) $state),
+                    ->formatStateUsing(fn($state, $record): string => $record->isGlobal() ? 'Global' : (string) $state),
+                TextColumn::make('section')
+                    ->label('Sección')
+                    ->sortable(),
                 TextColumn::make('sort_order')
                     ->label('Orden')
                     ->sortable(),

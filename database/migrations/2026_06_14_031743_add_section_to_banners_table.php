@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('banner_site', function (Blueprint $table) {
-            if (! Schema::hasColumn('banner_site', 'section')) {
+        Schema::table('banners', function (Blueprint $table) {
+            if (! Schema::hasColumn('banners', 'section')) {
                 $table->string('section')->nullable()->after('site_id');
             }
         });
@@ -23,8 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('banner_site', function (Blueprint $table) {
-            if (Schema::hasColumn('banner_site', 'section')) {
+        Schema::table('banners', function (Blueprint $table) {
+            if (Schema::hasColumn('banners', 'section')) {
                 $table->dropColumn('section');
             }
         });
