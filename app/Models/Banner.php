@@ -21,6 +21,7 @@ class Banner extends Model
         'image_path',
         'target_url',
         'scope',
+        'section',
         'sort_order',
         'starts_at',
         'ends_at',
@@ -34,6 +35,7 @@ class Banner extends Model
     {
         return [
             'scope' => BannerScope::class,
+            'section' => 'string',
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
             'is_active' => 'boolean',

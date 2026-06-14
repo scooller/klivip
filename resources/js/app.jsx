@@ -1,15 +1,9 @@
-import '@web.awesome.me/webawesome-pro/dist/styles/webawesome.css';
+import './bootstrap';
 import '../scss/app.scss';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
-
-const webAwesomeKitCode = import.meta.env.VITE_WEBAWESOME_KIT_CODE;
-
-if (webAwesomeKitCode) {
-    document.documentElement.setAttribute('data-fa-kit-code', webAwesomeKitCode);
-}
 
 createInertiaApp({
     resolve: (name) =>

@@ -4,7 +4,6 @@ import { faGift, faPenToSquare, faRightFromBracket, faTicket, faTrophy } from '@
 import { useEffect, useMemo, useState } from 'react';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
-import { WaButton, WaFormatDate, WaTag } from '../Components/Front/primitives/wa';
 
 export default function Schedule({ site, calendarDays = [] }) {
     const page = usePage();
@@ -132,9 +131,9 @@ export default function Schedule({ site, calendarDays = [] }) {
                     onOpenMenu={() => setIsMenuOpen(true)}
                 />
 
-                <main className="home-main-content wa-stack">
-                    <section className="home-panel wa-stack" aria-label="Calendario de programacion">
-                        <div className="home-panel-heading wa-cluster">
+                <main className="home-main-content d-flex flex-column gap-3">
+                    <section className="home-panel d-flex flex-column gap-3" aria-label="Calendario de programacion">
+                        <div className="home-panel-heading d-flex flex-wrap gap-2 align-items-center">
                             <h2>Calendario</h2>
                             <p>{monthLabel}</p>
                         </div>
@@ -176,24 +175,28 @@ export default function Schedule({ site, calendarDays = [] }) {
                             </table>
                         </div>
 
-                        <div className="schedule-events-panel wa-stack" aria-live="polite">
+                        <div className="schedule-events-panel d-flex flex-column gap-3" aria-live="polite">
                             <h3>
                                 Eventos del dia{' '}
                                 {selectedDateIso ? (
-                                    <WaFormatDate date={selectedDateIso} weekday="long" day="2-digit" month="long" />
+                                    new Intl.DateTimeFormat('es-CL', {
+                                        weekday: 'long',
+                                        day: '2-digit',
+                                        month: 'long',
+                                    }).format(new Date(`${selectedDateIso}T00:00:00`))
                                 ) : null}
                             </h3>
 
                             {selectedEvents.length > 0 ? (
-                                <ul className="schedule-events-list wa-stack">
+                                <ul className="schedule-events-list d-flex flex-column gap-3">
                                     {selectedEvents.map((event, index) => (
                                         <li key={`${selectedDateIso}-${event.title}-${index}`}>
-                                            <div className="schedule-event-head wa-cluster">
+                                            <div className="schedule-event-head d-flex flex-wrap gap-2 align-items-center">
                                                 <strong>{event.title}</strong>
-                                                {event.offer_label ? <WaTag>{event.offer_label}</WaTag> : null}
+                                                {event.offer_label ? <span className="badge bg-secondary">{event.offer_label}</span> : null}
                                             </div>
                                             <p>{event.description ?? 'Evento especial'}</p>
-                                            <WaTag variant="success">{event.schedule_label ?? 'Programado'}</WaTag>
+                                            <span className="badge bg-success">{event.schedule_label ?? 'Programado'}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -211,44 +214,44 @@ export default function Schedule({ site, calendarDays = [] }) {
                     open={isMenuOpen}
                     onClose={() => setIsMenuOpen(false)}
                 >
-                    <div className="home-drawer-profile wa-stack">
+                    <div className="home-drawer-profile d-flex flex-column gap-3">
                         <strong>{customer?.name ?? 'Invitado'}</strong>
-                        <p>{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
+                        <p className="mb-0">{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
                     </div>
 
-                    <nav className="home-drawer-nav wa-stack" aria-label="Menu de usuario">
-                        <WaButton variant="text" onClick={() => {
+                    <nav className="home-drawer-nav d-flex flex-column gap-2" aria-label="Menu de usuario">
+                        <button className="btn btn-link text-start" onClick={() => {
                             setIsMenuOpen(false);
                             router.visit('/principal');
                         }}>
-                            <FontAwesomeIcon icon={faTrophy} slot="start" />
+                            <FontAwesomeIcon icon={faTrophy} className="me-2" />
                             Principal
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
+                        </button>
+                        <button className="btn btn-link text-start" onClick={() => {
                             setIsMenuOpen(false);
                             router.visit('/programacion');
                         }}>
-                            <FontAwesomeIcon icon={faGift} slot="start" />
+                            <FontAwesomeIcon icon={faGift} className="me-2" />
                             Sorteos
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
+                        </button>
+                        <button className="btn btn-link text-start" onClick={() => {
                             setIsMenuOpen(false);
                             router.visit('/usuario/cupones');
                         }}>
-                            <FontAwesomeIcon icon={faTicket} slot="start" />
+                            <FontAwesomeIcon icon={faTicket} className="me-2" />
                             Mis cupones
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
+                        </button>
+                        <button className="btn btn-link text-start" onClick={() => {
                             setIsMenuOpen(false);
                             router.visit('/usuario');
                         }}>
-                            <FontAwesomeIcon icon={faPenToSquare} slot="start" />
+                            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
                             Editar perfil
-                        </WaButton>
-                        <WaButton variant="text" onClick={handleLogout}>
-                            <FontAwesomeIcon icon={faRightFromBracket} slot="start" />
+                        </button>
+                        <button className="btn btn-link text-start" onClick={handleLogout}>
+                            <FontAwesomeIcon icon={faRightFromBracket} className="me-2" />
                             Cerrar sesion
-                        </WaButton>
+                        </button>
                     </nav>
                 </ActionDrawer>
             </div>

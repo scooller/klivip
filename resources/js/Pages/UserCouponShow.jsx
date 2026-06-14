@@ -5,7 +5,6 @@ import { useMemo, useState } from 'react';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import UserBenefitsCard from '../Components/Front/UserBenefitsCard';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
-import { WaButton } from '../Components/Front/primitives/wa';
 
 export default function UserCouponShow({ site, coupon }) {
     const page = usePage();
@@ -63,39 +62,54 @@ export default function UserCouponShow({ site, coupon }) {
                         <p>{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
                     </div>
 
-                    <nav className="home-drawer-nav wa-stack" aria-label="Menu de usuario">
-                        <WaButton variant="text" onClick={() => {
-                            setIsMenuOpen(false);
-                            router.visit('/principal');
-                        }}>
-                            <FontAwesomeIcon icon={faTrophy} slot="start" />
+                    <nav className="home-drawer-nav d-flex flex-column gap-2" aria-label="Menu de usuario">
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={() => {
+                                setIsMenuOpen(false);
+                                router.visit('/principal');
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faTrophy} className="me-2" />
                             Principal
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
-                            setIsMenuOpen(false);
-                            router.visit('/usuario');
-                        }}>
-                            <FontAwesomeIcon icon={faPenToSquare} slot="start" />
+                        </button>
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={() => {
+                                setIsMenuOpen(false);
+                                router.visit('/usuario');
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
                             Editar perfil
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
-                            setIsMenuOpen(false);
-                            router.visit('/usuario/cupones');
-                        }}>
-                            <FontAwesomeIcon icon={faTicket} slot="start" />
+                        </button>
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={() => {
+                                setIsMenuOpen(false);
+                                router.visit('/usuario/cupones');
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faTicket} className="me-2" />
                             Mis cupones
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
-                            setIsMenuOpen(false);
-                            router.visit('/programacion');
-                        }}>
-                            <FontAwesomeIcon icon={faGift} slot="start" />
+                        </button>
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={() => {
+                                setIsMenuOpen(false);
+                                router.visit('/programacion');
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faGift} className="me-2" />
                             Sorteos
-                        </WaButton>
-                        <WaButton variant="text" onClick={handleLogout}>
-                            <FontAwesomeIcon icon={faRightFromBracket} slot="start" />
+                        </button>
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={handleLogout}
+                        >
+                            <FontAwesomeIcon icon={faRightFromBracket} className="me-2" />
                             Cerrar sesion
-                        </WaButton>
+                        </button>
                     </nav>
                 </ActionDrawer>
             </div>

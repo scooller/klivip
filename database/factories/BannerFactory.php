@@ -20,6 +20,7 @@ class BannerFactory extends Factory
             'image_path' => 'banners/demo-banner.jpg',
             'target_url' => fake()->optional()->url(),
             'scope' => fake()->randomElement([BannerScope::Sites, BannerScope::Global]),
+            'section' => fake()->randomElement(['home', 'events', 'games']),
             'sort_order' => fake()->numberBetween(0, 100),
             'starts_at' => fake()->optional()->dateTimeBetween('-1 week', '+1 week'),
             'ends_at' => fake()->optional()->dateTimeBetween('+1 week', '+1 month'),

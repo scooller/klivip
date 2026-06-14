@@ -15,7 +15,6 @@ import { useEffect, useMemo, useState } from 'react';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import FrontFooter from '../Components/Front/FrontFooter';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
-import { WaButton, WaCallout, WaCarousel, WaCarouselItem } from '../Components/Front/primitives/wa';
 
 export default function Principal({ site, promotions = [], games = [], banners = [] }) {
     const page = usePage();
@@ -176,46 +175,43 @@ export default function Principal({ site, promotions = [], games = [], banners =
                     onOpenMenu={() => setIsMenuOpen(true)}
                 />
 
-                <main className="home-main-content wa-stack">
-                    <section className="home-banner wa-stack" aria-label="Banner principal">
-                        <WaCarousel
-                            className="home-banner-carousel"
-                            navigation
-                            pagination
-                            loop
-                            autoplay
-                            autoplayInterval={4500}
-                            mouseDragging
-                            slidesPerPage={1}
-                            slidesPerMove={1}
-                        >
-                            {bannerSlides.map((banner) => (
-                                <WaCarouselItem key={banner.id} className="home-banner-item">
-                                    {banner.href ? (
-                                        <a href={banner.href} target="_blank" rel="noreferrer" className="home-banner-link">
+                <main className="home-main-content d-flex flex-column gap-3">
+                    <section className="home-banner d-flex flex-column gap-3" aria-label="Banner principal">
+                        <div id="bannerCarousel" className="carousel slide home-banner-carousel" data-bs-ride="carousel">
+                            <div className="carousel-inner">
+                                {bannerSlides.map((banner, index) => (
+                                    <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} home-banner-item`}>
+                                        {banner.href ? (
+                                            <a href={banner.href} target="_blank" rel="noreferrer" className="home-banner-link">
+                                                <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                            </a>
+                                        ) : (
                                             <img src={banner.src} alt={banner.alt} className="home-banner-image" />
-                                        </a>
-                                    ) : (
-                                        <img src={banner.src} alt={banner.alt} className="home-banner-image" />
-                                    )}
-                                </WaCarouselItem>
-                            ))}
-                        </WaCarousel>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                            <button className="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+                                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span className="visually-hidden">Anterior</span>
+                            </button>
+                            <button className="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+                                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span className="visually-hidden">Siguiente</span>
+                            </button>
+                        </div>
 
-                        <WaButton variant="brand" size="small" onClick={openUserPage}>
-                            Quiero participar
-                        </WaButton>
                     </section>
 
-                    <section className="home-panel wa-stack">
-                        <div className="home-panel-heading wa-cluster">
+                    <section className="home-panel d-flex flex-column gap-3">
+                        <div className="home-panel-heading d-flex flex-wrap gap-2 align-items-center">
                             <h2>Proximo sorteo</h2>
                             <p>
                                 <FontAwesomeIcon icon={faCalendarDays} /> {drawDate} - 20:00
                             </p>
                         </div>
 
-                        <div className="home-draw-grid wa-grid">
+                        <div className="home-draw-grid d-grid gap-3">
                             {nextDrawCards.map((card) => (
                                 <article key={card.id} className="home-draw-card">
                                     <span>{card.subtitle}</span>
@@ -226,15 +222,15 @@ export default function Principal({ site, promotions = [], games = [], banners =
                         </div>
                     </section>
 
-                    <section className="home-panel wa-stack">
-                        <div className="home-panel-heading wa-cluster">
+                    <section className="home-panel d-flex flex-column gap-3">
+                        <div className="home-panel-heading d-flex flex-wrap gap-2 align-items-center">
                             <h2>Programacion semanal</h2>
-                            <WaButton variant="neutral" size="small" onClick={() => router.visit('/programacion')}>
+                            <button className="btn btn-outline-secondary btn-sm" onClick={() => router.visit('/programacion')}>
                                 Ver toda la programacion
-                            </WaButton>
+                            </button>
                         </div>
 
-                        <div className="home-week-grid wa-grid">
+                        <div className="home-week-grid d-grid gap-3">
                             {weeklyHighlights.map((item) => (
                                 <article key={item.id} className="home-week-card">
                                     <span>{item.label}</span>
@@ -245,91 +241,93 @@ export default function Principal({ site, promotions = [], games = [], banners =
                         </div>
                     </section>
 
-                    <section className="home-panel home-games-section wa-stack" aria-label="Juegos del sitio">
-                        <div className="home-panel-heading wa-cluster">
+                    <section className="home-panel home-games-section d-flex flex-column gap-3" aria-label="Juegos del sitio">
+                        <div className="home-panel-heading d-flex flex-wrap gap-2 align-items-center">
                             <h2>Juegos del sitio</h2>
                             <p>Disponibles hoy en {sharedSite.name}</p>
                         </div>
 
                         {pageGames.length > 0 ? (
-                            <WaCarousel
-                                className="home-games-carousel"
-                                navigation
-                                pagination
-                                mouseDragging
-                                slidesPerPage={gameSlidesPerPage}
-                                slidesPerMove={1}
-                            >
-                                {pageGames.map((game, index) => (
-                                    <WaCarouselItem key={game.id ?? `site-game-${index}`} className="home-games-slide">
-                                        <article className="home-game-card">
-                                            <div className="home-game-image">
-                                                <img
-                                                    src={game.image_url}
-                                                    alt={game.title ?? `Juego ${index + 1}`}
-                                                    loading="lazy"
-                                                />
-                                                <span className="home-game-badge">
-                                                    {game.is_featured ? 'Destacado' : 'Juego'}
-                                                </span>
-                                            </div>
+                            <div id="gamesCarousel" className="carousel slide home-games-carousel" data-bs-ride="carousel">
+                                <div className="carousel-inner">
+                                    {pageGames.map((game, index) => (
+                                        <div key={game.id ?? `site-game-${index}`} className={`carousel-item ${index === 0 ? 'active' : ''} home-games-slide`}>
+                                            <article className="home-game-card">
+                                                <div className="home-game-image">
+                                                    <img
+                                                        src={game.image_url}
+                                                        alt={game.title ?? `Juego ${index + 1}`}
+                                                        loading="lazy"
+                                                    />
+                                                    <span className="home-game-badge">
+                                                        {game.is_featured ? 'Destacado' : 'Juego'}
+                                                    </span>
+                                                </div>
 
-                                            <div className="home-game-content">
-                                                <h3>{game.title}</h3>
-                                                <p>{game.description ?? 'Disponible para jugar en este sitio.'}</p>
-                                            </div>
+                                                <div className="home-game-content">
+                                                    <h3>{game.title}</h3>
+                                                    <p>{game.description ?? 'Disponible para jugar en este sitio.'}</p>
+                                                </div>
 
-                                            <div className="home-game-actions">
-                                                <WaButton
-                                                    variant="brand"
-                                                    size="small"
-                                                    disabled={!game.url}
-                                                    onClick={() => {
-                                                        if (!game.url) {
-                                                            return;
-                                                        }
+                                                <div className="home-game-actions">
+                                                    <button
+                                                        className="btn btn-primary btn-sm"
+                                                        disabled={!game.url}
+                                                        onClick={() => {
+                                                            if (!game.url) {
+                                                                return;
+                                                            }
 
-                                                        window.open(game.url, '_blank', 'noopener,noreferrer');
-                                                    }}
-                                                >
-                                                    Jugar ahora
-                                                </WaButton>
-                                            </div>
-                                        </article>
-                                    </WaCarouselItem>
-                                ))}
-                            </WaCarousel>
+                                                            window.open(game.url, '_blank', 'noopener,noreferrer');
+                                                        }}
+                                                    >
+                                                        Jugar ahora
+                                                    </button>
+                                                </div>
+                                            </article>
+                                        </div>
+                                    ))}
+                                </div>
+                                <button className="carousel-control-prev" type="button" data-bs-target="#gamesCarousel" data-bs-slide="prev">
+                                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span className="visually-hidden">Anterior</span>
+                                </button>
+                                <button className="carousel-control-next" type="button" data-bs-target="#gamesCarousel" data-bs-slide="next">
+                                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span className="visually-hidden">Siguiente</span>
+                                </button>
+                            </div>
                         ) : (
-                            <WaCallout className="empty-state-callout" variant="warning">
+                            <div className="alert alert-warning empty-state-callout" role="alert">
                                 <strong>Sin juegos disponibles</strong>
-                                <p>Este sitio aun no tiene juegos activos.</p>
-                            </WaCallout>
+                                <p className="mb-0">Este sitio aun no tiene juegos activos.</p>
+                            </div>
                         )}
                     </section>
 
-                    <section className="home-panel wa-stack">
-                        <div className="home-panel-heading wa-cluster">
+                    <section className="home-panel d-flex flex-column gap-3">
+                        <div className="home-panel-heading d-flex flex-wrap gap-2 align-items-center">
                             <h2>Como ganar cupones?</h2>
                             <p>Completa estos pasos para participar</p>
                         </div>
 
-                        <div className="home-steps-grid wa-grid">
-                            <article className="home-step-card wa-stack">
+                        <div className="home-steps-grid d-grid gap-3">
+                            <article className="home-step-card d-flex flex-column gap-3">
                                 <FontAwesomeIcon icon={faCoins} />
                                 <h3>Carga saldo</h3>
                                 <p>1 credito</p>
                             </article>
-                            <article className="home-step-card wa-stack">
+                            <article className="home-step-card d-flex flex-column gap-3">
                                 <FontAwesomeIcon icon={faTrophy} />
                                 <h3>Gana desafios</h3>
                                 <p>2 creditos</p>
                             </article>
-                            <article className="home-step-card wa-stack">
+                            <article className="home-step-card d-flex flex-column gap-3">
                                 <FontAwesomeIcon icon={faGift} />
                                 <h3>Canjea premios</h3>
                                 <p>3 creditos</p>
                             </article>
-                            <article className="home-step-card wa-stack">
+                            <article className="home-step-card d-flex flex-column gap-3">
                                 <FontAwesomeIcon icon={faUsers} />
                                 <h3>Invita amigos</h3>
                                 <p>4 creditos</p>
@@ -347,38 +345,38 @@ export default function Principal({ site, promotions = [], games = [], banners =
                     open={isMenuOpen}
                     onClose={() => setIsMenuOpen(false)}
                 >
-                    <div className="home-drawer-profile wa-stack">
+                    <div className="home-drawer-profile d-flex flex-column gap-3">
                         <div className="home-drawer-avatar">
                             <FontAwesomeIcon icon={faCircleUser} />
                         </div>
                         <strong>{customer?.name ?? 'Invitado'}</strong>
-                        <p>{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
+                        <p className="mb-0">{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
                     </div>
 
-                    <nav className="home-drawer-nav wa-stack" aria-label="Menu de usuario">
-                        <WaButton variant="text" onClick={openUserPage}>
-                            <FontAwesomeIcon icon={faPenToSquare} slot="start" />
+                    <nav className="home-drawer-nav d-flex flex-column gap-2" aria-label="Menu de usuario">
+                        <button className="btn btn-link text-start" onClick={openUserPage}>
+                            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
                             Editar perfil
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
+                        </button>
+                        <button className="btn btn-link text-start" onClick={() => {
                             setIsMenuOpen(false);
                             router.visit('/usuario/cupones');
                         }}>
-                            <FontAwesomeIcon icon={faTicket} slot="start" />
+                            <FontAwesomeIcon icon={faTicket} className="me-2" />
                             Mis cupones
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
+                        </button>
+                        <button className="btn btn-link text-start" onClick={() => {
                             setIsMenuOpen(false);
                             router.visit('/programacion');
                         }}>
-                            <FontAwesomeIcon icon={faGift} slot="start" />
+                            <FontAwesomeIcon icon={faGift} className="me-2" />
                             Sorteos
-                        </WaButton>
+                        </button>
 
-                        <WaButton variant="text" onClick={handleCustomerLogout}>
-                            <FontAwesomeIcon icon={faRightFromBracket} slot="start" />
+                        <button className="btn btn-link text-start" onClick={handleCustomerLogout}>
+                            <FontAwesomeIcon icon={faRightFromBracket} className="me-2" />
                             Cerrar sesion
-                        </WaButton>
+                        </button>
                     </nav>
                 </ActionDrawer>
             </div>

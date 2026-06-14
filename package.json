@@ -21,8 +21,9 @@
         "@fortawesome/react-fontawesome": "^3.3.1",
         "@inertiajs/react": "^3.1.1",
         "@inertiajs/vite": "^3.1.1",
+        "@popperjs/core": "^2.11.8",
         "@vitejs/plugin-react": "^6.0.1",
-        "@web.awesome.me/webawesome-pro": "^3.7.0",
+        "bootstrap": "^5.3.8",
         "react": "^19.2.6",
         "react-dom": "^19.2.6"
     }

@@ -32,6 +32,7 @@ class BannerSeeder extends Seeder
                 'image_path' => $globalImagePath,
                 'target_url' => null,
                 'scope' => BannerScope::Global,
+                'section' => 'home',
                 'sort_order' => 1,
                 'starts_at' => now()->subDay(),
                 'ends_at' => now()->addMonth(),
@@ -45,6 +46,7 @@ class BannerSeeder extends Seeder
                 'image_path' => $siteOneImagePath,
                 'target_url' => null,
                 'scope' => BannerScope::Sites,
+                'section' => 'home',
                 'sort_order' => 2,
                 'starts_at' => now()->subDay(),
                 'ends_at' => now()->addWeeks(3),
@@ -58,6 +60,7 @@ class BannerSeeder extends Seeder
                 'image_path' => $multiSiteImagePath,
                 'target_url' => null,
                 'scope' => BannerScope::Sites,
+                'section' => 'home',
                 'sort_order' => 3,
                 'starts_at' => now()->subHours(12),
                 'ends_at' => now()->addWeeks(2),
@@ -72,8 +75,8 @@ class BannerSeeder extends Seeder
 
     private function ensureDemoBannerStored(string $fileName): string
     {
-        $sourcePath = public_path('images/banners/'.$fileName);
-        $destinationPath = 'banners/'.$fileName;
+        $sourcePath = public_path('images/banners/' . $fileName);
+        $destinationPath = 'banners/' . $fileName;
 
         if (is_file($sourcePath) && ! Storage::disk('public')->exists($destinationPath)) {
             Storage::disk('public')->put($destinationPath, file_get_contents($sourcePath));

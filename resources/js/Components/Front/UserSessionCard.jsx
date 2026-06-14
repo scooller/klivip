@@ -1,7 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import { useMemo, useRef, useState } from 'react';
 import BaseCard from './primitives/BaseCard';
-import { WaAvatar, WaBadge, WaButton, WaCallout, WaInput } from './primitives/wa';
 
 function formatPhone(rawValue) {
     if (rawValue.includes('@') || /[a-zA-Z]/.test(rawValue)) {
@@ -151,83 +150,86 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
             <BaseCard
                 title={(
                     <span>
-                        <WaBadge variant="neutral" pill>Perfil protegido</WaBadge>
+                        <span className="badge rounded-pill bg-secondary">Perfil protegido</span>
                     </span>
                 )}
             >
-                <div className="profile-editor wa-stack">
-                    <div className="profile-editor-avatar wa-stack">
-                        <WaAvatar
-                            className="profile-editor-avatar-image"
-                            image={customer?.avatar_url ?? undefined}
-                            label={customer?.name || 'Avatar'}
-                            initials={avatarInitial}
-                        />
+                <div className="profile-editor d-flex flex-column gap-3">
+                    <div className="profile-editor-avatar d-flex flex-column gap-3">
+                        <div className="profile-editor-avatar-image">
+                            {customer?.avatar_url ? (
+                                <img src={customer.avatar_url} alt={customer?.name || 'Avatar'} className="rounded-circle" style={{width: '100px', height: '100px', objectFit: 'cover'}} />
+                            ) : (
+                                <div className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style={{width: '100px', height: '100px', fontSize: '48px'}}>
+                                    {avatarInitial}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <label>Nombre Completo</label>
-                    <WaInput className="profile-input" type="text" value={customer?.name ?? ''} disabled />
+                    <input className="profile-input form-control" type="text" value={customer?.name ?? ''} disabled />
 
                     <label>E-mail</label>
-                    <WaInput className="profile-input" type="text" value={customer?.email ?? ''} disabled />
+                    <input className="profile-input form-control" type="text" value={customer?.email ?? ''} disabled />
 
                     <label>Numero de Telefono</label>
-                    <WaInput className="profile-input" type="text" value={customer?.phone ?? ''} disabled />
+                    <input className="profile-input form-control" type="text" value={customer?.phone ?? ''} disabled />
 
                     {!hideBirthDate && customer?.birth_date ? (
                         <>
                             <label>Fecha de Nacimiento</label>
-                            <WaInput className="profile-input" type="text" value={customer.birth_date} disabled />
+                            <input className="profile-input form-control" type="text" value={customer.birth_date} disabled />
                         </>
                     ) : null}
 
                     {unlockFeedback ? (
-                        <WaCallout className="feedback-callout" variant={unlockFeedback.variant}>
+                        <div className={`feedback-callout alert alert-${unlockFeedback.variant === 'success' ? 'success' : unlockFeedback.variant}`} role="alert">
                             <strong>{unlockFeedback.title}</strong>
-                            <p>{unlockFeedback.description}</p>
-                        </WaCallout>
+                            <p className="mb-0">{unlockFeedback.description}</p>
+                        </div>
                     ) : null}
 
                     {unlockErrorMessage ? (
-                        <WaCallout className="feedback-callout" variant="danger">
+                        <div className="feedback-callout alert alert-danger" role="alert">
                             <strong>No se pudo desbloquear</strong>
-                            <p>{unlockErrorMessage}</p>
-                        </WaCallout>
+                            <p className="mb-0">{unlockErrorMessage}</p>
+                        </div>
                     ) : null}
 
                     {otpEnabled ? (
                         <>
-                            <WaButton className="block-action" type="button" variant="brand" onClick={handleRequestUnlockOtp}>
+                            <button className="block-action btn btn-primary" type="button" onClick={handleRequestUnlockOtp}>
                                 Solicitar codigo
-                            </WaButton>
+                            </button>
 
-                            <form className="wa-stack" onSubmit={handleVerifyUnlockOtp}>
+                            <form className="d-flex flex-column gap-3" onSubmit={handleVerifyUnlockOtp}>
                                 <label htmlFor="profile-unlock-otp">Codigo de desbloqueo</label>
-                                <WaInput
+                                <input
                                     id="profile-unlock-otp"
-                                    className="profile-input"
+                                    className="profile-input form-control"
                                     type="text"
                                     inputMode="text"
                                     autoComplete="one-time-code"
                                     value={unlockForm.data.otp_code}
                                     onInput={(event) => unlockForm.setData('otp_code', event.target.value)}
                                 />
-                                <WaButton className="block-action" type="submit" variant="brand" disabled={unlockForm.processing}>
+                                <button className="block-action btn btn-primary" type="submit" disabled={unlockForm.processing}>
                                     Verificar codigo
-                                </WaButton>
+                                </button>
                             </form>
                         </>
                     ) : null}
 
                     {magicLinkEnabled ? (
-                        <WaButton className="block-action" type="button" variant="neutral" onClick={handleRequestUnlockLink}>
+                        <button className="block-action btn btn-outline-secondary" type="button" onClick={handleRequestUnlockLink}>
                             Enviar link de un solo uso
-                        </WaButton>
+                        </button>
                     ) : null}
 
-                    <WaButton className="block-action" type="button" variant="danger" onClick={onLogout}>
+                    <button className="block-action btn btn-danger" type="button" onClick={onLogout}>
                         Cerrar sesion
-                    </WaButton>
+                    </button>
                 </div>
             </BaseCard>
         );
@@ -237,21 +239,24 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
         <BaseCard
             title={(
                 <span>
-                    <WaBadge variant="success" pill>Editar perfil (desbloqueado)</WaBadge>
+                    <span className="badge rounded-pill bg-success">Editar perfil (desbloqueado)</span>
                 </span>
             )}
         >
-            <form className="profile-editor wa-stack" onSubmit={handleSubmit}>
-                <div className="profile-editor-avatar wa-stack">
-                    <WaAvatar
-                        className="profile-editor-avatar-image"
-                        image={avatarPreview ?? customer?.avatar_url ?? undefined}
-                        label={form.data.name || 'Avatar'}
-                        initials={avatarInitial}
-                    />
-                    <WaButton type="button" size="small" variant="neutral" onClick={handleAvatarPick}>
+            <form className="profile-editor d-flex flex-column gap-3" onSubmit={handleSubmit}>
+                <div className="profile-editor-avatar d-flex flex-column gap-3">
+                    <div className="profile-editor-avatar-image">
+                        {avatarPreview || customer?.avatar_url ? (
+                            <img src={avatarPreview ?? customer?.avatar_url} alt={form.data.name || 'Avatar'} className="rounded-circle" style={{width: '100px', height: '100px', objectFit: 'cover'}} />
+                        ) : (
+                            <div className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style={{width: '100px', height: '100px', fontSize: '48px'}}>
+                                {avatarInitial}
+                            </div>
+                        )}
+                    </div>
+                    <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleAvatarPick}>
                         Agregar avatar
-                    </WaButton>
+                    </button>
                     <input
                         ref={fileInputRef}
                         className="profile-editor-file"
@@ -262,9 +267,9 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                 </div>
 
                 <label htmlFor="profile-name">Nombre Completo</label>
-                <WaInput
+                <input
                     id="profile-name"
-                    className="profile-input"
+                    className="profile-input form-control"
                     type="text"
                     autoComplete="name"
                     value={form.data.name}
@@ -272,9 +277,9 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                 />
 
                 <label htmlFor="profile-email">E-mail</label>
-                <WaInput
+                <input
                     id="profile-email"
-                    className="profile-input"
+                    className="profile-input form-control"
                     type="email"
                     autoComplete="email"
                     value={form.data.email}
@@ -282,9 +287,9 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                 />
 
                 <label htmlFor="profile-email-confirmation">Confirma su E-mail</label>
-                <WaInput
+                <input
                     id="profile-email-confirmation"
-                    className="profile-input"
+                    className="profile-input form-control"
                     type="email"
                     autoComplete="email"
                     value={form.data.email_confirmation}
@@ -292,9 +297,9 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                 />
 
                 <label htmlFor="profile-phone">Numero de Telefono</label>
-                <WaInput
+                <input
                     id="profile-phone"
-                    className="profile-input"
+                    className="profile-input form-control"
                     type="text"
                     autoComplete="tel"
                     value={form.data.phone}
@@ -304,9 +309,9 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                 {!hideBirthDate ? (
                     <>
                         <label htmlFor="profile-birth-date">Fecha de Nacimiento</label>
-                        <WaInput
+                        <input
                             id="profile-birth-date"
-                            className="profile-input"
+                            className="profile-input form-control"
                             type="date"
                             max={maxBirthDate}
                             value={form.data.birth_date}
@@ -316,26 +321,26 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                 ) : null}
 
                 {form.recentlySuccessful ? (
-                    <WaCallout className="feedback-callout" variant="success">
+                    <div className="feedback-callout alert alert-success" role="alert">
                         <strong>Perfil actualizado</strong>
-                        <p>Tus cambios se guardaron correctamente.</p>
-                    </WaCallout>
+                        <p className="mb-0">Tus cambios se guardaron correctamente.</p>
+                    </div>
                 ) : null}
 
                 {formErrorMessage ? (
-                    <WaCallout className="feedback-callout" variant="danger">
+                    <div className="feedback-callout alert alert-danger" role="alert">
                         <strong>Error al guardar</strong>
-                        <p>{formErrorMessage}</p>
-                    </WaCallout>
+                        <p className="mb-0">{formErrorMessage}</p>
+                    </div>
                 ) : null}
 
-                <WaButton className="block-action" type="submit" variant="brand" disabled={form.processing}>
+                <button className="block-action btn btn-primary" type="submit" disabled={form.processing}>
                     Guardar cambios
-                </WaButton>
+                </button>
 
-                <WaButton className="block-action" type="button" variant="danger" onClick={onLogout}>
+                <button className="block-action btn btn-danger" type="button" onClick={onLogout}>
                     Cerrar sesion
-                </WaButton>
+                </button>
             </form>
         </BaseCard>
     );

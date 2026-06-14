@@ -1,7 +1,6 @@
 import { router, usePage } from '@inertiajs/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { WaButton } from './primitives/wa';
 
 export default function FrontHeader({
     site,
@@ -31,20 +30,20 @@ export default function FrontHeader({
 
             <div>{centerContent}</div>
             <div className="header-actions">
-                <WaButton variant="brand" onClick={() => router.visit('/usuario')}>
-                    <FontAwesomeIcon icon={faUser} slot="start" />
+                <button className="btn btn-primary" onClick={() => router.visit('/usuario')}>
+                    <FontAwesomeIcon icon={faUser} className="me-2" />
                     Registrarse
-                </WaButton>
+                </button>
                 {customer ? (
-                    <WaButton variant="neutral" onClick={() => router.visit('/usuario')}>
-                        <FontAwesomeIcon icon={faUser} slot="start" />
+                    <button className="btn btn-outline-secondary" onClick={() => router.visit('/usuario')}>
+                        <FontAwesomeIcon icon={faUser} className="me-2" />
                         Ver perfil
-                    </WaButton>
+                    </button>
                 ) : (
-                    <WaButton variant="neutral" onClick={() => router.visit('/usuario')}>
-                        <FontAwesomeIcon icon={faUser} slot="start" />
+                    <button className="btn btn-outline-secondary" onClick={() => router.visit('/usuario')}>
+                        <FontAwesomeIcon icon={faUser} className="me-2" />
                         Conectarse
-                    </WaButton>
+                    </button>
                 )}
                 {rightContent}
             </div>

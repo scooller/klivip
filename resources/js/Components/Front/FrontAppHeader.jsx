@@ -1,12 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faBars } from '@fortawesome/free-solid-svg-icons';
-import { WaAvatar, WaButton } from './primitives/wa';
 
 export default function FrontAppHeader({
     title,
     onBack,
     onOpenMenu,
-    currentTime = '7:49 a.m',
+    currentTime = '0:00 a.m',
     hideBack = false,
     userName = null,
     userSubtitle = null,
@@ -20,13 +19,16 @@ export default function FrontAppHeader({
 
             <div className="front-app-header-main">
                 {showUserBlock ? (
-                    <div className="front-app-header-user wa-cluster" aria-label="Usuario actual">
-                        <WaAvatar
-                            className="front-app-header-user-avatar"
-                            image={userAvatarImage ?? undefined}
-                            label={userName}
-                            initials={userName.slice(0, 1).toUpperCase()}
-                        />
+                    <div className="front-app-header-user d-flex flex-wrap gap-2 align-items-center" aria-label="Usuario actual">
+                        <div className="front-app-header-user-avatar">
+                            {userAvatarImage ? (
+                                <img src={userAvatarImage} alt={userName} className="rounded-circle" style={{width: '40px', height: '40px', objectFit: 'cover'}} />
+                            ) : (
+                                <div className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style={{width: '40px', height: '40px'}}>
+                                    {userName.slice(0, 1).toUpperCase()}
+                                </div>
+                            )}
+                        </div>
                         <div className="front-app-header-user-copy">
                             <strong>{userName}</strong>
                             <small>{userSubtitle ?? 'Cuenta activa'}</small>
@@ -42,9 +44,9 @@ export default function FrontAppHeader({
 
                 {title ? <h1>{title}</h1> : <span className="front-app-header-spacer" aria-hidden="true" />}
 
-                <WaButton className="front-app-header-menu" variant="neutral" size="small" onClick={onOpenMenu}>
+                <button type="button" className="btn btn-outline-secondary btn-sm front-app-header-menu" onClick={onOpenMenu}>
                     <FontAwesomeIcon icon={faBars} />
-                </WaButton>
+                </button>
             </div>
         </header>
     );

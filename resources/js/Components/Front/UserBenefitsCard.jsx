@@ -1,5 +1,3 @@
-import { WaButton, WaCard, WaTag } from './primitives/wa';
-
 function normalizeCouponCode(code) {
     const digitsOnly = String(code ?? '').replace(/\D/g, '');
 
@@ -21,17 +19,17 @@ export default function UserBenefitsCard({
 
     return (
         <section
-            className={`active-coupons-panel wa-stack ${isDetailMode ? 'active-coupons-panel--detail' : ''}`.trim()}
+            className={`active-coupons-panel d-flex flex-column gap-3 ${isDetailMode ? 'active-coupons-panel--detail' : ''}`.trim()}
             aria-label="Cupones activos"
         >
             <h3>CUPONES ACTIVOS</h3>
 
             {activeCoupons.length > 0 ? (
-                <div className={`active-coupons-list wa-stack ${isDetailMode ? 'is-detail' : ''}`.trim()}>
+                <div className={`active-coupons-list d-flex flex-column gap-3 ${isDetailMode ? 'is-detail' : ''}`.trim()}>
                     {activeCoupons.map((coupon) => (
-                        <WaCard
+                        <div
                             key={coupon.id}
-                            className={`active-coupon-card ${onCouponSelect ? 'is-clickable' : ''}`.trim()}
+                            className={`active-coupon-card card ${onCouponSelect ? 'is-clickable' : ''}`.trim()}
                             onClick={() => onCouponSelect?.(coupon)}
                             onKeyDown={(event) => {
                                 if (!onCouponSelect) {
@@ -46,42 +44,44 @@ export default function UserBenefitsCard({
                             role={onCouponSelect ? 'button' : undefined}
                             tabIndex={onCouponSelect ? 0 : undefined}
                         >
-                            <div className="active-coupon-card__header wa-cluster">
+                            <div className="active-coupon-card__header d-flex flex-wrap gap-2 align-items-center card-body">
                                 <div>
                                     <p className="active-coupon-card__brand">{coupon.site_name ?? 'Sala'}</p>
                                     <p className="active-coupon-card__meta">Cupon activo</p>
                                 </div>
-                                <WaTag variant="brand">{coupon.draw_label ?? coupon.type_label ?? 'TOMBOLA'}</WaTag>
+                                <span className="badge bg-primary">{coupon.draw_label ?? coupon.type_label ?? 'TOMBOLA'}</span>
                             </div>
 
-                            <div className="active-coupon-card__body wa-stack">
+                            <div className="active-coupon-card__body d-flex flex-column gap-3 card-body">
                                 <p className="active-coupon-card__code">{normalizeCouponCode(coupon.code)}</p>
-                                <div className="active-coupon-card__tags wa-cluster">
-                                    <WaTag>{coupon.type_label ?? 'Tipo de sorteo'}</WaTag>
-                                    <WaTag variant="success">{coupon.valid_to ?? 'Vigente'}</WaTag>
+                                <div className="active-coupon-card__tags d-flex flex-wrap gap-2 align-items-center">
+                                    <span className="badge bg-secondary">{coupon.type_label ?? 'Tipo de sorteo'}</span>
+                                    <span className="badge bg-success">{coupon.valid_to ?? 'Vigente'}</span>
                                 </div>
                             </div>
 
                             {onCouponSelect ? (
-                                <div className="active-coupon-card__footer wa-stack">
-                                    <WaButton variant="neutral" size="small">
+                                <div className="active-coupon-card__footer d-flex flex-column gap-3 card-body">
+                                    <button className="btn btn-outline-secondary btn-sm w-100" type="button">
                                         Ver detalle
-                                    </WaButton>
+                                    </button>
                                 </div>
                             ) : null}
-                        </WaCard>
+                        </div>
                     ))}
                 </div>
             ) : (
-                <WaCard className="active-coupons-empty">
-                    <p>No tienes cupones activos por ahora.</p>
-                </WaCard>
+                <div className="active-coupons-empty card">
+                    <div className="card-body">
+                        <p className="mb-0">No tienes cupones activos por ahora.</p>
+                    </div>
+                </div>
             )}
 
             {actionLabel && onAction ? (
-                <WaButton type="button" className="active-coupons-action" variant="brand" onClick={onAction}>
+                <button type="button" className="active-coupons-action btn btn-primary w-100" onClick={onAction}>
                     {actionLabel}
-                </WaButton>
+                </button>
             ) : null}
         </section>
     );

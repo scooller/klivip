@@ -13,7 +13,6 @@ import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import UserSessionCard from '../Components/Front/UserSessionCard';
 import UserWelcomeCard from '../Components/Front/UserWelcomeCard';
 import { useMemo, useState } from 'react';
-import { WaCallout, WaInput, WaButton } from '../Components/Front/primitives/wa';
 
 function formatPhone(rawValue) {
     if (rawValue.includes('@') || /[a-zA-Z]/.test(rawValue)) {
@@ -210,20 +209,20 @@ export default function User({ site, activeCoupons = [] }) {
                     <div className="user-login-glow user-login-glow--top" aria-hidden="true" />
                     <div className="user-login-glow user-login-glow--bottom" aria-hidden="true" />
 
-                    <main className="user-login-shell wa-stack">
+                    <main className="user-login-shell d-flex flex-column gap-3">
                         <span className="user-login-hour">7:49 a.m</span>
 
-                        <section className="user-login-card wa-stack" aria-label="Acceso principal">
+                        <section className="user-login-card d-flex flex-column gap-3" aria-label="Acceso principal">
                             <div className="user-login-brand" aria-hidden="true">
                                 <h1>{site.name}</h1>
                             </div>
 
                             {isRegistering ? (
-                                <form className="user-login-form-shell user-register-form-shell wa-stack" onSubmit={handleRegisterCustomer}>
-                                    <label htmlFor="register-name">Nombre Completo</label>
-                                    <WaInput
+                                <form className="user-login-form-shell user-register-form-shell d-flex flex-column gap-3" onSubmit={handleRegisterCustomer}>
+                                    <label htmlFor="register-name" className="form-label">Nombre Completo</label>
+                                    <input
                                         id="register-name"
-                                        className="user-phone-input user-register-input"
+                                        className="form-control user-phone-input user-register-input"
                                         type="text"
                                         autoComplete="name"
                                         placeholder="Carlos Silva"
@@ -231,10 +230,10 @@ export default function User({ site, activeCoupons = [] }) {
                                         onInput={(event) => registerForm.setData('name', event.target.value)}
                                     />
 
-                                    <label htmlFor="register-email">E-mail</label>
-                                    <WaInput
+                                    <label htmlFor="register-email" className="form-label">E-mail</label>
+                                    <input
                                         id="register-email"
-                                        className="user-phone-input user-register-input"
+                                        className="form-control user-phone-input user-register-input"
                                         type="email"
                                         autoComplete="email"
                                         placeholder="correo@ejemplo.com"
@@ -242,10 +241,10 @@ export default function User({ site, activeCoupons = [] }) {
                                         onInput={(event) => registerForm.setData('email', event.target.value)}
                                     />
 
-                                    <label htmlFor="register-email-confirmation">Confirma su E-mail</label>
-                                    <WaInput
+                                    <label htmlFor="register-email-confirmation" className="form-label">Confirma su E-mail</label>
+                                    <input
                                         id="register-email-confirmation"
-                                        className="user-phone-input user-register-input"
+                                        className="form-control user-phone-input user-register-input"
                                         type="email"
                                         autoComplete="email"
                                         placeholder="correo@ejemplo.com"
@@ -253,10 +252,10 @@ export default function User({ site, activeCoupons = [] }) {
                                         onInput={(event) => registerForm.setData('email_confirmation', event.target.value)}
                                     />
 
-                                    <label htmlFor="register-phone">Numero de Telefono</label>
-                                    <WaInput
+                                    <label htmlFor="register-phone" className="form-label">Numero de Telefono</label>
+                                    <input
                                         id="register-phone"
-                                        className="user-phone-input user-register-input"
+                                        className="form-control user-phone-input user-register-input"
                                         type="text"
                                         autoComplete="tel"
                                         placeholder="+56 9 1548 2685"
@@ -264,10 +263,10 @@ export default function User({ site, activeCoupons = [] }) {
                                         onInput={(event) => registerForm.setData('phone', formatPhone(event.target.value))}
                                     />
 
-                                    <label htmlFor="register-birth-date">Fecha de Nacimiento</label>
-                                    <WaInput
+                                    <label htmlFor="register-birth-date" className="form-label">Fecha de Nacimiento</label>
+                                    <input
                                         id="register-birth-date"
-                                        className="user-phone-input user-register-input"
+                                        className="form-control user-phone-input user-register-input"
                                         type="date"
                                         max={adultMaxBirthDate}
                                         value={registerForm.data.birth_date}
@@ -275,33 +274,29 @@ export default function User({ site, activeCoupons = [] }) {
                                     />
 
                                     {feedback ? (
-                                        <WaCallout className="feedback-callout" variant={feedback.variant}>
+                                        <div className="alert feedback-callout" role="alert">
                                             <strong>{feedback.title}</strong>
-                                            <p>{feedback.description}</p>
-                                        </WaCallout>
+                                            <p className="mb-0">{feedback.description}</p>
+                                        </div>
                                     ) : null}
 
                                     {registerErrorMessage ? (
-                                        <WaCallout className="feedback-callout" variant="danger">
+                                        <div className="alert alert-danger feedback-callout" role="alert">
                                             <strong>Error de registro</strong>
-                                            <p>{registerErrorMessage}</p>
-                                        </WaCallout>
+                                            <p className="mb-0">{registerErrorMessage}</p>
+                                        </div>
                                     ) : null}
 
-                                    <WaButton
-                                        className="user-login-primary"
-                                        variant="brand"
-                                        size="large"
+                                    <button
+                                        className="user-login-primary btn btn-primary btn-lg w-100"
                                         type="submit"
                                         disabled={registerForm.processing}
                                     >
                                         Registrarme
-                                    </WaButton>
+                                    </button>
 
-                                    <WaButton
-                                        className="user-login-secondary"
-                                        variant="neutral"
-                                        size="large"
+                                    <button
+                                        className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
                                         type="button"
                                         disabled={registerForm.processing}
                                         onClick={() => {
@@ -310,14 +305,14 @@ export default function User({ site, activeCoupons = [] }) {
                                         }}
                                     >
                                         Volver al acceso
-                                    </WaButton>
+                                    </button>
                                 </form>
                             ) : (
-                                <form className="user-login-form-shell wa-stack" onSubmit={isOtpPending ? handleVerifyOtp : handleRequestOtp}>
-                                    <label htmlFor="customer-phone-entry">Numero de Telefono / Email:</label>
-                                    <WaInput
+                                <form className="user-login-form-shell d-flex flex-column gap-3" onSubmit={isOtpPending ? handleVerifyOtp : handleRequestOtp}>
+                                    <label htmlFor="customer-phone-entry" className="form-label">Numero de Telefono / Email:</label>
+                                    <input
                                         id="customer-phone-entry"
-                                        className="user-phone-input"
+                                        className="form-control user-phone-input"
                                         type="text"
                                         value={loginForm.data.identifier}
                                         autoComplete="username"
@@ -327,10 +322,8 @@ export default function User({ site, activeCoupons = [] }) {
                                     />
 
                                     {isOtpPending ? (
-                                        <WaButton
-                                            className="user-login-secondary"
-                                            variant="neutral"
-                                            size="large"
+                                        <button
+                                            className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
                                             type="button"
                                             onClick={() => {
                                                 setIsChangingUser(true);
@@ -339,15 +332,15 @@ export default function User({ site, activeCoupons = [] }) {
                                             }}
                                         >
                                             Cambiar usuario
-                                        </WaButton>
+                                        </button>
                                     ) : null}
 
                                     {isOtpPending ? (
                                         <>
-                                            <label htmlFor="customer-otp-entry">Codigo de acceso:</label>
-                                            <WaInput
+                                            <label htmlFor="customer-otp-entry" className="form-label">Codigo de acceso:</label>
+                                            <input
                                                 id="customer-otp-entry"
-                                                className="user-phone-input"
+                                                className="form-control user-phone-input"
                                                 type="text"
                                                 inputMode="text"
                                                 autoComplete="one-time-code"
@@ -359,48 +352,42 @@ export default function User({ site, activeCoupons = [] }) {
                                     ) : null}
 
                                     {feedback ? (
-                                        <WaCallout className="feedback-callout" variant={feedback.variant}>
+                                        <div className="alert feedback-callout" role="alert">
                                             <strong>{feedback.title}</strong>
-                                            <p>{feedback.description}</p>
-                                        </WaCallout>
+                                            <p className="mb-0">{feedback.description}</p>
+                                        </div>
                                     ) : null}
 
                                     {loginErrorMessage ? (
-                                        <WaCallout className="feedback-callout" variant="danger">
+                                        <div className="alert alert-danger feedback-callout" role="alert">
                                             <strong>Error de autenticacion</strong>
-                                            <p>{loginErrorMessage}</p>
-                                        </WaCallout>
+                                            <p className="mb-0">{loginErrorMessage}</p>
+                                        </div>
                                     ) : null}
 
-                                    <WaButton
-                                        className="user-login-primary"
-                                        variant="brand"
-                                        size="large"
+                                    <button
+                                        className="user-login-primary btn btn-primary btn-lg w-100"
                                         type="submit"
                                         disabled={loginForm.processing}
                                     >
                                         {isOtpPending ? 'Verificar codigo' : 'Acceder'}
-                                    </WaButton>
+                                    </button>
 
                                     {isOtpPending ? (
-                                        <WaButton
-                                            className="user-login-secondary"
-                                            variant="neutral"
-                                            size="large"
+                                        <button
+                                            className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
                                             type="button"
                                             disabled={loginForm.processing}
                                             onClick={() => handleRequestOtp()}
                                         >
                                             Reenviar codigo
-                                        </WaButton>
+                                        </button>
                                     ) : (
                                         <>
                                             <p className="user-login-copy">Aun no estas registrado?</p>
 
-                                            <WaButton
-                                                className="user-login-secondary"
-                                                variant="brand"
-                                                size="large"
+                                            <button
+                                                className="user-login-secondary btn btn-primary btn-lg w-100"
                                                 type="button"
                                                 onClick={() => {
                                                     setIsRegistering(true);
@@ -408,7 +395,7 @@ export default function User({ site, activeCoupons = [] }) {
                                                 }}
                                             >
                                                 Registrarme
-                                            </WaButton>
+                                            </button>
                                         </>
                                     )}
                                 </form>
@@ -432,23 +419,23 @@ export default function User({ site, activeCoupons = [] }) {
                     onOpenMenu={() => setIsMenuOpen(true)}
                 />
 
-                <main className="casino-content wa-stack">
+                <main className="casino-content d-flex flex-column gap-3">
                     {feedback ? (
-                        <WaCallout className="feedback-callout" variant={feedback.variant}>
+                        <div className="alert feedback-callout" role="alert">
                             <strong>{feedback.title}</strong>
-                            <p>{feedback.description}</p>
-                        </WaCallout>
+                            <p className="mb-0">{feedback.description}</p>
+                        </div>
                     ) : null}
 
                     <UserWelcomeCard site={site} adminPortal={adminPortal} />
 
-                    <div className="user-grid wa-grid">
+                    <div className="user-grid d-flex flex-column gap-3">
                         <div>
                             <UserSessionCard customer={customer} profileUnlock={profileUnlock} onLogout={handleLogout} />
                         </div>
                     </div>
 
-                    <section id="mis-cupones" className="user-coupons-section wa-stack">
+                    <section id="mis-cupones" className="user-coupons-section d-flex flex-column gap-3">
                         <UserBenefitsCard
                             activeCoupons={activeCoupons.slice(0, 2)}
                             onCouponSelect={(coupon) => {
@@ -471,41 +458,56 @@ export default function User({ site, activeCoupons = [] }) {
                     open={isMenuOpen}
                     onClose={() => setIsMenuOpen(false)}
                 >
-                    <div className="home-drawer-profile wa-stack">
+                    <div className="home-drawer-profile d-flex flex-column gap-3">
                         <strong>{customer?.name ?? 'Invitado'}</strong>
-                        <p>{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
+                        <p className="mb-0">{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
                     </div>
 
-                    <nav className="home-drawer-nav wa-stack" aria-label="Menu de usuario">
-                        <WaButton variant="text" onClick={() => {
-                            setIsMenuOpen(false);
-                            router.visit('/principal');
-                        }}>
-                            <FontAwesomeIcon icon={faTrophy} slot="start" />
+                    <nav className="home-drawer-nav d-flex flex-column gap-2" aria-label="Menu de usuario">
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={() => {
+                                setIsMenuOpen(false);
+                                router.visit('/principal');
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faTrophy} className="me-2" />
                             Principal
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => setIsMenuOpen(false)}>
-                            <FontAwesomeIcon icon={faPenToSquare} slot="start" />
+                        </button>
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={() => setIsMenuOpen(false)}
+                        >
+                            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
                             Editar perfil
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
-                            setIsMenuOpen(false);
-                            router.visit('/usuario/cupones');
-                        }}>
-                            <FontAwesomeIcon icon={faTicket} slot="start" />
+                        </button>
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={() => {
+                                setIsMenuOpen(false);
+                                router.visit('/usuario/cupones');
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faTicket} className="me-2" />
                             Mis cupones
-                        </WaButton>
-                        <WaButton variant="text" onClick={() => {
-                            setIsMenuOpen(false);
-                            router.visit('/programacion');
-                        }}>
-                            <FontAwesomeIcon icon={faGift} slot="start" />
+                        </button>
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={() => {
+                                setIsMenuOpen(false);
+                                router.visit('/programacion');
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faGift} className="me-2" />
                             Sorteos
-                        </WaButton>
-                        <WaButton variant="text" onClick={handleLogout}>
-                            <FontAwesomeIcon icon={faRightFromBracket} slot="start" />
+                        </button>
+                        <button
+                            className="btn btn-link text-start"
+                            onClick={handleLogout}
+                        >
+                            <FontAwesomeIcon icon={faRightFromBracket} className="me-2" />
                             Cerrar sesion
-                        </WaButton>
+                        </button>
                     </nav>
                 </ActionDrawer>
             </div>
