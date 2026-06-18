@@ -1,5 +1,5 @@
 import { useForm } from '@inertiajs/react';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BaseCard from './primitives/BaseCard';
 
 function formatPhone(rawValue) {
@@ -47,7 +47,9 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
     });
     const fileInputRef = useRef(null);
 
-    const maxBirthDate = useMemo(() => {
+    const [maxBirthDate, setMaxBirthDate] = useState('');
+
+    useEffect(() => {
         const date = new Date();
         date.setFullYear(date.getFullYear() - 18);
 
@@ -55,7 +57,7 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
 
-        return `${year}-${month}-${day}`;
+        setMaxBirthDate(`${year}-${month}-${day}`);
     }, []);
 
     const avatarInitial = form.data.name.trim().charAt(0).toUpperCase() || 'U';

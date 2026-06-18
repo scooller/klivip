@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import UserBenefitsCard from '../Components/Front/UserBenefitsCard';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
@@ -9,12 +9,21 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const currentTime = useMemo(() => {
-        return new Intl.DateTimeFormat('es-CL', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-        }).format(new Date());
+    const [currentTime, setCurrentTime] = useState('');
+
+    useEffect(() => {
+        const updateTime = () => {
+            setCurrentTime(new Intl.DateTimeFormat('es-CL', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+            }).format(new Date()));
+        };
+
+        updateTime();
+        const interval = setInterval(updateTime, 60 * 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const handleLogout = () => {

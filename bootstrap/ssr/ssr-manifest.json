@@ -1,0 +1,41 @@
+{
+  "node_modules/laravel-vite-plugin/inertia-helpers/index.js": [],
+  "resources/js/Components/Front/FrontAppHeader.jsx": [
+    "/build/assets/FrontAppHeader-DRdhF7Zp.js"
+  ],
+  "resources/js/Components/Front/FrontFooter.jsx": [
+    "/build/assets/Principal-DM9vrAKq.js"
+  ],
+  "resources/js/Components/Front/Sections/ActionDrawer.jsx": [
+    "/build/assets/FrontAppHeader-DRdhF7Zp.js"
+  ],
+  "resources/js/Components/Front/UserBenefitsCard.jsx": [
+    "/build/assets/UserBenefitsCard-DOvtvw-h.js"
+  ],
+  "resources/js/Components/Front/UserSessionCard.jsx": [
+    "/build/assets/User-C0YmJg-D.js"
+  ],
+  "resources/js/Components/Front/UserWelcomeCard.jsx": [
+    "/build/assets/User-C0YmJg-D.js"
+  ],
+  "resources/js/Components/Front/primitives/BaseCard.jsx": [
+    "/build/assets/User-C0YmJg-D.js"
+  ],
+  "resources/js/Pages/Principal.jsx": [
+    "/build/assets/Principal-DM9vrAKq.js"
+  ],
+  "resources/js/Pages/Schedule.jsx": [
+    "/build/assets/Schedule-u1ZOqjLX.js"
+  ],
+  "resources/js/Pages/User.jsx": [
+    "/build/assets/User-C0YmJg-D.js"
+  ],
+  "resources/js/Pages/UserCouponShow.jsx": [
+    "/build/assets/UserCouponShow-DXBw4bdl.js"
+  ],
+  "resources/js/Pages/UserCouponsIndex.jsx": [
+    "/build/assets/UserCouponsIndex-DBRgmPJs.js"
+  ],
+  "resources/js/ssr.jsx": [],
+  "resources/scss/app.scss": []
+}

@@ -7,7 +7,7 @@ import {
     faTrophy,
     faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import FrontFooter from '../Components/Front/FrontFooter';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
@@ -21,6 +21,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [gameSlidesPerPage, setGameSlidesPerPage] = useState(3);
+    const carouselRefs = useRef([]);
 
     useEffect(() => {
         const resolveSlidesPerPage = () => {
@@ -45,6 +46,14 @@ export default function Principal({ site, promotions = [], games = [], banners =
         return () => {
             window.removeEventListener('resize', resolveSlidesPerPage);
         };
+    }, []);
+
+    useEffect(() => {
+        carouselRefs.current.forEach((el) => {
+            if (el) {
+                new window.bootstrap.Carousel(el, { ride: 'carousel', interval: 5000 });
+            }
+        });
     }, []);
 
     // Avoid rendering time/date strings during SSR — compute on client only
@@ -190,7 +199,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
 
                 <main className="home-main-content container-fluid">
                     <section className="banner-slide home-banner" aria-label="Banner principal">
-                        <div id="bannerHome" className="carousel slide" data-bs-ride="carousel">
+                        <div id="bannerHome" className="carousel slide" ref={(el) => { carouselRefs.current[0] = el; }}>
                             <div className="carousel-inner">
                                 {bannerHome.map((banner, index) => (
                                     <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} home-banner-item`}>
@@ -237,7 +246,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
 
                     {/* Banner games */}
                     <section className="banner-slide games-banner" aria-label="Banner juegos">
-                        <div id="bannerGames" className="carousel slide" data-bs-ride="carousel">
+                        <div id="bannerGames" className="carousel slide" ref={(el) => { carouselRefs.current[1] = el; }}>
                             <div className="carousel-inner">
                                 {bannersGames.map((banner, index) => (
                                     <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} home-banner-item`}>

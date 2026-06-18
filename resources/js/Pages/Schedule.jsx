@@ -99,12 +99,21 @@ export default function Schedule({ site, calendarDays = [] }) {
         setSelectedDateIso(firstCurrentMonthDay ?? null);
     }, [calendarWeeks]);
 
-    const currentTime = useMemo(() => {
-        return new Intl.DateTimeFormat('es-CL', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-        }).format(new Date());
+    const [currentTime, setCurrentTime] = useState('');
+
+    useEffect(() => {
+        const updateTime = () => {
+            setCurrentTime(new Intl.DateTimeFormat('es-CL', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+            }).format(new Date()));
+        };
+
+        updateTime();
+        const interval = setInterval(updateTime, 60 * 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const handleLogout = () => {

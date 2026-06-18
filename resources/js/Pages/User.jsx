@@ -4,7 +4,7 @@ import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import UserSessionCard from '../Components/Front/UserSessionCard';
 import UserWelcomeCard from '../Components/Front/UserWelcomeCard';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function formatPhone(rawValue) {
     if (rawValue.includes('@') || /[a-zA-Z]/.test(rawValue)) {
@@ -50,12 +50,21 @@ export default function User({ site, activeCoupons = [] }) {
     const isOtpPending = loginRequiresOtp && Boolean(otpLogin.pending) && !isChangingUser;
     const [feedback, setFeedback] = useState(null);
 
-    const currentTime = useMemo(() => {
-        return new Intl.DateTimeFormat('es-CL', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-        }).format(new Date());
+    const [currentTime, setCurrentTime] = useState('');
+
+    useEffect(() => {
+        const updateTime = () => {
+            setCurrentTime(new Intl.DateTimeFormat('es-CL', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+            }).format(new Date()));
+        };
+
+        updateTime();
+        const interval = setInterval(updateTime, 60 * 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const loginForm = useForm({
@@ -72,7 +81,9 @@ export default function User({ site, activeCoupons = [] }) {
         birth_date: '',
     });
 
-    const adultMaxBirthDate = useMemo(() => {
+    const [adultMaxBirthDate, setAdultMaxBirthDate] = useState('');
+
+    useEffect(() => {
         const date = new Date();
         date.setFullYear(date.getFullYear() - 18);
 
@@ -80,7 +91,7 @@ export default function User({ site, activeCoupons = [] }) {
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
 
-        return `${year}-${month}-${day}`;
+        setAdultMaxBirthDate(`${year}-${month}-${day}`);
     }, []);
 
     const handleRequestOtp = (event) => {
@@ -202,7 +213,7 @@ export default function User({ site, activeCoupons = [] }) {
                     <div className="user-login-glow user-login-glow--bottom" aria-hidden="true" />
 
                     <main className="user-login-shell d-flex flex-column gap-3">
-                        <span className="user-login-hour">7:49 a.m</span>
+                        <span className="user-login-hour">{currentTime}</span>
 
                         <section className="user-login-card d-flex flex-column gap-3" aria-label="Acceso principal">
                             <div className="user-login-brand" aria-hidden="true">
