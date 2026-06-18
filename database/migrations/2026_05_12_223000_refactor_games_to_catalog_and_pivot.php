@@ -7,39 +7,61 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        if (DB::getDriverName() === 'sqlite') {
-            DB::statement('DROP INDEX IF EXISTS games_site_id_sort_order_index');
+        if (Schema::hasColumn('games', 'site_id')) {
+            Schema::table('games', function (Blueprint $table) {
+                $table->dropConstrainedForeignId('site_id');
+            });
         }
 
-        Schema::table('games', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('site_id');
-        });
+        $this->dropGamesSiteIdSortOrderIndex();
 
-        Schema::create('game_site', function (Blueprint $table) {
-            $table->foreignId('game_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('site_id')->constrained()->cascadeOnDelete();
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->timestamps();
+        if (! Schema::hasTable('game_site')) {
+            Schema::create('game_site', function (Blueprint $table) {
+                $table->foreignId('game_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('site_id')->constrained()->cascadeOnDelete();
+                $table->unsignedInteger('sort_order')->default(0);
+                $table->timestamps();
 
-            $table->unique(['game_id', 'site_id']);
-        });
+                $table->unique(['game_id', 'site_id']);
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('game_site');
 
-        Schema::table('games', function (Blueprint $table) {
-            $table->foreignId('site_id')->nullable()->constrained()->nullOnDelete();
-            $table->index(['site_id', 'sort_order']);
-        });
+        if (! Schema::hasColumn('games', 'site_id')) {
+            Schema::table('games', function (Blueprint $table) {
+                $table->foreignId('site_id')->nullable()->constrained()->nullOnDelete();
+            });
+        }
+
+        $this->dropGamesSiteIdSortOrderIndex();
+
+        $indexExists = collect(DB::select('SHOW INDEX FROM games'))
+            ->pluck('Key_name')
+            ->contains('games_site_id_sort_order_index');
+
+        if (! $indexExists) {
+            Schema::table('games', function (Blueprint $table) {
+                $table->index(['site_id', 'sort_order']);
+            });
+        }
+    }
+
+    private function dropGamesSiteIdSortOrderIndex(): void
+    {
+        $indexExists = collect(DB::select('SHOW INDEX FROM games'))
+            ->pluck('Key_name')
+            ->contains('games_site_id_sort_order_index');
+
+        if ($indexExists) {
+            Schema::table('games', function (Blueprint $table) {
+                $table->dropIndex('games_site_id_sort_order_index');
+            });
+        }
     }
 };

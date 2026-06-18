@@ -2,13 +2,9 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCalendarDays,
-    faCircleUser,
     faCoins,
     faGift,
-    faPenToSquare,
-    faTicket,
     faTrophy,
-    faRightFromBracket,
     faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useMemo, useState } from 'react';
@@ -51,20 +47,29 @@ export default function Principal({ site, promotions = [], games = [], banners =
         };
     }, []);
 
-    const currentTime = useMemo(() => {
-        return new Intl.DateTimeFormat('es-CL', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-        }).format(new Date());
-    }, []);
+    // Avoid rendering time/date strings during SSR — compute on client only
+    const [currentTime, setCurrentTime] = useState('');
+    const [drawDate, setDrawDate] = useState('');
 
-    const drawDate = useMemo(() => {
-        return new Intl.DateTimeFormat('es-CL', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        }).format(new Date());
+    useEffect(() => {
+        const updateTimes = () => {
+            setCurrentTime(new Intl.DateTimeFormat('es-CL', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+            }).format(new Date()));
+
+            setDrawDate(new Intl.DateTimeFormat('es-CL', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            }).format(new Date()));
+        };
+
+        updateTimes();
+        const interval = setInterval(updateTimes, 60 * 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const featuredSlides = useMemo(() => {
@@ -94,9 +99,11 @@ export default function Principal({ site, promotions = [], games = [], banners =
         }];
     }, [pageGames, pagePromotions]);
 
-    const bannerSlides = useMemo(() => {
-        if (pageBanners.length > 0) {
-            return pageBanners.map((banner, index) => ({
+    // banner Home
+    const bannerHome = useMemo(() => {
+        // solo banner section == home
+        if (pageBanners.length > 0 && pageBanners.some(banner => banner.section === 'home')) {
+            return pageBanners.filter(banner => banner.section === 'home').map((banner, index) => ({
                 id: banner.id ?? `banner-${index + 1}`,
                 src: banner.image_url,
                 alt: banner.title ?? `Banner ${index + 1}`,
@@ -104,26 +111,37 @@ export default function Principal({ site, promotions = [], games = [], banners =
             }));
         }
 
-        return [
-            {
-                id: 'banner-1',
-                src: '/images/banners/banner-1-muestra.png',
-                alt: 'Promociones en casino con doble diversion',
-                href: null,
-            },
-            {
-                id: 'banner-2',
-                src: '/images/banners/banner-2-muestra.png',
-                alt: 'Banner de juegos y premios de temporada',
-                href: null,
-            },
-            {
-                id: 'banner-3',
-                src: '/images/banners/banner-1-boton-on.png',
-                alt: 'Banner de registro para participar en sorteos',
-                href: null,
-            },
-        ];
+        return [];
+    }, [pageBanners]);
+
+    // banner Events
+    const bannersEvents = useMemo(() => {
+        // solo banner section == events
+        if (pageBanners.length > 0 && pageBanners.some(banner => banner.section === 'events')) {
+            return pageBanners.filter(banner => banner.section === 'events').map((banner, index) => ({
+                id: banner.id ?? `banner-${index + 1}`,
+                src: banner.image_url,
+                alt: banner.title ?? `Banner ${index + 1}`,
+                href: banner.target_url,
+            }));
+        }
+
+        return [];
+    }, [pageBanners]);
+
+    // banner Games
+    const bannersGames = useMemo(() => {
+        // solo banner section == games
+        if (pageBanners.length > 0 && pageBanners.some(banner => banner.section === 'games')) {
+            return pageBanners.filter(banner => banner.section === 'games').map((banner, index) => ({
+                id: banner.id ?? `banner-${index + 1}`,
+                src: banner.image_url,
+                alt: banner.title ?? `Banner ${index + 1}`,
+                href: banner.target_url,
+            }));
+        }
+
+        return [];
     }, [pageBanners]);
 
     const nextDrawCards = useMemo(() => {
@@ -145,11 +163,6 @@ export default function Principal({ site, promotions = [], games = [], banners =
             description: featuredSlides[index]?.badge ?? 'Evento especial',
         }));
     }, [featuredSlides]);
-
-    const openUserPage = () => {
-        setIsMenuOpen(false);
-        router.visit('/usuario');
-    };
 
     const handleCustomerLogout = () => {
         router.post('/usuario/logout', {}, {
@@ -175,11 +188,11 @@ export default function Principal({ site, promotions = [], games = [], banners =
                     onOpenMenu={() => setIsMenuOpen(true)}
                 />
 
-                <main className="home-main-content d-flex flex-column gap-3">
-                    <section className="home-banner d-flex flex-column gap-3" aria-label="Banner principal">
-                        <div id="bannerCarousel" className="carousel slide home-banner-carousel" data-bs-ride="carousel">
+                <main className="home-main-content container-fluid">
+                    <section className="banner-slide home-banner" aria-label="Banner principal">
+                        <div id="bannerHome" className="carousel slide" data-bs-ride="carousel">
                             <div className="carousel-inner">
-                                {bannerSlides.map((banner, index) => (
+                                {bannerHome.map((banner, index) => (
                                     <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} home-banner-item`}>
                                         {banner.href ? (
                                             <a href={banner.href} target="_blank" rel="noreferrer" className="home-banner-link">
@@ -191,11 +204,11 @@ export default function Principal({ site, promotions = [], games = [], banners =
                                     </div>
                                 ))}
                             </div>
-                            <button className="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+                            <button className="carousel-control-prev" type="button" data-bs-target="#bannerHome" data-bs-slide="prev">
                                 <span className="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span className="visually-hidden">Anterior</span>
                             </button>
-                            <button className="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+                            <button className="carousel-control-next" type="button" data-bs-target="#bannerHome" data-bs-slide="next">
                                 <span className="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span className="visually-hidden">Siguiente</span>
                             </button>
@@ -203,7 +216,53 @@ export default function Principal({ site, promotions = [], games = [], banners =
 
                     </section>
 
-                    <section className="home-panel d-flex flex-column gap-3">
+                    {/* Banner Evento */}
+                    <section className="banner-slide event-banner" aria-label="Banner evento">
+                        <div id="bannerEvents" className="carousel slide">
+                            <div className="carousel-inner">
+                                {bannersEvents.map((banner, index) => (
+                                    <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} home-banner-item`}>
+                                        {banner.href ? (
+                                            <a href={banner.href} target="_blank" rel="noreferrer" className="home-banner-link">
+                                                <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                            </a>
+                                        ) : (
+                                            <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Banner games */}
+                    <section className="banner-slide games-banner" aria-label="Banner juegos">
+                        <div id="bannerGames" className="carousel slide" data-bs-ride="carousel">
+                            <div className="carousel-inner">
+                                {bannersGames.map((banner, index) => (
+                                    <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} home-banner-item`}>
+                                        {banner.href ? (
+                                            <a href={banner.href} target="_blank" rel="noreferrer" className="home-banner-link">
+                                                <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                            </a>
+                                        ) : (
+                                            <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                            <button className="carousel-control-prev" type="button" data-bs-target="#bannerGames" data-bs-slide="prev">
+                                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span className="visually-hidden">Anterior</span>
+                            </button>
+                            <button className="carousel-control-next" type="button" data-bs-target="#bannerGames" data-bs-slide="next">
+                                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span className="visually-hidden">Siguiente</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    {/* <section className="home-panel d-flex flex-column gap-3">
                         <div className="home-panel-heading d-flex flex-wrap gap-2 align-items-center">
                             <h2>Proximo sorteo</h2>
                             <p>
@@ -333,7 +392,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
                                 <p>4 creditos</p>
                             </article>
                         </div>
-                    </section>
+                    </section> */}
 
                     <FrontFooter site={sharedSite} />
                 </main>
@@ -344,41 +403,9 @@ export default function Principal({ site, promotions = [], games = [], banners =
                     label={customer ? customer.name : 'Menu principal'}
                     open={isMenuOpen}
                     onClose={() => setIsMenuOpen(false)}
-                >
-                    <div className="home-drawer-profile d-flex flex-column gap-3">
-                        <div className="home-drawer-avatar">
-                            <FontAwesomeIcon icon={faCircleUser} />
-                        </div>
-                        <strong>{customer?.name ?? 'Invitado'}</strong>
-                        <p className="mb-0">{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
-                    </div>
-
-                    <nav className="home-drawer-nav d-flex flex-column gap-2" aria-label="Menu de usuario">
-                        <button className="btn btn-link text-start" onClick={openUserPage}>
-                            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
-                            Editar perfil
-                        </button>
-                        <button className="btn btn-link text-start" onClick={() => {
-                            setIsMenuOpen(false);
-                            router.visit('/usuario/cupones');
-                        }}>
-                            <FontAwesomeIcon icon={faTicket} className="me-2" />
-                            Mis cupones
-                        </button>
-                        <button className="btn btn-link text-start" onClick={() => {
-                            setIsMenuOpen(false);
-                            router.visit('/programacion');
-                        }}>
-                            <FontAwesomeIcon icon={faGift} className="me-2" />
-                            Sorteos
-                        </button>
-
-                        <button className="btn btn-link text-start" onClick={handleCustomerLogout}>
-                            <FontAwesomeIcon icon={faRightFromBracket} className="me-2" />
-                            Cerrar sesion
-                        </button>
-                    </nav>
-                </ActionDrawer>
+                    customer={customer}
+                    onLogout={handleCustomerLogout}
+                />
             </div>
         </>
     );

@@ -1,6 +1,4 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGift, faPenToSquare, faRightFromBracket, faTicket, faTrophy } from '@fortawesome/free-solid-svg-icons';
 import { useMemo, useState } from 'react';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import UserBenefitsCard from '../Components/Front/UserBenefitsCard';
@@ -41,7 +39,7 @@ export default function UserCouponShow({ site, coupon }) {
                     onOpenMenu={() => setIsMenuOpen(true)}
                 />
 
-                <main className="home-main-content user-coupons-content">
+                <main className="home-main-content container-fluid user-coupons-content">
                     <UserBenefitsCard
                         mode="detail"
                         activeCoupons={coupon ? [coupon] : []}
@@ -56,62 +54,9 @@ export default function UserCouponShow({ site, coupon }) {
                     label={customer ? customer.name : 'Menu principal'}
                     open={isMenuOpen}
                     onClose={() => setIsMenuOpen(false)}
-                >
-                    <div className="home-drawer-profile">
-                        <strong>{customer?.name ?? 'Invitado'}</strong>
-                        <p>{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
-                    </div>
-
-                    <nav className="home-drawer-nav d-flex flex-column gap-2" aria-label="Menu de usuario">
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={() => {
-                                setIsMenuOpen(false);
-                                router.visit('/principal');
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faTrophy} className="me-2" />
-                            Principal
-                        </button>
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={() => {
-                                setIsMenuOpen(false);
-                                router.visit('/usuario');
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
-                            Editar perfil
-                        </button>
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={() => {
-                                setIsMenuOpen(false);
-                                router.visit('/usuario/cupones');
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faTicket} className="me-2" />
-                            Mis cupones
-                        </button>
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={() => {
-                                setIsMenuOpen(false);
-                                router.visit('/programacion');
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faGift} className="me-2" />
-                            Sorteos
-                        </button>
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={handleLogout}
-                        >
-                            <FontAwesomeIcon icon={faRightFromBracket} className="me-2" />
-                            Cerrar sesion
-                        </button>
-                    </nav>
-                </ActionDrawer>
+                    customer={customer}
+                    onLogout={handleLogout}
+                />
             </div>
         </>
     );

@@ -1,12 +1,4 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faGift,
-    faPenToSquare,
-    faRightFromBracket,
-    faTicket,
-    faTrophy,
-} from '@fortawesome/free-solid-svg-icons';
 import UserBenefitsCard from '../Components/Front/UserBenefitsCard';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
@@ -274,7 +266,7 @@ export default function User({ site, activeCoupons = [] }) {
                                     />
 
                                     {feedback ? (
-                                        <div className="alert feedback-callout" role="alert">
+                                        <div className="alert alert-info feedback-callout" role="alert">
                                             <strong>{feedback.title}</strong>
                                             <p className="mb-0">{feedback.description}</p>
                                         </div>
@@ -352,7 +344,7 @@ export default function User({ site, activeCoupons = [] }) {
                                     ) : null}
 
                                     {feedback ? (
-                                        <div className="alert feedback-callout" role="alert">
+                                        <div className="alert alert-info feedback-callout" role="alert">
                                             <strong>{feedback.title}</strong>
                                             <p className="mb-0">{feedback.description}</p>
                                         </div>
@@ -421,7 +413,7 @@ export default function User({ site, activeCoupons = [] }) {
 
                 <main className="casino-content d-flex flex-column gap-3">
                     {feedback ? (
-                        <div className="alert feedback-callout" role="alert">
+                        <div className="alert alert-info feedback-callout" role="alert">
                             <strong>{feedback.title}</strong>
                             <p className="mb-0">{feedback.description}</p>
                         </div>
@@ -457,59 +449,9 @@ export default function User({ site, activeCoupons = [] }) {
                     label={customer ? customer.name : 'Menu principal'}
                     open={isMenuOpen}
                     onClose={() => setIsMenuOpen(false)}
-                >
-                    <div className="home-drawer-profile d-flex flex-column gap-3">
-                        <strong>{customer?.name ?? 'Invitado'}</strong>
-                        <p className="mb-0">{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
-                    </div>
-
-                    <nav className="home-drawer-nav d-flex flex-column gap-2" aria-label="Menu de usuario">
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={() => {
-                                setIsMenuOpen(false);
-                                router.visit('/principal');
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faTrophy} className="me-2" />
-                            Principal
-                        </button>
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
-                            Editar perfil
-                        </button>
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={() => {
-                                setIsMenuOpen(false);
-                                router.visit('/usuario/cupones');
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faTicket} className="me-2" />
-                            Mis cupones
-                        </button>
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={() => {
-                                setIsMenuOpen(false);
-                                router.visit('/programacion');
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faGift} className="me-2" />
-                            Sorteos
-                        </button>
-                        <button
-                            className="btn btn-link text-start"
-                            onClick={handleLogout}
-                        >
-                            <FontAwesomeIcon icon={faRightFromBracket} className="me-2" />
-                            Cerrar sesion
-                        </button>
-                    </nav>
-                </ActionDrawer>
+                    customer={customer}
+                    onLogout={handleLogout}
+                />
             </div>
         </>
     );

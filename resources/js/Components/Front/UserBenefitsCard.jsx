@@ -29,7 +29,7 @@ export default function UserBenefitsCard({
                     {activeCoupons.map((coupon) => (
                         <div
                             key={coupon.id}
-                            className={`active-coupon-card card ${onCouponSelect ? 'is-clickable' : ''}`.trim()}
+                            className={`active-coupon-card mx-auto card ${onCouponSelect ? 'is-clickable' : ''}`.trim()}
                             onClick={() => onCouponSelect?.(coupon)}
                             onKeyDown={(event) => {
                                 if (!onCouponSelect) {
@@ -44,15 +44,15 @@ export default function UserBenefitsCard({
                             role={onCouponSelect ? 'button' : undefined}
                             tabIndex={onCouponSelect ? 0 : undefined}
                         >
-                            <div className="active-coupon-card__header d-flex flex-wrap gap-2 align-items-center card-body">
+                            <div className="active-coupon-card__header card-header d-flex flex-wrap gap-2 align-items-center">
                                 <div>
-                                    <p className="active-coupon-card__brand">{coupon.site_name ?? 'Sala'}</p>
-                                    <p className="active-coupon-card__meta">Cupon activo</p>
+                                    <p className="active-coupon-card__brand card-title">{coupon.site_name ?? 'Sala'}</p>
+                                    <p className="active-coupon-card__meta card-text">Cupon activo</p>
                                 </div>
                                 <span className="badge bg-primary">{coupon.draw_label ?? coupon.type_label ?? 'TOMBOLA'}</span>
                             </div>
 
-                            <div className="active-coupon-card__body d-flex flex-column gap-3 card-body">
+                            <div className="active-coupon-card__body card-body d-flex flex-column gap-3">
                                 <p className="active-coupon-card__code">{normalizeCouponCode(coupon.code)}</p>
                                 <div className="active-coupon-card__tags d-flex flex-wrap gap-2 align-items-center">
                                     <span className="badge bg-secondary">{coupon.type_label ?? 'Tipo de sorteo'}</span>
@@ -61,7 +61,7 @@ export default function UserBenefitsCard({
                             </div>
 
                             {onCouponSelect ? (
-                                <div className="active-coupon-card__footer d-flex flex-column gap-3 card-body">
+                                <div className="active-coupon-card__footer card-footer d-flex flex-column gap-3">
                                     <button className="btn btn-outline-secondary btn-sm w-100" type="button">
                                         Ver detalle
                                     </button>

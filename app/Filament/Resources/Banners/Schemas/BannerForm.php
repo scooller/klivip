@@ -60,7 +60,7 @@ class BannerForm
                     ->label('Alcance')
                     ->required()
                     ->live()
-                    ->default(BannerScope::Sites->value)
+                    ->default(BannerScope::Global->value)
                     ->options($scopeOptions)
                     ->afterStateUpdated(function (Set $set, ?string $state): void {
                         if ($state === BannerScope::Global->value) {

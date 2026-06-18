@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('banners', function (Blueprint $table) {
             if (! Schema::hasColumn('banners', 'section')) {
-                $table->string('section')->nullable()->after('site_id');
+                $table->string('section')->nullable()->after('scope');
             }
         });
     }

@@ -63,7 +63,7 @@ class PrincipalController extends Controller
             ->where(function ($query) use ($site): void {
                 $query
                     ->where('scope', BannerScope::Global->value)
-                    ->orWhereHas('sites', fn ($siteQuery) => $siteQuery->where('sites.id', $site->id));
+                    ->orWhereHas('sites', fn($siteQuery) => $siteQuery->where('sites.id', $site->id));
             })
             ->where(function ($query): void {
                 $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
@@ -75,9 +75,10 @@ class PrincipalController extends Controller
             ->orderByDesc('created_at')
             ->limit(8)
             ->get()
-            ->map(fn (Banner $banner): array => [
+            ->map(fn(Banner $banner): array => [
                 'id' => (string) $banner->id,
                 'title' => $banner->title,
+                'section' => $banner->section,
                 'image_url' => $this->resolveBannerImageUrl((string) $banner->image_path),
                 'target_url' => $banner->target_url,
             ])
@@ -87,20 +88,20 @@ class PrincipalController extends Controller
 
     private function resolveBannerImageUrl(string $path): string
     {
-        $publicStoragePath = public_path('storage/'.$path);
+        $publicStoragePath = public_path('storage/' . $path);
 
         if (is_file($publicStoragePath)) {
-            return asset('storage/'.$path);
+            return asset('storage/' . $path);
         }
 
         $fallbackName = basename($path);
-        $fallbackPublicPath = public_path('images/banners/'.$fallbackName);
+        $fallbackPublicPath = public_path('images/banners/' . $fallbackName);
 
         if (is_file($fallbackPublicPath)) {
-            return asset('images/banners/'.$fallbackName);
+            return asset('images/banners/' . $fallbackName);
         }
 
-        return asset('storage/'.$path);
+        return asset('storage/' . $path);
     }
 
     /**
@@ -118,9 +119,9 @@ class PrincipalController extends Controller
             ->latest('starts_at')
             ->limit(30)
             ->get()
-            ->filter(fn (Promotion $promotion): bool => $promotion->isScheduledFor(now()))
+            ->filter(fn(Promotion $promotion): bool => $promotion->isScheduledFor(now()))
             ->take(7)
-            ->map(fn (Promotion $promotion): array => [
+            ->map(fn(Promotion $promotion): array => [
                 'title' => $promotion->title,
                 'offer_label' => $promotion->offer_label,
                 'description' => $promotion->description,
@@ -152,7 +153,7 @@ class PrincipalController extends Controller
     private function mapGames(Collection $games): array
     {
         return $games
-            ->map(fn (Game $game): array => [
+            ->map(fn(Game $game): array => [
                 'id' => $game->id,
                 'title' => $game->title,
                 'description' => $game->description,
@@ -170,17 +171,17 @@ class PrincipalController extends Controller
             return asset('images/games/game-placeholder.svg');
         }
 
-        $publicStoragePath = public_path('storage/'.$path);
+        $publicStoragePath = public_path('storage/' . $path);
 
         if (is_file($publicStoragePath)) {
-            return asset('storage/'.$path);
+            return asset('storage/' . $path);
         }
 
         $fallbackName = basename($path);
-        $fallbackPublicPath = public_path('images/games/'.$fallbackName);
+        $fallbackPublicPath = public_path('images/games/' . $fallbackName);
 
         if (is_file($fallbackPublicPath)) {
-            return asset('images/games/'.$fallbackName);
+            return asset('images/games/' . $fallbackName);
         }
 
         return asset('images/games/game-placeholder.svg');
@@ -215,7 +216,7 @@ class PrincipalController extends Controller
         sort($normalizedDays);
 
         return collect($normalizedDays)
-            ->map(fn (int $day): string => $labels[$day] ?? (string) $day)
+            ->map(fn(int $day): string => $labels[$day] ?? (string) $day)
             ->implode(', ');
     }
 

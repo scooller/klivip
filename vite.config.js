@@ -9,6 +9,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/scss/app.scss', 'resources/js/app.jsx'],
+            ssr: 'resources/js/ssr.jsx',
             refresh: true,
             fonts: [
                 bunny('Instrument Sans', {
