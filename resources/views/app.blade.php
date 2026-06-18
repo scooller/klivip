@@ -7,7 +7,6 @@
 
         <title inertia>{{ config('app.name', 'Klivip') }}</title>
 
-        @viteReactRefresh
         @vite(['resources/scss/app.scss', 'resources/js/app.jsx'])
         @inertiaHead
     </head>
