@@ -199,18 +199,18 @@ export default function Principal({ site, promotions = [], games = [], banners =
                     onOpenMenu={() => setIsMenuOpen(true)}
                 />
 
-                <main className="home-main-content container-fluid">
+                <main className="home-main-content container mx-auto g-0">
                     <section className="banner-slide home-banner" aria-label="Banner principal">
                         <div id="bannerHome" className="carousel slide" ref={(el) => { carouselRefs.current[0] = el; }}>
                             <div className="carousel-inner">
                                 {bannerHome.map((banner, index) => (
-                                    <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} home-banner-item`}>
+                                    <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} banner-slide-item`}>
                                         {banner.href ? (
-                                            <a href={banner.href} target="_blank" rel="noreferrer" className="home-banner-link">
-                                                <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                            <a href={banner.href} target="_blank" rel="noreferrer" className="banner-slide-link">
+                                                <img src={banner.src} alt={banner.alt} className="banner-slide-image" />
                                             </a>
                                         ) : (
-                                            <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                            <img src={banner.src} alt={banner.alt} className="banner-slide-image" />
                                         )}
                                     </div>
                                 ))}
@@ -232,13 +232,13 @@ export default function Principal({ site, promotions = [], games = [], banners =
                         <div id="bannerEvents" className="carousel slide">
                             <div className="carousel-inner">
                                 {bannersEvents.map((banner, index) => (
-                                    <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} home-banner-item`}>
+                                    <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} banner-slide-item`}>
                                         {banner.href ? (
-                                            <a href={banner.href} target="_blank" rel="noreferrer" className="home-banner-link">
-                                                <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                            <a href={banner.href} target="_blank" rel="noreferrer" className="banner-slide-link">
+                                                <img src={banner.src} alt={banner.alt} className="banner-slide-image" />
                                             </a>
                                         ) : (
-                                            <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                            <img src={banner.src} alt={banner.alt} className="banner-slide-image" />
                                         )}
                                     </div>
                                 ))}
@@ -251,13 +251,13 @@ export default function Principal({ site, promotions = [], games = [], banners =
                         <div id="bannerGames" className="carousel slide" ref={(el) => { carouselRefs.current[1] = el; }}>
                             <div className="carousel-inner">
                                 {bannersGames.map((banner, index) => (
-                                    <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} home-banner-item`}>
+                                    <div key={banner.id} className={`carousel-item ${index === 0 ? 'active' : ''} banner-slide-item`}>
                                         {banner.href ? (
-                                            <a href={banner.href} target="_blank" rel="noreferrer" className="home-banner-link">
-                                                <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                            <a href={banner.href} target="_blank" rel="noreferrer" className="banner-slide-link">
+                                                <img src={banner.src} alt={banner.alt} className="banner-slide-image" />
                                             </a>
                                         ) : (
-                                            <img src={banner.src} alt={banner.alt} className="home-banner-image" />
+                                            <img src={banner.src} alt={banner.alt} className="banner-slide-image" />
                                         )}
                                     </div>
                                 ))}
