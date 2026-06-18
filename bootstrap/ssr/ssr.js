@@ -18,7 +18,7 @@ var renderPage = (page) => createInertiaApp({
 	page,
 	render: renderToString,
 	resolve: (name) => resolvePageComponent(`./Pages/${name}.jsx`, /* #__PURE__ */ Object.assign({
-		"./Pages/Principal.jsx": () => import("./assets/Principal-DM9vrAKq.js"),
+		"./Pages/Principal.jsx": () => import("./assets/Principal-CVmbnjQn.js"),
 		"./Pages/Schedule.jsx": () => import("./assets/Schedule-u1ZOqjLX.js"),
 		"./Pages/User.jsx": () => import("./assets/User-C0YmJg-D.js"),
 		"./Pages/UserCouponShow.jsx": () => import("./assets/UserCouponShow-DXBw4bdl.js"),

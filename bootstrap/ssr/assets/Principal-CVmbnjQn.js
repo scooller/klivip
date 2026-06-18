@@ -57,10 +57,12 @@ function Principal({ site, promotions = [], games = [], banners = [] }) {
 		};
 	}, []);
 	useEffect(() => {
-		carouselRefs.current.forEach((el) => {
-			if (el) new window.bootstrap.Carousel(el, {
-				ride: "carousel",
-				interval: 5e3
+		import("bootstrap/dist/js/bootstrap.bundle.js").then(({ Carousel }) => {
+			carouselRefs.current.forEach((el) => {
+				if (el) new Carousel(el, {
+					ride: "carousel",
+					interval: 5e3
+				});
 			});
 		});
 	}, []);
@@ -340,4 +342,4 @@ function Principal({ site, promotions = [], games = [], banners = [] }) {
 //#endregion
 export { Principal as default };
 
-//# sourceMappingURL=Principal-DM9vrAKq.js.map
+//# sourceMappingURL=Principal-CVmbnjQn.js.map
