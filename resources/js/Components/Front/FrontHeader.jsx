@@ -18,7 +18,11 @@ export default function FrontHeader({
         <header className="casino-header">
             {showBrand ? (
                 <div className="brand-lockup">
-                    <span className="brand-mark">GI</span>
+                    {site?.logo ? (
+                        <img src={site.logo} alt={site.name ?? 'Klivip'} className="brand-logo" />
+                    ) : (
+                        <span className="brand-mark">GI</span>
+                    )}
                     <div>
                         <h3>{site?.name ?? 'Klivip'}</h3>
                         <p>{computedSubtitle}</p>

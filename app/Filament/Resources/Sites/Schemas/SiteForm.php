@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Sites\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -21,6 +22,14 @@ class SiteForm
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->rules(['alpha_dash']),
+                FileUpload::make('logo')
+                    ->label('Logo')
+                    ->disk('public')
+                    ->directory('sites/logos')
+                    ->visibility('public')
+                    ->image()
+                    ->imageEditor()
+                    ->nullable(),
                 TextInput::make('address')
                     ->label('Dirección')
                     ->maxLength(255)

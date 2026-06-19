@@ -25,6 +25,7 @@ class ScheduleController extends Controller
             'site' => [
                 'name' => $site->name,
                 'slug' => $site->slug,
+                'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
             ],

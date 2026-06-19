@@ -48,7 +48,8 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
                     </div>
                 </div>
                 <hr className="w-100" />
-                <ul class="nav justify-content-center py-2">
+                <p className="text-center mb-0">{siteSetting?.site_name ?? 'Klivip'} &copy; {new Date().getFullYear()}</p>
+                {/* <ul class="nav justify-content-center py-2">
                     <li class="nav-item">
                         <a class="nav-link disabled" aria-disabled="true">{siteSetting?.site_name ?? 'Klivip'} &copy; {new Date().getFullYear()}</a>
                     </li>
@@ -58,7 +59,7 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
                     <li class="nav-item">
                         <a class="nav-link" href="#">Politica de Privacidad</a>
                     </li>
-                </ul>
+                </ul> */}
             </div>
         </footer>
     );

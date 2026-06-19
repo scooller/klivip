@@ -19,6 +19,7 @@ class Site extends Model
     protected $fillable = [
         'name',
         'slug',
+        'logo',
         'content',
         'address',
         'opening_hours',
