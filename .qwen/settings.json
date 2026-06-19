@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(php *)",
+      "Agent(Explore)",
+      "Bash(type *)",
+      "Bash(findstr *)"
     ]
   },
   "$version": 4

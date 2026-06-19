@@ -32,7 +32,7 @@ foreach ($publicBaseDomains as $baseDomain) {
                 ->name($routeNamePrefix . '.schedule');
             Route::get('/usuario', UserController::class)->name($routeNamePrefix);
             Route::get('/cupones/qr/{token}', CouponQrRedeemController::class)
-                ->where('token', '[A-Za-z0-9]+')
+                ->where('token', '[A-Za-z0-9_-]+')
                 ->name($routeNamePrefix . '.coupons.qr-redeem');
             Route::post('/usuario/perfil', [UserController::class, 'updateProfile'])
                 ->middleware('auth:customer')

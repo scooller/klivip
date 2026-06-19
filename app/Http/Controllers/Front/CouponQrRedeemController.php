@@ -15,14 +15,18 @@ class CouponQrRedeemController extends Controller
     {
         /** @var Site $site */
         $site = $request->attributes->get('currentSite');
+        $qr_token = $request->route('token');
 
-        Log::debug("Attempting to redeem coupon with token: $token for site: {$site->name}");
+        Log::debug("Attempting to redeem coupon with token: {$qr_token} for site: {$site->name} (site_id: {$site->id})");
+        Log::debug("Route parameters", $request->route()?->parameters() ?? []);
 
         $coupon = Coupon::query()
             ->where('site_id', $site->id)
             ->where('qr_enabled', true)
-            ->where('qr_token', $token)
+            ->where('qr_token', $qr_token)
             ->first();
+
+        Log::debug("Coupon query result", ['coupon_id' => $coupon?->id, 'coupon_code' => $coupon?->code]);
 
         if (! $coupon) {
             return response()->view('coupon-redeem-result', [
@@ -33,7 +37,7 @@ class CouponQrRedeemController extends Controller
         }
 
         if (! $coupon->isValidNow()) {
-            Log::debug("Attempting to redeem coupon with token: $token for site: {$site->name} - Coupon is invalid");
+            Log::debug("Attempting to redeem coupon with token: $qr_token for site: {$site->name} - Coupon is invalid");
 
             return response()->view('coupon-redeem-result', [
                 'status' => 'invalid',
@@ -59,7 +63,7 @@ class CouponQrRedeemController extends Controller
             ->increment('used_count');
 
         if ($redeemed === 0) {
-            Log::debug("Attempting to redeem coupon with token: $token for site: {$site->name} - Coupon could not be redeemed due to concurrent redemption");
+            Log::debug("Attempting to redeem coupon with token: $qr_token for site: {$site->name} - Coupon could not be redeemed due to concurrent redemption");
             return response()->view('coupon-redeem-result', [
                 'status' => 'invalid',
                 'title' => 'Cupon no disponible',
