@@ -418,6 +418,7 @@ export default function User({ site, activeCoupons = [] }) {
 
             <div className="casino-layout">
                 <FrontAppHeader
+                    site={sharedSite}
                     title="Mi Cuenta"
                     currentTime={currentTime}
                     onBack={() => router.visit('/principal')}

@@ -134,6 +134,7 @@ export default function Schedule({ site, calendarDays = [] }) {
 
             <div className="home-main-page">
                 <FrontAppHeader
+                    site={sharedSite}
                     title="Toda la Programacion"
                     currentTime={currentTime}
                     onBack={() => router.visit('/principal')}

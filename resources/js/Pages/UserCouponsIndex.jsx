@@ -44,6 +44,7 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
 
             <div className="home-main-page user-coupons-page">
                 <FrontAppHeader
+                    site={sharedSite}
                     title="Mis Cupones"
                     currentTime={currentTime}
                     onBack={() => router.visit('/principal')}

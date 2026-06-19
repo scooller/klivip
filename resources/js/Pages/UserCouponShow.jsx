@@ -42,6 +42,7 @@ export default function UserCouponShow({ site, coupon }) {
 
             <div className="home-main-page user-coupons-page">
                 <FrontAppHeader
+                    site={sharedSite}
                     title="Mis Cupones"
                     currentTime={currentTime}
                     onBack={() => router.visit('/usuario/cupones')}

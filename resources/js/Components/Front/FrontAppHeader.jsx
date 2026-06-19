@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faBars } from '@fortawesome/free-solid-svg-icons';
 
 export default function FrontAppHeader({
+    site,
     title,
     onBack,
     onOpenMenu,

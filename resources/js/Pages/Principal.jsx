@@ -191,6 +191,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
 
             <div className="home-main-page">
                 <FrontAppHeader
+                    site={sharedSite}
                     title={null}
                     currentTime={currentTime}
                     hideBack
