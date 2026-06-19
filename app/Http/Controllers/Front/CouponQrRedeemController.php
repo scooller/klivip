@@ -7,6 +7,7 @@ use App\Models\Coupon;
 use App\Models\Site;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class CouponQrRedeemController extends Controller
 {
@@ -15,7 +16,7 @@ class CouponQrRedeemController extends Controller
         /** @var Site $site */
         $site = $request->attributes->get('currentSite');
 
-        console_log("Attempting to redeem coupon with token: $token for site: {$site->name}");
+        Log::debug("Attempting to redeem coupon with token: $token for site: {$site->name}");
 
         $coupon = Coupon::query()
             ->where('site_id', $site->id)
@@ -32,6 +33,8 @@ class CouponQrRedeemController extends Controller
         }
 
         if (! $coupon->isValidNow()) {
+            Log::debug("Attempting to redeem coupon with token: $token for site: {$site->name} - Coupon is invalid");
+
             return response()->view('coupon-redeem-result', [
                 'status' => 'invalid',
                 'title' => 'Cupon no disponible',
@@ -56,6 +59,7 @@ class CouponQrRedeemController extends Controller
             ->increment('used_count');
 
         if ($redeemed === 0) {
+            Log::debug("Attempting to redeem coupon with token: $token for site: {$site->name} - Coupon could not be redeemed due to concurrent redemption");
             return response()->view('coupon-redeem-result', [
                 'status' => 'invalid',
                 'title' => 'Cupon no disponible',
