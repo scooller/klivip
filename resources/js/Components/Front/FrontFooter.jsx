@@ -8,7 +8,7 @@ import {
 export default function FrontFooter({ site, id = 'section-soporte' }) {
     return (
         <footer id={id} className="site-footer navbar navbar-expand-lg">
-            <div class="container-fluid">
+            <div class="container-fluid flex-column">
                 <div className="w-100 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
                     <p>{site?.opening_hours ?? 'Juego Responsable'}</p>
                     <p>{site?.address ?? 'Seguridad Garantizada'}</p>
