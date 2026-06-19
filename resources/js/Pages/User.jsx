@@ -4,6 +4,7 @@ import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import UserSessionCard from '../Components/Front/UserSessionCard';
 import UserWelcomeCard from '../Components/Front/UserWelcomeCard';
+import FrontFooter from '../Components/Front/FrontFooter';
 import { useEffect, useState } from 'react';
 
 function formatPhone(rawValue) {
@@ -33,6 +34,7 @@ function formatPhone(rawValue) {
 
 export default function User({ site, activeCoupons = [] }) {
     const page = usePage();
+    const sharedSite = page.props.site ?? site;
     const customer = page.props.auth?.customer ?? null;
     const adminPortal = page.props.auth?.adminPortal ?? null;
     const security = page.props.auth?.security ?? {};
@@ -453,6 +455,8 @@ export default function User({ site, activeCoupons = [] }) {
                         />
                     </section>
                 </main>
+
+                <FrontFooter site={sharedSite} />
 
                 <ActionDrawer
                     className="home-profile-drawer"

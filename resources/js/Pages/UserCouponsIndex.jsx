@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import UserBenefitsCard from '../Components/Front/UserBenefitsCard';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
+import FrontFooter from '../Components/Front/FrontFooter';
 
 export default function UserCouponsIndex({ site, activeCoupons = [], pagination = null }) {
     const page = usePage();
+    const sharedSite = page.props.site ?? site;
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -100,6 +102,8 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
                         </div>
                     ) : null}
                 </main>
+
+                <FrontFooter site={sharedSite} />
 
                 <ActionDrawer
                     className="home-profile-drawer"

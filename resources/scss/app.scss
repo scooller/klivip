@@ -48,6 +48,19 @@ body {
   color: var(--casino-text);
 }
 
+.shadow-1{
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+.shadow-2{
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+}
+.shadow-3{
+    box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+.shadow-4{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
 .offcanvas-backdrop {
   opacity: 1!important;
   backdrop-filter: blur(6px);
@@ -209,15 +222,10 @@ body {
   font-weight: 600;
 }
 
-.casino-footer {
+.site-footer {
   border: 1px solid var(--casino-line);
-  border-radius: 18px;
   background: linear-gradient(145deg, rgba(9, 15, 60, 0.88), rgba(6, 11, 42, 0.86));
   padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
   gap: 12px;
 
   p {
@@ -242,13 +250,13 @@ body {
   }
 }
 
-.home-entry-page .casino-footer,
-.home-main-page .casino-footer {
+.home-entry-page .site-footer,
+.home-main-page .site-footer {
   border-color: rgba(162, 120, 255, 0.32);
   background: linear-gradient(145deg, rgba(47, 24, 106, 0.66), rgba(33, 15, 82, 0.66));
 }
 
-.home-entry-page .casino-footer p,
+.home-entry-page .site-footer p,
 .home-entry-page .social-links {
   color: rgba(226, 215, 252, 0.88);
 }
@@ -894,11 +902,6 @@ body {
 
   .home-drawer-profile strong { font-size: 1.375rem; }
   .brand-lockup p { display: none; }
-
-  .casino-footer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 
   .hero-actions,
   .header-actions {

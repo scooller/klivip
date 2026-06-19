@@ -64,7 +64,7 @@
     </style>
 </head>
 <body>
-    <article class="card">
+    <article class="card coupon-card shadow-2">
         @if (($status ?? '') === 'redeemed')
             <span class="status status--ok">Cobrado</span>
         @else

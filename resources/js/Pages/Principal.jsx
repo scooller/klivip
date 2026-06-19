@@ -404,9 +404,9 @@ export default function Principal({ site, promotions = [], games = [], banners =
                             </article>
                         </div>
                     </section> */}
-
-                    <FrontFooter site={sharedSite} />
                 </main>
+
+                <FrontFooter site={sharedSite} />
 
                 <ActionDrawer
                     className="home-profile-drawer"

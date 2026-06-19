@@ -2,9 +2,11 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
+import FrontFooter from '../Components/Front/FrontFooter';
 
 export default function Schedule({ site, calendarDays = [] }) {
     const page = usePage();
+    const sharedSite = page.props.site ?? site;
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [selectedDateIso, setSelectedDateIso] = useState(null);
@@ -213,6 +215,8 @@ export default function Schedule({ site, calendarDays = [] }) {
                         </div>
                     </section>
                 </main>
+
+                <FrontFooter site={sharedSite} />
 
                 <ActionDrawer
                     className="home-profile-drawer"
