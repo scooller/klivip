@@ -6,7 +6,8 @@
       "Agent(Explore)",
       "Bash(type *)",
       "Bash(findstr *)",
-      "Bash(del *)"
+      "Bash(del *)",
+      "Bash(vendor/bin/pint *)"
     ]
   },
   "$version": 4

@@ -50,6 +50,7 @@ class UserCouponsController extends Controller
                 'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
+                'links' => $site->links,
             ],
             'auth' => [
                 'customer' => $customer ? [
@@ -117,6 +118,7 @@ class UserCouponsController extends Controller
                 'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
+                'links' => $site->links,
             ],
             'auth' => [
                 'customer' => $customer ? [

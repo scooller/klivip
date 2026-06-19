@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
                 'name' => $site->name,
                 'slug' => $site->slug,
                 'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
+                'links' => $site->links,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
             ] : null,

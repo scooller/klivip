@@ -20,6 +20,7 @@ class Site extends Model
         'name',
         'slug',
         'logo',
+        'links',
         'content',
         'address',
         'opening_hours',
@@ -33,6 +34,7 @@ class Site extends Model
     {
         return [
             'is_active' => 'boolean',
+            'links' => 'array',
         ];
     }
 

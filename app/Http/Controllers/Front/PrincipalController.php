@@ -39,6 +39,7 @@ class PrincipalController extends Controller
                 'content' => $site->content,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
+                'links' => $site->links,
                 'url' => $site->url,
             ],
             'banners' => $banners,

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Sites\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -29,6 +30,21 @@ class SiteForm
                     ->visibility('public')
                     ->image()
                     ->imageEditor()
+                    ->nullable(),
+                Repeater::make('links')
+                    ->label('Links')
+                    ->schema([
+                        TextInput::make('label')
+                            ->label('Texto')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('url')
+                            ->label('URL')
+                            ->required()
+                            ->url()
+                            ->maxLength(255),
+                    ])
+                    ->columns(2)
                     ->nullable(),
                 TextInput::make('address')
                     ->label('Dirección')

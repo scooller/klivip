@@ -36,20 +36,20 @@ export default function FrontAppHeader({
                                             className="rounded-circle"
                                             style={{ width: '40px', height: '40px', objectFit: 'cover' }}
                                         />
+                                    ) : site?.logo ? (
+                                        <img
+                                            src={site.logo}
+                                            alt={site.name ?? userName}
+                                            className="rounded-circle"
+                                            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                        />
                                     ) : (
-                                        // <div
-                                        //     className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white"
-                                        //     style={{ width: '40px', height: '40px' }}
-                                        // >
-                                        //     {userName.slice(0, 1).toUpperCase()}
-                                            // </div>
-                                            // logo site
-                                            <img
-                                                src={site?.logo ? `/storage/${site.logo}` : '/images/default-logo.png'}
-                                                alt={userName}
-                                                className="rounded-circle"
-                                                style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                            />
+                                        <div
+                                            className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white"
+                                            style={{ width: '40px', height: '40px' }}
+                                        >
+                                            {userName?.slice(0, 1).toUpperCase()}
+                                        </div>
                                     )}
                                 </div>
 

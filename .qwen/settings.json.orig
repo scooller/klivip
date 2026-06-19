@@ -5,7 +5,8 @@
       "Bash(php *)",
       "Agent(Explore)",
       "Bash(type *)",
-      "Bash(findstr *)"
+      "Bash(findstr *)",
+      "Bash(del *)"
     ]
   },
   "$version": 4

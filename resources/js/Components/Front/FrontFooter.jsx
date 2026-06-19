@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faFacebookF,
     faInstagram,
+    faLinkedin,
+    faTwitter,
     faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
 import { usePage } from '@inertiajs/react';
@@ -13,7 +15,7 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
 
     return (
         <footer id={id} className="site-footer navbar navbar-expand-lg">
-            <div class="container-fluid flex-column">
+            <div className="container-fluid flex-column">
                 <div className="w-100 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-4 gap-3">
                     <p>{site?.opening_hours ?? 'Juego Responsable'}</p>
                     <p>{site?.address ?? contact.address ?? 'Seguridad Garantizada'}</p>
@@ -48,18 +50,16 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
                     </div>
                 </div>
                 <hr className="w-100" />
+                {site?.links?.length > 0 && (
+                    <ul className="nav justify-content-center py-2">
+                        {site.links.map((link) => (
+                            <li key={link.url} className="nav-item">
+                                <a className="nav-link" href={link.url}>{link.label}</a>
+                            </li>
+                        ))}
+                    </ul>
+                )}
                 <p className="text-center mb-0">{siteSetting?.site_name ?? 'Klivip'} &copy; {new Date().getFullYear()}</p>
-                {/* <ul class="nav justify-content-center py-2">
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">{siteSetting?.site_name ?? 'Klivip'} &copy; {new Date().getFullYear()}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Terminos y condiciones</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Politica de Privacidad</a>
-                    </li>
-                </ul> */}
             </div>
         </footer>
     );
