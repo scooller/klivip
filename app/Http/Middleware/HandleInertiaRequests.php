@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Site;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -44,7 +45,10 @@ class HandleInertiaRequests extends Middleware
             'site' => $site ? [
                 'name' => $site->name,
                 'slug' => $site->slug,
+                'address' => $site->address,
+                'opening_hours' => $site->opening_hours,
             ] : null,
+            'siteSetting' => SiteSetting::forFrontend(),
         ];
     }
 }
