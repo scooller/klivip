@@ -4,7 +4,8 @@
       "Bash(npm run *)",
       "Bash(php *)",
       "Agent(Explore)",
-      "Bash(type *)"
+      "Bash(type *)",
+      "Bash(findstr *)"
     ]
   },
   "$version": 4

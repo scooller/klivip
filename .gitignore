@@ -31,3 +31,4 @@ AGENTS.md
 .editorconfig
 boost.json
 /assets
+/.qwen
