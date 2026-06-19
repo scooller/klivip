@@ -15,6 +15,8 @@ class CouponQrRedeemController extends Controller
         /** @var Site $site */
         $site = $request->attributes->get('currentSite');
 
+        console_log("Attempting to redeem coupon with token: $token for site: {$site->name}");
+
         $coupon = Coupon::query()
             ->where('site_id', $site->id)
             ->where('qr_enabled', true)
