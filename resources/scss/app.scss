@@ -228,6 +228,13 @@ body {
   padding: 16px 20px;
   gap: 12px;
 
+  hr{
+    border: 0;
+    height: 1px;
+    background: var(--casino-line);
+    margin: 0;
+  }
+
   .nav-link{
     color: rgba(199, 204, 239, 0.88);
   }

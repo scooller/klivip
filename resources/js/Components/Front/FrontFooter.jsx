@@ -20,6 +20,7 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
                         <FontAwesomeIcon icon={faYoutube} />
                     </div>
                 </div>
+                <hr className="w-100" />
                 <ul class="nav justify-content-center">
                     <li class="nav-item">
                         <a class="nav-link disabled" aria-disabled="true">Klivip &copy; 2023</a>
