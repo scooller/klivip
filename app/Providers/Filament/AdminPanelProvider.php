@@ -18,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use AchyutN\FilamentLogViewer\FilamentLogViewer;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -44,6 +45,9 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
+            ])
+            ->plugins([
+                FilamentLogViewer::make(),
             ])
             ->middleware([
                 EncryptCookies::class,
