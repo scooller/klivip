@@ -33,6 +33,8 @@
   --profile-panel-bg-start: rgba(26, 17, 66, 0.94);
   --profile-panel-bg-end: rgba(19, 13, 52, 0.94);
   --profile-panel-border: rgba(143, 111, 226, 0.42);
+
+  --bs-body-color: #c7ccef;
 }
 
 * { box-sizing: border-box; }
@@ -238,6 +240,9 @@ body {
   .nav-link{
     color: rgba(199, 204, 239, 0.88);
   }
+}
+.user-login-form-shell .form-control, .user-login-form-shell .form-label {
+    --bs-body-color: #c7ccef;
 }
 
 .social-links {
