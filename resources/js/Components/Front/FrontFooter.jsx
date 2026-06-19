@@ -15,9 +15,31 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
                     <p>Atencion 24/7</p>
                     <div className="social-links">
                         <span>Siguenos</span>
-                        <FontAwesomeIcon icon={faFacebookF} />
-                        <FontAwesomeIcon icon={faInstagram} />
-                        <FontAwesomeIcon icon={faYoutube} />
+                        {site?.facebook_url ? (
+                            <a href={site.facebook_url} className="nav-link" target="_blank" rel="noopener noreferrer">
+                                <FontAwesomeIcon icon={faFacebookF} />
+                            </a>
+                        ) : null}
+                        {site?.instagram_url ? (
+                            <a href={site.instagram_url} className="nav-link" target="_blank" rel="noopener noreferrer">
+                                <FontAwesomeIcon icon={faInstagram} />
+                            </a>
+                        ) : null}
+                        {site?.twitter_url ? (
+                            <a href={site.twitter_url} className="nav-link" target="_blank" rel="noopener noreferrer">
+                                <FontAwesomeIcon icon={faTwitter} />
+                            </a>
+                        ) : null}
+                        {site?.linkedin_url ? (
+                            <a href={site.linkedin_url} className="nav-link" target="_blank" rel="noopener noreferrer">
+                                <FontAwesomeIcon icon={faLinkedin} />
+                            </a>
+                        ) : null}
+                        {site?.youtube_url ? (
+                            <a href={site.youtube_url} className="nav-link" target="_blank" rel="noopener noreferrer">
+                                <FontAwesomeIcon icon={faYoutube} />
+                            </a>
+                        ) : null}
                     </div>
                 </div>
                 <hr className="w-100" />
