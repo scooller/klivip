@@ -34,6 +34,11 @@ class SiteForm
                 Repeater::make('links')
                     ->label('Links')
                     ->schema([
+                        TextInput::make('icon')
+                            ->label('Icono (FontAwesome)')
+                            ->maxLength(255)
+                            ->placeholder('faFacebookF, faInstagram, faTwitter...')
+                            ->nullable(),
                         TextInput::make('label')
                             ->label('Texto')
                             ->required()

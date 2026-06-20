@@ -5,8 +5,46 @@ import {
     faLinkedin,
     faTwitter,
     faYoutube,
+    faTiktok,
+    faPinterestP,
+    faSnapchatGhost,
+    faWhatsapp,
+    faTelegram,
+    faDiscord,
+    faSpotify,
+    faGithub,
 } from '@fortawesome/free-brands-svg-icons';
+import {
+    faEnvelope,
+    faPhone,
+    faLink,
+    faMapMarkerAlt,
+    faClock,
+    faGlobe,
+} from '@fortawesome/free-solid-svg-icons';
 import { usePage } from '@inertiajs/react';
+
+const iconMap = {
+    faFacebookF,
+    faInstagram,
+    faLinkedin,
+    faTwitter,
+    faYoutube,
+    faTiktok,
+    faPinterestP,
+    faSnapchatGhost,
+    faWhatsapp,
+    faTelegram,
+    faDiscord,
+    faSpotify,
+    faGithub,
+    faEnvelope,
+    faPhone,
+    faLink,
+    faMapMarkerAlt,
+    faClock,
+    faGlobe,
+};
 
 export default function FrontFooter({ site, id = 'section-soporte' }) {
     const { siteSetting } = usePage().props;
@@ -54,7 +92,12 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
                     <ul className="nav justify-content-center py-2">
                         {site.links.map((link) => (
                             <li key={link.url} className="nav-item">
-                                <a className="nav-link" href={link.url}>{link.label}</a>
+                                <a className="nav-link" href={link.url} target="_blank" rel="noopener noreferrer">
+                                    {link.icon && iconMap[link.icon] && (
+                                        <FontAwesomeIcon icon={iconMap[link.icon]} className="me-2" />
+                                    )}
+                                    {link.label}
+                                </a>
                             </li>
                         ))}
                     </ul>
