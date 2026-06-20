@@ -49,11 +49,17 @@ class CouponForm
                 Select::make('type')
                     ->required()
                     ->options(CouponType::options())
-                    ->default(CouponType::Percentage->value),
+                    ->default(CouponType::Percentage->value)
+                    ->live(),
                 TextInput::make('value')
                     ->required()
                     ->numeric()
-                    ->minValue(0.01),
+                    ->minValue(0.01)
+                    ->visible(fn (Get $get): bool => $get('type') !== CouponType::Message->value),
+                TextInput::make('message')
+                    ->required()
+                    ->maxLength(255)
+                    ->visible(fn (Get $get): bool => $get('type') === CouponType::Message->value),
                 TextInput::make('max_uses')
                     ->nullable()
                     ->integer()

@@ -148,6 +148,7 @@ class UserCouponsController extends Controller
             'type_label' => $typeLabel,
             'draw_label' => mb_strtoupper($typeLabel),
             'valid_to' => $coupon->valid_to?->format('d/m/Y - H:i'),
+            'message' => $coupon->message,
         ];
     }
 }

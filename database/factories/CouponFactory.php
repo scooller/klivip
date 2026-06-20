@@ -26,8 +26,10 @@ class CouponFactory extends Factory
             'type' => fake()->randomElement([
                 CouponType::Percentage,
                 CouponType::Fixed,
+                CouponType::Message,
             ]),
             'value' => fake()->randomElement([10, 15, 20, 50]),
+            'message' => fake()->optional(0.3)->sentence(),
             'max_uses' => fake()->optional()->numberBetween(100, 1000),
             'used_count' => 0,
             'valid_from' => now(),

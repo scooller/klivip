@@ -22,6 +22,7 @@ class Coupon extends Model
         'code',
         'type',
         'value',
+        'message',
         'max_uses',
         'used_count',
         'valid_from',

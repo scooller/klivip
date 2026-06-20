@@ -43,7 +43,11 @@ class CouponsTable
                     ->sortable(),
                 TextColumn::make('value')
                     ->formatStateUsing(fn ($state): string => number_format((float) $state, 2))
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(fn ($record): bool => $record->type !== CouponType::Message),
+                TextColumn::make('message')
+                    ->searchable()
+                    ->visible(fn ($record): bool => $record->type === CouponType::Message),
                 TextColumn::make('used_count')
                     ->label('Usos')
                     ->sortable(),

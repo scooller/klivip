@@ -6,6 +6,7 @@ enum CouponType: string
 {
     case Percentage = 'percentage';
     case Fixed = 'fixed';
+    case Message = 'mensaje';
 
     /**
      * @return array<string, string>
@@ -15,6 +16,7 @@ enum CouponType: string
         return [
             self::Percentage->value => 'Percentage',
             self::Fixed->value => 'Fixed Amount',
+            self::Message->value => 'Mensaje',
         ];
     }
 
