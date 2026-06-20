@@ -25,9 +25,15 @@ class CouponInfolist
                         return ucfirst((string) $state);
                     }),
                 TextEntry::make('value')
-                    ->visible(fn ($record): bool => $record->type !== CouponType::Message),
+                    ->formatStateUsing(function ($state, $record): string {
+                        if ($record->type === CouponType::Message) {
+                            return $record->message ?? '-';
+                        }
+
+                        return (string) $state;
+                    }),
                 TextEntry::make('message')
-                    ->visible(fn ($record): bool => $record->type === CouponType::Message),
+                    ->visible(false),
                 TextEntry::make('used_count')
                     ->label('Usos'),
                 TextEntry::make('max_uses')

@@ -42,12 +42,17 @@ class CouponsTable
                     })
                     ->sortable(),
                 TextColumn::make('value')
-                    ->formatStateUsing(fn ($state): string => number_format((float) $state, 2))
-                    ->sortable()
-                    ->visible(fn ($record): bool => $record->type !== CouponType::Message),
+                    ->formatStateUsing(function ($state, $record): string {
+                        if ($record->type === CouponType::Message) {
+                            return $record->message ?? '-';
+                        }
+
+                        return number_format((float) $state, 2);
+                    })
+                    ->sortable(),
                 TextColumn::make('message')
                     ->searchable()
-                    ->visible(fn ($record): bool => $record->type === CouponType::Message),
+                    ->visible(false),
                 TextColumn::make('used_count')
                     ->label('Usos')
                     ->sortable(),
