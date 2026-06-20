@@ -85,6 +85,30 @@ body {
   background: rgba(11, 8, 35, 0.6)!important;
 }
 
+.coupon-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1040;
+  backdrop-filter: blur(6px);
+  background: rgba(11, 8, 35, 0.6);
+}
+
+.coupon-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1045;
+  overflow-y: auto;
+  outline: 0;
+}
+
+.coupon-modal-content {
+  position: relative;
+  margin: 10vh auto;
+  padding: 16px;
+  max-width: 420px;
+  width: 90%;
+}
+
 .home-entry-page,
 .user-login-screen {
   position: relative;
@@ -710,9 +734,10 @@ body {
 .active-coupon-card {
   border: 1px solid rgba(242, 213, 127, 0.32);
   border-radius: 0.875rem;
-  background: linear-gradient(180deg, rgba(46, 18, 110, 0.96), rgba(27, 12, 73, 0.98));
-  box-shadow: 0 10px 24px rgba(14, 4, 44, 0.22);
   max-width: 18rem;
+  aspect-ratio: 938 / 1149;
+  background-image: url('../images/ticket-amarillo.png');
+  background-size: cover;
 
   &.is-clickable { cursor: pointer; }
 

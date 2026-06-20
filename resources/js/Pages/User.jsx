@@ -5,6 +5,7 @@ import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import UserSessionCard from '../Components/Front/UserSessionCard';
 import UserWelcomeCard from '../Components/Front/UserWelcomeCard';
 import FrontFooter from '../Components/Front/FrontFooter';
+import CouponDetailModal from '../Components/Front/CouponDetailModal';
 import { useEffect, useState } from 'react';
 
 function formatPhone(rawValue) {
@@ -48,6 +49,7 @@ export default function User({ site, activeCoupons = [] }) {
     };
     const [isChangingUser, setIsChangingUser] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
     const [isRegistering, setIsRegistering] = useState(false);
     const isOtpPending = loginRequiresOtp && Boolean(otpLogin.pending) && !isChangingUser;
     const [feedback, setFeedback] = useState(null);
@@ -453,7 +455,7 @@ export default function User({ site, activeCoupons = [] }) {
                                     return;
                                 }
 
-                                router.visit(`/usuario/cupones/${coupon.id}`);
+                                setSelectedCoupon(coupon);
                             }}
                             actionLabel="Ver todos los cupones"
                             onAction={() => router.visit('/usuario/cupones')}
@@ -472,6 +474,12 @@ export default function User({ site, activeCoupons = [] }) {
                     onClose={() => setIsMenuOpen(false)}
                     customer={customer}
                     onLogout={handleLogout}
+                />
+
+                <CouponDetailModal
+                    coupon={selectedCoupon}
+                    open={selectedCoupon !== null}
+                    onClose={() => setSelectedCoupon(null)}
                 />
             </div>
         </>

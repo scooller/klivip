@@ -60,7 +60,7 @@ export default function ActionDrawer({
                 </div>
                 <div className="offcanvas-body casino-drawer-content">
                     {customer && (
-                        <div className="home-drawer-profile d-flex flex-column gap-3">
+                        <div className="home-drawer-profile d-flex gap-3">
                             <div className="home-drawer-avatar">
                                 <FontAwesomeIcon icon={faCircleUser} />
                             </div>
@@ -68,6 +68,8 @@ export default function ActionDrawer({
                             <p className="mb-0">{customer?.email ?? 'Conecta tu cuenta para participar en sorteos.'}</p>
                         </div>
                     )}
+
+                    <hr className="my-3" />
 
                     <nav className="home-drawer-nav d-flex flex-column gap-2" aria-label="Menu de usuario">
                         {NAV_ITEMS.map(({ route, icon, label: itemLabel }) => (

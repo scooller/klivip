@@ -16,7 +16,7 @@ export default function CouponCard({
 
     return (
         <div
-            className={`active-coupon-card mx-auto card ${isClickable ? 'is-clickable' : ''}`.trim()}
+            className={`active-coupon-card mx-auto text-center card ${isClickable ? 'is-clickable' : ''}`.trim()}
             onClick={() => onClick?.(coupon)}
             onKeyDown={(event) => {
                 if (!onClick) {
@@ -31,12 +31,11 @@ export default function CouponCard({
             role={isClickable ? 'button' : undefined}
             tabIndex={isClickable ? 0 : undefined}
         >
-            <div className="active-coupon-card__header card-header d-flex flex-wrap gap-2 align-items-center">
+            <div className="active-coupon-card__header card-header">
                 <div>
                     <p className="active-coupon-card__brand card-title">{coupon.site_name ?? 'Sala'}</p>
-                    <p className="active-coupon-card__meta card-text">Cupon activo</p>
+                    <p className="active-coupon-card__meta card-text">{coupon.draw_label ?? coupon.type_label ?? 'TOMBOLA'}</p>
                 </div>
-                <span className="badge bg-primary">{coupon.draw_label ?? coupon.type_label ?? 'TOMBOLA'}</span>
             </div>
 
             <div className="active-coupon-card__body card-body d-flex flex-column gap-3">

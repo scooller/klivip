@@ -2,6 +2,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import UserBenefitsCard from '../Components/Front/UserBenefitsCard';
+import CouponDetailModal from '../Components/Front/CouponDetailModal';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import FrontFooter from '../Components/Front/FrontFooter';
 
@@ -10,6 +11,7 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
     const sharedSite = page.props.site ?? site;
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
 
     const [currentTime, setCurrentTime] = useState('');
 
@@ -59,7 +61,7 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
                                 return;
                             }
 
-                            router.visit(`/usuario/cupones/${coupon.id}`);
+                            setSelectedCoupon(coupon);
                         }}
                     />
 
@@ -115,6 +117,12 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
                     onClose={() => setIsMenuOpen(false)}
                     customer={customer}
                     onLogout={handleLogout}
+                />
+
+                <CouponDetailModal
+                    coupon={selectedCoupon}
+                    open={selectedCoupon !== null}
+                    onClose={() => setSelectedCoupon(null)}
                 />
             </div>
         </>
