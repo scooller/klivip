@@ -41,25 +41,25 @@ class CouponForm
                 TextInput::make('code')
                     ->required()
                     ->maxLength(255)
-                    ->dehydrateStateUsing(fn (string $state): string => strtoupper(trim($state)))
+                    ->dehydrateStateUsing(fn(string $state): string => strtoupper(trim($state)))
                     ->unique(
                         ignoreRecord: true,
-                        modifyRuleUsing: fn (Unique $rule, Get $get): Unique => $rule->where('site_id', $get('site_id')),
+                        modifyRuleUsing: fn(Unique $rule, Get $get): Unique => $rule->where('site_id', $get('site_id')),
                     ),
                 Select::make('type')
                     ->required()
                     ->options(CouponType::options())
-                    ->default(CouponType::Percentage->value)
+                    ->default(CouponType::Message->value)
                     ->live(),
                 TextInput::make('value')
-                    ->required(fn (Get $get): bool => $get('type') !== CouponType::Message->value)
+                    ->required(fn(Get $get): bool => $get('type') !== CouponType::Message->value)
                     ->numeric()
                     ->minValue(0.01)
-                    ->visible(fn (Get $get): bool => $get('type') !== CouponType::Message->value),
+                    ->visible(fn(Get $get): bool => $get('type') !== CouponType::Message->value),
                 TextInput::make('message')
                     ->required()
                     ->maxLength(255)
-                    ->visible(fn (Get $get): bool => $get('type') === CouponType::Message->value),
+                    ->visible(fn(Get $get): bool => $get('type') === CouponType::Message->value),
                 TextInput::make('max_uses')
                     ->nullable()
                     ->integer()

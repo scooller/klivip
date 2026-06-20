@@ -62,6 +62,7 @@ export default function UserCouponShow({ site, coupon }) {
 
                 <FrontFooter site={site} id="section-soporte" />
                 <ActionDrawer
+                    site={sharedSite}
                     className="home-profile-drawer"
                     placement="start"
                     label={customer ? customer.name : 'Menu principal'}

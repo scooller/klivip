@@ -220,6 +220,7 @@ export default function Schedule({ site, calendarDays = [] }) {
                 <FrontFooter site={sharedSite} />
 
                 <ActionDrawer
+                    site={sharedSite}
                     className="home-profile-drawer"
                     placement="start"
                     label={customer ? customer.name : 'Menu principal'}

@@ -410,6 +410,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
                 <FrontFooter site={sharedSite} />
 
                 <ActionDrawer
+                    site={sharedSite}
                     className="home-profile-drawer"
                     placement="start"
                     label={customer ? customer.name : 'Menu principal'}

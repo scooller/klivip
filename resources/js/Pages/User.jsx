@@ -464,6 +464,7 @@ export default function User({ site, activeCoupons = [] }) {
                 <FrontFooter site={sharedSite} />
 
                 <ActionDrawer
+                    site={sharedSite}
                     className="home-profile-drawer"
                     placement="start"
                     label={customer ? customer.name : 'Menu principal'}

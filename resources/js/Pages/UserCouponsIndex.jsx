@@ -107,6 +107,7 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
                 <FrontFooter site={sharedSite} />
 
                 <ActionDrawer
+                    site={sharedSite}
                     className="home-profile-drawer"
                     placement="start"
                     label={customer ? customer.name : 'Menu principal'}

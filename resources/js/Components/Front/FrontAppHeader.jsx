@@ -17,7 +17,7 @@ export default function FrontAppHeader({
     return (
         <nav className="navbar bg-body-tertiary front-app-header py-2">
             <div className="container-fluid d-flex flex-column">
-                <div className="small text-muted w-100 mb-2">
+                <div className="small w-100 mb-2">
                     {currentTime}
                 </div>
 
@@ -55,7 +55,7 @@ export default function FrontAppHeader({
 
                                 <div className="d-none d-md-flex flex-column lh-sm">
                                     <strong>{userName}</strong>
-                                    <small className="text-muted">{userSubtitle ?? 'Cuenta activa'}</small>
+                                    <small className="sub-title">{userSubtitle ?? 'Cuenta activa'}</small>
                                 </div>
                             </div>
                         ) : hideBack ? (

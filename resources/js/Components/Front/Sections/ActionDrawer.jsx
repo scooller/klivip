@@ -17,6 +17,7 @@ const NAV_ITEMS = [
 ];
 
 export default function ActionDrawer({
+    site,
     label,
     open,
     onClose,
@@ -38,11 +39,18 @@ export default function ActionDrawer({
         <>
             {open && <div className="offcanvas-backdrop fade show"></div>}
             <div
-                className={`offcanvas ${offcanvasClass} ${open ? 'show' : ''} casino-drawer ${className}`.trim()}
+                className={`offcanvas shadow-1 ${offcanvasClass} ${open ? 'show' : ''} casino-drawer ${className}`.trim()}
                 style={{ visibility: open ? 'visible' : 'hidden' }}
             >
                 <div className="offcanvas-header">
-                    <h5 className="offcanvas-title">{label}</h5>
+                    <div className="offcanvas-title">
+                        <img
+                            src={site.logo}
+                            alt={site.name ?? userName}
+                            className="rounded-circle"
+                            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                        />
+                    </div>
                     <button
                         type="button"
                         className="btn-close"
