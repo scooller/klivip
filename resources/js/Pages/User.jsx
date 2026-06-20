@@ -219,7 +219,11 @@ export default function User({ site, activeCoupons = [] }) {
 
                         <section className="user-login-card d-flex flex-column gap-3" aria-label="Acceso principal">
                             <div className="user-login-brand" aria-hidden="true">
-                                <h1>{site.name}</h1>
+                                {site?.logo ? (
+                                    <img src={site?.logo} alt={`${site.name ?? userName}`} className="user-login-logo img-fluid" />
+                                ) : (
+                                    <span className="user-login-site-name">{site.name}</span>
+                                )}
                             </div>
 
                             {isRegistering ? (

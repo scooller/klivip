@@ -6,7 +6,6 @@
   --casino-surface-soft: #111a5b;
   --casino-gold: #e0b33b;
   --casino-gold-soft: #ffd76c;
-  --casino-text: #f5f6ff;
   --casino-muted: #b8bddb;
   --casino-line: rgba(224, 179, 59, 0.3);
 
@@ -35,6 +34,7 @@
   --profile-panel-border: rgba(143, 111, 226, 0.42);
 
   --bs-body-color: #c7ccef;
+  --casino-text: var(--bs-body-color);
 }
 
 * { box-sizing: border-box; }
@@ -47,7 +47,7 @@ body {
     radial-gradient(circle at 85% 5%, rgba(102, 45, 184, 0.36), transparent 28%),
     radial-gradient(circle at 18% 20%, rgba(20, 91, 214, 0.34), transparent 36%),
     linear-gradient(180deg, #070426 0%, #02041e 100%);
-  color: var(--casino-text);
+  color: var(--bs-body-color);
 }
 
 .shadow-1{
@@ -241,8 +241,17 @@ body {
     color: rgba(199, 204, 239, 0.88);
   }
 }
-.user-login-form-shell .form-control, .user-login-form-shell .form-label {
-    --bs-body-color: #c7ccef;
+.user-login-form-shell{
+    .form-control:placeholder{
+        color: rgba(199, 204, 239, 0.88);
+    }
+    .form-control, .form-label {
+        --bs-body-color: #c7ccef;
+    }
+}
+
+.form-label{
+    color: var(--bs-body-color);
 }
 
 .social-links {
