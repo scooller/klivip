@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import UserBenefitsCard from '../Components/Front/UserBenefitsCard';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
+import FrontFooter from '../Components/Front/FrontFooter';
 
 export default function UserCouponShow({ site, coupon }) {
     const page = usePage();
+    const sharedSite = page.props.site ?? site;
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -58,6 +60,7 @@ export default function UserCouponShow({ site, coupon }) {
                     />
                 </main>
 
+                <FrontFooter site={site} id="section-soporte" />
                 <ActionDrawer
                     className="home-profile-drawer"
                     placement="start"
