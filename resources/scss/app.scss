@@ -242,7 +242,7 @@ body {
   }
 }
 .user-login-form-shell{
-    .form-control:placeholder{
+    .form-control::placeholder{
         color: rgba(199, 204, 239, 0.88);
     }
     .form-control, .form-label {
