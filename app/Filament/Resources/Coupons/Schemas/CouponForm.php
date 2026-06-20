@@ -52,7 +52,7 @@ class CouponForm
                     ->default(CouponType::Percentage->value)
                     ->live(),
                 TextInput::make('value')
-                    ->required()
+                    ->required(fn (Get $get): bool => $get('type') !== CouponType::Message->value)
                     ->numeric()
                     ->minValue(0.01)
                     ->visible(fn (Get $get): bool => $get('type') !== CouponType::Message->value),
