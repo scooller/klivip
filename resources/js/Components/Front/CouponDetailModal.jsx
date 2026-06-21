@@ -1,5 +1,5 @@
 import { Modal } from 'bootstrap';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import CouponCard from './CouponCard';
 
 export default function CouponDetailModal({
@@ -8,35 +8,52 @@ export default function CouponDetailModal({
     onClose,
 }) {
     const modalRef = useRef(null);
-    const bsModalRef = useRef(null);
+    const instanceRef = useRef(null);
+    const stableOnClose = useRef(onClose);
+    stableOnClose.current = onClose;
+
+    const handleHidden = useCallback(() => {
+        stableOnClose.current();
+    }, []);
 
     useEffect(() => {
         if (!modalRef.current) {
             return;
         }
 
-        bsModalRef.current = Modal.getOrCreateInstance(modalRef.current);
-
-        if (open) {
-            bsModalRef.current.show();
-        } else {
-            bsModalRef.current.hide();
-        }
-    }, [open]);
-
-    useEffect(() => {
-        if (!modalRef.current) {
-            return;
-        }
-
-        const handleHidden = () => onClose();
+        instanceRef.current = Modal.getOrCreateInstance(modalRef.current, { backdrop: true });
         modalRef.current.addEventListener('hidden.bs.modal', handleHidden);
 
         return () => {
-            modalRef.current?.removeEventListener('hidden.bs.modal', handleHidden);
-            bsModalRef.current?.dispose();
+            if (!modalRef.current) {
+                return;
+            }
+
+            modalRef.current.removeEventListener('hidden.bs.modal', handleHidden);
+            const instance = instanceRef.current;
+
+            if (instance) {
+                instance.hide();
+                Modal.getInstance(modalRef.current)?.dispose();
+            }
+
+            instanceRef.current = null;
         };
-    }, [onClose]);
+    }, [handleHidden]);
+
+    useEffect(() => {
+        const instance = instanceRef.current;
+
+        if (!instance) {
+            return;
+        }
+
+        if (open) {
+            instance.show();
+        } else {
+            instance.hide();
+        }
+    }, [open]);
 
     return (
         <div className="modal fade" ref={modalRef} tabIndex="-1" aria-hidden="true">
