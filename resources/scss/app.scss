@@ -754,6 +754,11 @@ body {
         max-width: none;
         width: 100%;
         aspect-ratio: 938 / 1149;
+        --card-font-size: 2rem;
+        --card-title-font-size: 2.25rem;
+        --card-subtitle-font-size: 1.875rem;
+        --card-code-font-size: 5.25rem;
+        --card-meta-font-size: 1.75rem;
     }
 }
 
