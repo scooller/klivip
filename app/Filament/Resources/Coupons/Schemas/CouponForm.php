@@ -63,6 +63,7 @@ class CouponForm
                 TextInput::make('max_uses')
                     ->nullable()
                     ->integer()
+                    ->default(1)
                     ->minValue(1),
                 TextInput::make('used_count')
                     ->required()

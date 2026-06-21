@@ -691,15 +691,22 @@ body {
 }
 
 .active-coupon-card {
-    border: none;
     --bs-card-border-radius: 0;
+    --bs-card-bg: transparent;
+    --card-font-size: 1rem;
+    --card-title-font-size: 1.25rem;
+    --card-subtitle-font-size: 0.875rem;
+    --card-code-font-size: 3.25rem;
+    --card-meta-font-size: 0.75rem;
+
+    border: none;
     width: 18rem;
     aspect-ratio: 938 / 1149;
-    --bs-card-bg: transparent;
-    background-color: transparent!important;
+    background-color: var(--bs-card-bg)!important;
     background-image: url('/images/ticket-amarillo.png');
     background-size: cover;
     color: var(--brand-violet-950);
+    font-size: var(--card-font-size);
 
     &.is-clickable { cursor: pointer; }
 
@@ -711,33 +718,32 @@ body {
         --bs-card-cap-color:var(--brand-violet-950);
         border: none!important;
         .card-title{
-            font-size: 1.25rem;
+            font-size: var(--card-title-font-size);
             font-weight: 700;
         }
         .card-subtitle{
-            font-size: 0.75rem;
+            font-size: var(--card-subtitle-font-size);
             font-weight: 600;
         }
     }
     .card-body{
         .code{
             letter-spacing: 0.05em;
-            font-size: 3.25rem;
+            font-size: var(--card-code-font-size);
             font-weight: 800;
-            margin-bottom: 0;
+            margin-bottom: 2rem;
         }
         .message{
-            font-size: 1rem;
+            font-size: var(--card-font-size);
             font-weight: 600;
-            margin-top: 2rem;
         }
         .meta{
-            font-size: 0.75rem;
+            font-size: var(--card-meta-font-size);
             font-weight: 500;
         }
     }
     .card-footer{
-        font-size: 0.75rem;
+        font-size: var(--card-meta-font-size);
         font-weight: 500;
         border: none!important;
     }
