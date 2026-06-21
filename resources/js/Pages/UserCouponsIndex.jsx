@@ -86,7 +86,7 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
 
                                 <li class="page-item disabled">
                                     <button className="page-link" disabled>
-                                        Pagina {pagination.current_page} de {pagination.last_page} · {pagination.total} cupones
+                                        Pagina {pagination.current_page} de {pagination.last_page} <small>( {pagination.total} cupones )</small>
                                     </button>
                                 </li>
 
