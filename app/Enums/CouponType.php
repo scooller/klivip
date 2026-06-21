@@ -24,4 +24,9 @@ enum CouponType: string
     {
         return self::options()[$this->value];
     }
+
+    public function value(): string
+    {
+        return $this->value;
+    }
 }

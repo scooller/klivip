@@ -34,29 +34,29 @@ export default function CouponCard({
             <div className="card-header">
                 <div>
                     <p className="card-title">{coupon.site_name ?? 'Sala'}</p>
-                    <p className="card-subtitle">{coupon.draw_label ?? coupon.type_label ?? 'TOMBOLA'}</p>
+                    <p className="card-subtitle">{coupon.draw_label ?? 'TOMBOLA'}</p>
                 </div>
             </div>
 
             <div className="card-body">
                 {
-                    //type_label='percentage,fixed,mensaje'
+                    //draw_label='percentage,fixed,mensaje'
                 }
-                {coupon.type_label === 'percentage' && (
+                {coupon.draw_label === 'percentage' && (
                     <>
                     <p className="code">{normalizeCouponCode(coupon.code)}</p>
                     <p className="message">Dcto de {coupon.value}%</p>
                     </>
                 )}
 
-                {coupon.type_label === 'fixed' && (
+                {coupon.draw_label === 'fixed' && (
                     <>
                     <p className="code">{normalizeCouponCode(coupon.code)}</p>
                         <p className="message">{coupon.value} Uso{ coupon.value > 1 ('s') }</p>
                     </>
                 )}
 
-                {coupon.type_label === 'mensaje' && (
+                {coupon.draw_label === 'mensaje' && (
                     <>
                     <p className="code">{normalizeCouponCode(coupon.code)}</p>
                     <p className="message">{coupon.message}</p>
