@@ -66,43 +66,45 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
                     />
 
                     {pagination ? (
-                        <div className="coupons-pagination d-flex flex-wrap gap-2 align-items-center" role="navigation" aria-label="Paginacion de cupones">
-                            <button
-                                className="btn btn-outline-secondary btn-sm"
-                                disabled={!pagination.prev_page_url}
-                                onClick={() => {
-                                    if (!pagination.prev_page_url) {
-                                        return;
-                                    }
+                        <nav aria-label="Paginación de cupones activos">
+                            <ul class="pagination">
+                                <li class="page-item"><button
+                                    className="page-link"
+                                    disabled={!pagination.prev_page_url}
+                                    onClick={() => {
+                                        if (!pagination.prev_page_url) {
+                                            return;
+                                        }
 
-                                    router.visit(pagination.prev_page_url, {
-                                        preserveScroll: true,
-                                    });
-                                }}
-                            >
-                                Anterior
-                            </button>
+                                        router.visit(pagination.prev_page_url, {
+                                            preserveScroll: true,
+                                        });
+                                    }}
+                                >
+                                    Anterior
+                                </button></li>
 
-                            <p className="mb-0">
-                                Pagina {pagination.current_page} de {pagination.last_page} · {pagination.total} cupones
-                            </p>
+                                <li class="page-item disabled">
+                                    Pagina {pagination.current_page} de {pagination.last_page} · {pagination.total} cupones
+                                </li>
 
-                            <button
-                                className="btn btn-primary btn-sm"
-                                disabled={!pagination.next_page_url}
-                                onClick={() => {
-                                    if (!pagination.next_page_url) {
-                                        return;
-                                    }
+                                <li class="page-item"><button
+                                    className="page-link"
+                                    disabled={!pagination.next_page_url}
+                                    onClick={() => {
+                                        if (!pagination.next_page_url) {
+                                            return;
+                                        }
 
-                                    router.visit(pagination.next_page_url, {
-                                        preserveScroll: true,
-                                    });
-                                }}
-                            >
-                                Siguiente
-                            </button>
-                        </div>
+                                        router.visit(pagination.next_page_url, {
+                                            preserveScroll: true,
+                                        });
+                                    }}
+                                    >
+                                    Siguiente
+                                </button></li>
+                            </ul>
+                        </nav>
                     ) : null}
                 </main>
 

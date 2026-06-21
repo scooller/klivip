@@ -17,18 +17,20 @@ export default function UserBenefitsCard({
             <h3>CUPONES ACTIVOS</h3>
 
             {activeCoupons.length > 0 ? (
-                <div className={`active-coupons-list d-flex flex-column gap-3 ${isDetailMode ? 'is-detail' : ''}`.trim()}>
+                <div className={`row row-cols-1 row-cols-md-3 g-4 ${isDetailMode ? 'is-detail' : ''}`.trim()}>
                     {activeCoupons.map((coupon) => (
-                        <CouponCard
-                            key={coupon.id}
-                            coupon={coupon}
-                            onClick={onCouponSelect}
-                        />
+                        <div key={coupon.id} className="col">
+                            <CouponCard
+                                key={coupon.id}
+                                coupon={coupon}
+                                onClick={onCouponSelect}
+                            />
+                        </div>
                     ))}
                 </div>
             ) : (
-                <div className="active-coupons-empty card">
-                    <div className="card-body">
+                <div className="active-coupons-empty">
+                    <div className="alert alert-info m-0" role="alert">
                         <p className="mb-0">No tienes cupones activos por ahora.</p>
                     </div>
                 </div>

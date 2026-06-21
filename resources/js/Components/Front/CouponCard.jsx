@@ -31,7 +31,7 @@ export default function CouponCard({
             role={isClickable ? 'button' : undefined}
             tabIndex={isClickable ? 0 : undefined}
         >
-            <div className="active-coupon-card__header card-header">
+            <div className="card-header">
                 <div>
                     <p className="card-title">{coupon.site_name ?? 'Sala'}</p>
                     <p className="card-subtitle">{coupon.draw_label ?? coupon.type_label ?? 'TOMBOLA'}</p>
@@ -40,7 +40,10 @@ export default function CouponCard({
 
             <div className="card-body">
                 {coupon.message ? (
-                    <p className="message">{coupon.message}</p>
+                    <>
+                        <p className="code">{normalizeCouponCode(coupon.code)}</p>
+                        <p className="message">{coupon.message}</p>
+                    </>
                 ) : (
                     <p className="code">{normalizeCouponCode(coupon.code)}</p>
                 )}

@@ -690,23 +690,6 @@ body {
   }
 }
 
-.active-coupons-list {
-  max-height: 74vh;
-  overflow-y: auto;
-  padding-right: 2px;
-
-  &.is-detail {
-    max-height: none;
-    overflow: visible;
-  }
-
-  &::-webkit-scrollbar { width: 7px; }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 999px;
-    background: rgba(244, 212, 122, 0.5);
-  }
-}
-
 .active-coupon-card {
     border: none;
     --bs-card-border-radius: 0;
