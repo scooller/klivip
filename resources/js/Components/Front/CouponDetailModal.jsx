@@ -1,3 +1,4 @@
+import { Modal } from 'bootstrap';
 import { useEffect, useRef } from 'react';
 import CouponCard from './CouponCard';
 
@@ -14,7 +15,6 @@ export default function CouponDetailModal({
             return;
         }
 
-        const Modal = window.bootstrap.Modal;
         bsModalRef.current = Modal.getOrCreateInstance(modalRef.current);
 
         if (open) {
