@@ -42,11 +42,15 @@ export default function CouponDetailModal({
         <div className="modal fade" ref={modalRef} tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content d-flex flex-column align-items-center gap-3 p-3">
-                    <CouponCard coupon={coupon} />
+                    {coupon ? (
+                        <>
+                            <CouponCard coupon={coupon} />
 
-                    <button className="btn btn-primary btn-sm w-100" type="button" data-bs-dismiss="modal">
-                        Cerrar
-                    </button>
+                            <button className="btn btn-primary btn-sm w-100" type="button" data-bs-dismiss="modal">
+                                Cerrar
+                            </button>
+                        </>
+                    ) : null}
                 </div>
             </div>
         </div>
