@@ -55,7 +55,8 @@ export default function CouponCard({
 
             {isClickable ? (
                 <div className="card-footer">
-                    <p className="mb-0">{coupon.created_at ?? 'Fecha de creación'}</p>
+                    <p className="mb-0">{coupon.valid_from ?? 'Fecha de inicio no disponible'}</p>
+                    <p className="mb-0">{coupon.valid_to ?? 'Fecha de fin no disponible'}</p>
                 </div>
             ) : null}
         </div>
