@@ -45,7 +45,10 @@ export default function CouponCard({
                         <p className="message">{coupon.message}</p>
                     </>
                 ) : (
-                    <p className="code">{normalizeCouponCode(coupon.code)}</p>
+                    <>
+                        <p className="code">{normalizeCouponCode(coupon.code)}</p>
+                        <p className="message">{coupon.value}</p>
+                    </>
                 )}
                 <div className="d-flex justify-content-evenly align-items-center">
                     <span className="badge bg-secondary">{coupon.type_label ?? 'Tipo de sorteo'}</span>

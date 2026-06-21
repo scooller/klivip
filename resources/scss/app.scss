@@ -708,6 +708,10 @@ body {
     color: var(--brand-violet-950);
     font-size: var(--card-font-size);
 
+    .card-header, .card-footer{
+        --bs-card-cap-bg: transparent!important;
+    }
+
     &.is-clickable { cursor: pointer; }
 
     &.is-clickable:focus-visible {

@@ -150,6 +150,7 @@ class UserCouponsController extends Controller
             'valid_from' => $coupon->valid_from?->format('d/m/Y - H:i'),
             'valid_to' => $coupon->valid_to?->format('d/m/Y - H:i'),
             'message' => $coupon->message,
+            'value' => $coupon->value,
             'max_uses' => $coupon->max_uses,
         ];
     }
