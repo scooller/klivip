@@ -709,6 +709,7 @@ body {
     }
     .card-header{
         --bs-card-cap-color:var(--brand-violet-950);
+        border: none!important;
         .card-title{
             font-size: 1.25rem;
             font-weight: 700;
@@ -720,13 +721,15 @@ body {
     }
     .card-body{
         .code{
-            font-size: 2.25rem;
-            font-weight: 800;
             letter-spacing: 0.05em;
+            font-size: 3.25rem;
+            font-weight: 800;
+            margin-bottom: 0;
         }
         .message{
             font-size: 1rem;
             font-weight: 600;
+            margin-top: 2rem;
         }
         .meta{
             font-size: 0.75rem;
@@ -736,6 +739,7 @@ body {
     .card-footer{
         font-size: 0.75rem;
         font-weight: 500;
+        border: none!important;
     }
 }
 

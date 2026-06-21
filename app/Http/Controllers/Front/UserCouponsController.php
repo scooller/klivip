@@ -39,7 +39,7 @@ class UserCouponsController extends Controller
 
         $activeCoupons = $paginatedCoupons
             ->getCollection()
-            ->map(fn (Coupon $coupon): array => $this->mapCoupon($coupon, $site))
+            ->map(fn(Coupon $coupon): array => $this->mapCoupon($coupon, $site))
             ->values()
             ->all();
 
@@ -47,7 +47,7 @@ class UserCouponsController extends Controller
             'site' => [
                 'name' => $site->name,
                 'slug' => $site->slug,
-                'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
+                'logo' => $site->logo ? asset('storage/' . $site->logo) : null,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
                 'links' => $site->links,
@@ -115,7 +115,7 @@ class UserCouponsController extends Controller
             'site' => [
                 'name' => $site->name,
                 'slug' => $site->slug,
-                'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
+                'logo' => $site->logo ? asset('storage/' . $site->logo) : null,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
                 'links' => $site->links,
@@ -147,8 +147,10 @@ class UserCouponsController extends Controller
             'code' => $coupon->code,
             'type_label' => $typeLabel,
             'draw_label' => mb_strtoupper($typeLabel),
+            'valid_from' => $coupon->valid_from?->format('d/m/Y - H:i'),
             'valid_to' => $coupon->valid_to?->format('d/m/Y - H:i'),
             'message' => $coupon->message,
+            'max_uses' => $coupon->max_uses,
         ];
     }
 }

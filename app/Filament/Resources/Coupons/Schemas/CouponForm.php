@@ -70,7 +70,8 @@ class CouponForm
                     ->minValue(0)
                     ->default(0),
                 DateTimePicker::make('valid_from')
-                    ->nullable(),
+                    ->required()
+                    ->default(now()),
                 DateTimePicker::make('valid_to')
                     ->nullable()
                     ->afterOrEqual('valid_from'),
