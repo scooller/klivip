@@ -138,8 +138,8 @@ class UserCouponsController extends Controller
     private function mapCoupon(Coupon $coupon, Site $site): array
     {
         $typeLabel = $coupon->type instanceof CouponType
-            ? $coupon->type->label()
-            : (string) $coupon->type;
+            ? $coupon->type
+            : (string) $coupon->type->label();
 
         return [
             'id' => $coupon->id,
