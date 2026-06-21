@@ -42,25 +42,17 @@ export default function CouponCard({
                 {
                     //draw_label='percentage,fixed,mensaje'
                 }
+                <p className="code">{normalizeCouponCode(coupon.code)}</p>
                 {coupon.draw_label === 'percentage' && (
-                    <>
-                    <p className="code">{normalizeCouponCode(coupon.code)}</p>
                     <p className="message">Dcto de {coupon.value}%</p>
-                    </>
                 )}
 
                 {coupon.draw_label === 'fixed' && (
-                    <>
-                    <p className="code">{normalizeCouponCode(coupon.code)}</p>
-                        <p className="message">{coupon.value} Uso{ coupon.value > 1 ('s') }</p>
-                    </>
+                    <p className="message">{coupon.value} Uso{coupon.value > 1 ? 's' : ''}</p>
                 )}
 
                 {coupon.draw_label === 'mensaje' && (
-                    <>
-                    <p className="code">{normalizeCouponCode(coupon.code)}</p>
                     <p className="message">{coupon.message}</p>
-                    </>
                 )}
                 <div className="d-flex justify-content-evenly align-items-center">
                     <span className="badge bg-secondary">{coupon.type_label ?? 'Tipo de sorteo'}</span>
