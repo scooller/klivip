@@ -39,15 +39,27 @@ export default function CouponCard({
             </div>
 
             <div className="card-body">
-                {coupon.message ? (
+                {
+                    //type_label='percentage,fixed,mensaje'
+                }
+                {coupon.type_label === 'percentage' && (
                     <>
-                        <p className="code">{normalizeCouponCode(coupon.code)}</p>
-                        <p className="message">{coupon.message}</p>
+                    <p className="code">{normalizeCouponCode(coupon.code)}</p>
+                    <p className="message">Dcto de {coupon.value}%</p>
                     </>
-                ) : (
+                )}
+
+                {coupon.type_label === 'fixed' && (
                     <>
-                        <p className="code">{normalizeCouponCode(coupon.code)}</p>
-                        <p className="message">{coupon.value}</p>
+                    <p className="code">{normalizeCouponCode(coupon.code)}</p>
+                        <p className="message">{coupon.value} Uso{ coupon.value > 1 ('s') }</p>
+                    </>
+                )}
+
+                {coupon.type_label === 'mensaje' && (
+                    <>
+                    <p className="code">{normalizeCouponCode(coupon.code)}</p>
+                    <p className="message">{coupon.message}</p>
                     </>
                 )}
                 <div className="d-flex justify-content-evenly align-items-center">
