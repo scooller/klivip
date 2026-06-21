@@ -67,7 +67,7 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
 
                     {pagination ? (
                         <nav aria-label="Paginación de cupones activos">
-                            <ul class="pagination">
+                            <ul class="pagination justify-content-center mt-4">
                                 <li class="page-item"><button
                                     className="page-link"
                                     disabled={!pagination.prev_page_url}
@@ -85,7 +85,9 @@ export default function UserCouponsIndex({ site, activeCoupons = [], pagination 
                                 </button></li>
 
                                 <li class="page-item disabled">
-                                    Pagina {pagination.current_page} de {pagination.last_page} · {pagination.total} cupones
+                                    <button className="page-link" disabled>
+                                        Pagina {pagination.current_page} de {pagination.last_page} · {pagination.total} cupones
+                                    </button>
                                 </li>
 
                                 <li class="page-item"><button

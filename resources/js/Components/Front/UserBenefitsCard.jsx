@@ -17,7 +17,7 @@ export default function UserBenefitsCard({
             <h3>CUPONES ACTIVOS</h3>
 
             {activeCoupons.length > 0 ? (
-                <div className={`row row-cols-1 row-cols-md-3 g-4 ${isDetailMode ? 'is-detail' : ''}`.trim()}>
+                <div className={`row row-cols-1 row-cols-md-3 g-4 justify-content-center ${isDetailMode ? 'is-detail' : ''}`.trim()}>
                     {activeCoupons.map((coupon) => (
                         <div key={coupon.id} className="col">
                             <CouponCard

@@ -55,9 +55,7 @@ export default function CouponCard({
 
             {isClickable ? (
                 <div className="card-footer">
-                    <button className="btn btn-outline-secondary btn-sm w-100" type="button">
-                        Ver detalle
-                    </button>
+                    <p className="mb-0">{coupon.created_at ?? 'Fecha de creación'}</p>
                 </div>
             ) : null}
         </div>
