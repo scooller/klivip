@@ -34,7 +34,7 @@ export default function CouponCard({
             <div className="card-header">
                 <div>
                     <p className="card-title">{coupon.site_name ?? 'Sala'}</p>
-                    <p className="card-subtitle">{coupon.draw_label ?? 'TOMBOLA'}</p>
+                    <p className="card-subtitle">{coupon.type_label ?? 'TOMBOLA'}</p>
                 </div>
             </div>
 
@@ -55,7 +55,7 @@ export default function CouponCard({
                     <p className="message">{coupon.message}</p>
                 )}
                 <div className="d-flex justify-content-evenly align-items-center">
-                    <span className="badge bg-secondary">{coupon.type_label ?? 'Tipo de sorteo'}</span>
+                    <span className="badge bg-secondary">{coupon.draw_label ?? 'Tipo de sorteo'}</span>
                     <span className="badge bg-success">{coupon.valid_to ?? 'Vigente'}</span>
                 </div>
             </div>
