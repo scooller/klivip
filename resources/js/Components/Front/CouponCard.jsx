@@ -44,11 +44,11 @@ export default function CouponCard({
                 }
                 <p className="code">{normalizeCouponCode(coupon.code)}</p>
                 {coupon.draw_label === 'percentage' && (
-                    <p className="message">Dcto de {coupon.value}%</p>
+                    <p className="message">Dcto de {Number(coupon.value).toFixed(1)}%</p>
                 )}
 
                 {coupon.draw_label === 'fixed' && (
-                    <p className="message">{coupon.value} Uso{coupon.value > 1 ? 's' : ''}</p>
+                    <p className="message">{Math.round(coupon.value)} Uso{coupon.value > 1 ? 's' : ''}</p>
                 )}
 
                 {coupon.draw_label === 'mensaje' && (
