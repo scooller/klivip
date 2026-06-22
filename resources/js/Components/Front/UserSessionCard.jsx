@@ -2,6 +2,7 @@ import { useForm } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import BaseCard from './primitives/BaseCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBarcode, faPersonCircleCheck, faPersonWalkingDashedLineArrowRight, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 function formatPhone(rawValue) {
     if (rawValue.includes('@') || /[a-zA-Z]/.test(rawValue)) {

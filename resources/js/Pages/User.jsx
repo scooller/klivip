@@ -7,6 +7,7 @@ import UserWelcomeCard from '../Components/Front/UserWelcomeCard';
 import FrontFooter from '../Components/Front/FrontFooter';
 import CouponDetailModal from '../Components/Front/CouponDetailModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faBarcode, faPersonCircleCheck, faUserPen, faUsersSlash } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 
 function formatPhone(rawValue) {
