@@ -1,4 +1,5 @@
 import CouponCard from './CouponCard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function UserBenefitsCard({
     activeCoupons = [],
@@ -38,7 +39,7 @@ export default function UserBenefitsCard({
 
             {actionLabel && onAction ? (
                 <button type="button" className="active-coupons-action btn btn-primary w-100" onClick={onAction}>
-                    {actionLabel}
+                    <FontAwesomeIcon icon={faTicket} /> {actionLabel}
                 </button>
             ) : null}
         </section>

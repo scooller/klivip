@@ -1,6 +1,7 @@
 import { useForm } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import BaseCard from './primitives/BaseCard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function formatPhone(rawValue) {
     if (rawValue.includes('@') || /[a-zA-Z]/.test(rawValue)) {
@@ -202,7 +203,7 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                     {otpEnabled ? (
                         <>
                             <button className="block-action btn btn-primary" type="button" onClick={handleRequestUnlockOtp}>
-                                Solicitar codigo
+                                <FontAwesomeIcon icon={faBarcode} /> Solicitar codigo
                             </button>
 
                             <form className="d-flex flex-column gap-3" onSubmit={handleVerifyUnlockOtp}>
@@ -213,11 +214,12 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                                     type="text"
                                     inputMode="text"
                                     autoComplete="one-time-code"
+                                    placeholder='* * * * *'
                                     value={unlockForm.data.otp_code}
                                     onInput={(event) => unlockForm.setData('otp_code', event.target.value)}
                                 />
                                 <button className="block-action btn btn-primary" type="submit" disabled={unlockForm.processing}>
-                                    Verificar codigo
+                                    <FontAwesomeIcon icon={faPersonCircleCheck} /> Verificar codigo
                                 </button>
                             </form>
                         </>
@@ -225,12 +227,12 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
 
                     {magicLinkEnabled ? (
                         <button className="block-action btn btn-outline-secondary" type="button" onClick={handleRequestUnlockLink}>
-                            Enviar link de un solo uso
+                            <FontAwesomeIcon icon={faPersonWalkingDashedLineArrowRight} /> Enviar link de un solo uso
                         </button>
                     ) : null}
 
                     <button className="block-action btn btn-danger" type="button" onClick={onLogout}>
-                        Cerrar sesion
+                        <FontAwesomeIcon icon={faRightFromBracket} /> Cerrar sesion
                     </button>
                 </div>
             </BaseCard>

@@ -6,6 +6,7 @@ import UserSessionCard from '../Components/Front/UserSessionCard';
 import UserWelcomeCard from '../Components/Front/UserWelcomeCard';
 import FrontFooter from '../Components/Front/FrontFooter';
 import CouponDetailModal from '../Components/Front/CouponDetailModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 
 function formatPhone(rawValue) {
@@ -303,7 +304,7 @@ export default function User({ site, activeCoupons = [] }) {
                                         type="submit"
                                         disabled={registerForm.processing}
                                     >
-                                        Registrarme
+                                        <FontAwesomeIcon icon={faUserPen} /> Registrarme
                                     </button>
 
                                     <button
@@ -315,7 +316,7 @@ export default function User({ site, activeCoupons = [] }) {
                                             setFeedback(null);
                                         }}
                                     >
-                                        Volver al acceso
+                                        <FontAwesomeIcon icon={faArrowLeft} /> Volver al acceso
                                     </button>
                                 </form>
                             ) : (
@@ -342,7 +343,7 @@ export default function User({ site, activeCoupons = [] }) {
                                                 loginForm.reset('otp_code');
                                             }}
                                         >
-                                            Cambiar usuario
+                                            <FontAwesomeIcon icon={faUsersSlash} /> Cambiar usuario
                                         </button>
                                     ) : null}
 
@@ -381,7 +382,7 @@ export default function User({ site, activeCoupons = [] }) {
                                         type="submit"
                                         disabled={loginForm.processing}
                                     >
-                                        {isOtpPending ? 'Verificar codigo' : 'Acceder'}
+                                        <FontAwesomeIcon icon={faPersonCircleCheck} /> {isOtpPending ? 'Verificar codigo' : 'Acceder'}
                                     </button>
 
                                     {isOtpPending ? (
@@ -391,7 +392,7 @@ export default function User({ site, activeCoupons = [] }) {
                                             disabled={loginForm.processing}
                                             onClick={() => handleRequestOtp()}
                                         >
-                                            Reenviar codigo
+                                            <FontAwesomeIcon icon={faBarcode} /> Reenviar codigo
                                         </button>
                                     ) : (
                                         <>
@@ -405,7 +406,7 @@ export default function User({ site, activeCoupons = [] }) {
                                                     setFeedback(null);
                                                 }}
                                             >
-                                                Registrarme
+                                                <FontAwesomeIcon icon={faUserPen} /> Registrarme
                                             </button>
                                         </>
                                     )}
