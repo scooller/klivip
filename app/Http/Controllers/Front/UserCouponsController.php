@@ -39,7 +39,7 @@ class UserCouponsController extends Controller
 
         $activeCoupons = $paginatedCoupons
             ->getCollection()
-            ->map(fn(Coupon $coupon): array => $this->mapCoupon($coupon, $site))
+            ->map(fn (Coupon $coupon): array => $this->mapCoupon($coupon, $site))
             ->values()
             ->all();
 
@@ -47,7 +47,8 @@ class UserCouponsController extends Controller
             'site' => [
                 'name' => $site->name,
                 'slug' => $site->slug,
-                'logo' => $site->logo ? asset('storage/' . $site->logo) : null,
+                'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
+                'content' => $site->content,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
                 'links' => $site->links,
@@ -115,7 +116,8 @@ class UserCouponsController extends Controller
             'site' => [
                 'name' => $site->name,
                 'slug' => $site->slug,
-                'logo' => $site->logo ? asset('storage/' . $site->logo) : null,
+                'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
+                'content' => $site->content,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
                 'links' => $site->links,

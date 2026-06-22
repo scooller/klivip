@@ -35,6 +35,11 @@
 
   --bs-body-color: #c7ccef;
   --casino-text: var(--bs-body-color);
+  --bs-heading-color:var(--brand-violet-900);
+  --bs-color:var(--brand-violet-950);
+  --bs-body-bg:radial-gradient(circle at 85% 5%, rgba(102, 45, 184, 0.36), transparent 28%),
+    radial-gradient(circle at 18% 20%, rgba(20, 91, 214, 0.34), transparent 36%),
+    linear-gradient(180deg, #070426 0%, #02041e 100%);
 }
 
 * { box-sizing: border-box; }
@@ -43,10 +48,7 @@ body {
   margin: 0;
   font-family: 'Rajdhani', sans-serif;
   line-height: 1.45;
-  background:
-    radial-gradient(circle at 85% 5%, rgba(102, 45, 184, 0.36), transparent 28%),
-    radial-gradient(circle at 18% 20%, rgba(20, 91, 214, 0.34), transparent 36%),
-    linear-gradient(180deg, #070426 0%, #02041e 100%);
+  background:var(--bs-body-bg);
   color: var(--bs-body-color);
 }
 
@@ -408,6 +410,9 @@ body {
   width: min(1300px, 100%);
   margin: 0 auto;
   padding: 16px;
+  .card{
+    // --bs-card-bg: var(--brand-violet-850);
+  }
 }
 
 .home-banner,

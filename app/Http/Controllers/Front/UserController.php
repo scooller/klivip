@@ -318,6 +318,7 @@ class UserController extends Controller
                 'name' => $site->name,
                 'slug' => $site->slug,
                 'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
+                'content' => $site->content,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
                 'links' => $site->links,

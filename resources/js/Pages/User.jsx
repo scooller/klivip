@@ -442,9 +442,7 @@ export default function User({ site, activeCoupons = [] }) {
                     <UserWelcomeCard site={site} adminPortal={adminPortal} />
 
                     <div className="user-grid d-flex flex-column gap-3">
-                        <div>
-                            <UserSessionCard customer={customer} profileUnlock={profileUnlock} onLogout={handleLogout} />
-                        </div>
+                        <UserSessionCard customer={customer} profileUnlock={profileUnlock} onLogout={handleLogout} />
                     </div>
 
                     <section id="mis-cupones" className="user-coupons-section d-flex flex-column gap-3">

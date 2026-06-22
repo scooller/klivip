@@ -1,5 +1,5 @@
 export default function BaseCard({ title = null, className = '', children }) {
-    const classes = ['casino-card', 'card', className].filter(Boolean).join(' ');
+    const classes = ['casino-card', 'card','shadow-2', className].filter(Boolean).join(' ');
 
     return (
         <div className={classes}>
