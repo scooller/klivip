@@ -62,13 +62,13 @@ class CouponsRelationManager extends RelationManager
                 TextColumn::make('is_active')
                     ->label('Activo')
                     ->badge()
-                    ->color(fn (bool $state): string => $state ? 'success' : 'danger'),
+                    ->color(fn(bool $state): string => $state ? 'success' : 'danger'),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('coupons.created_at', 'desc')
             ->headerActions([
                 AttachAction::make()
                     ->preloadRecordSelect()
-                    ->recordSelectOptionsQuery(fn ($query) => $this->couponOptionsQuery($query)),
+                    ->recordSelectOptionsQuery(fn($query) => $this->couponOptionsQuery($query)),
             ])
             ->recordActions([
                 DetachAction::make(),
