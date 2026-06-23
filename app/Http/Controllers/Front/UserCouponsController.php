@@ -22,6 +22,7 @@ class UserCouponsController extends Controller
 
         $paginatedCoupons = Coupon::query()
             ->whereHas('users', fn ($query) => $query->whereKey($customer?->id))
+            ->with(['users' => fn ($query) => $query->whereKey($customer?->id)])
             ->where('site_id', $site->id)
             ->where('is_active', true)
             ->where(function ($query): void {
@@ -83,6 +84,7 @@ class UserCouponsController extends Controller
         $coupon = Coupon::query()
             ->where('id', (int) $couponId)
             ->whereHas('users', fn ($query) => $query->whereKey($customer?->id))
+            ->with(['users' => fn ($query) => $query->whereKey($customer?->id)])
             ->where('site_id', $site->id)
             ->where('is_active', true)
             ->where(function ($query): void {
@@ -99,6 +101,7 @@ class UserCouponsController extends Controller
         if ($coupon === null) {
             $coupon = Coupon::query()
                 ->whereHas('users', fn ($query) => $query->whereKey($customer?->id))
+                ->with(['users' => fn ($query) => $query->whereKey($customer?->id)])
                 ->where('site_id', $site->id)
                 ->where('is_active', true)
                 ->where(function ($query): void {
@@ -148,10 +151,13 @@ class UserCouponsController extends Controller
         $valueLabel = $coupon->type instanceof CouponType
             ? (string) $coupon->type->value() : '';
 
+        $pivot = $coupon->users->first()?->pivot;
+
         return [
             'id' => $coupon->id,
             'site_name' => $site->name,
             'code' => $coupon->code,
+            'redeem_code' => $pivot?->redeem_code,
             'type_label' => mb_strtoupper($typeLabel),
             'draw_label' => $valueLabel,
             'valid_from' => $coupon->valid_from?->format('d/m/Y - H:i'),

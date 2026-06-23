@@ -34,7 +34,7 @@ export default function CouponCard({
             <div className="card-header">
                 <div>
                     <p className="card-title">{coupon.site_name ?? 'Sala'}</p>
-                    <p className="card-subtitle">{coupon.type_label ?? 'TOMBOLA'}</p>
+                    <p className="card-subtitle">{coupon.redeem_code ?? '*********'}</p>
                 </div>
             </div>
 
