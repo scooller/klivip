@@ -61,6 +61,24 @@
             font-size: 0.95rem;
             color: #e7dbff;
         }
+
+        .btn-mis-cupones {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            background: rgba(126, 231, 135, 0.2);
+            border: 1px solid rgba(126, 231, 135, 0.5);
+            color: #8df3a7;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-mis-cupones:hover {
+            background: rgba(126, 231, 135, 0.35);
+        }
     </style>
 </head>
 <body>
@@ -82,6 +100,13 @@
         @endif
         @if(isset($usedCount))
             <p class="meta"><strong>Usos:</strong> {{ $usedCount }}@if(isset($maxUses) && $maxUses !== null) / {{ $maxUses }} @endif</p>
+        @endif
+        @if(! empty($redeemCode))
+            <p class="meta"><strong>Codigo:</strong> {{ $redeemCode }}</p>
+        @endif
+
+        @if(($status ?? '') === 'redeemed')
+            <a href="/usuario/cupones" class="btn-mis-cupones">Mis cupones</a>
         @endif
     </article>
 </body>
