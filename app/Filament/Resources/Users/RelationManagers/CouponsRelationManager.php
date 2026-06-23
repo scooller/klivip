@@ -53,8 +53,7 @@ class CouponsRelationManager extends RelationManager
                     ->default('-'),
                 TextColumn::make('pivot.created_at')
                     ->label('Asociado')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+                    ->dateTime('d/m/Y H:i'),
                 TextColumn::make('valid_to')
                     ->label('Válido hasta')
                     ->dateTime('d/m/Y H:i')
@@ -65,7 +64,7 @@ class CouponsRelationManager extends RelationManager
                     ->badge()
                     ->color(fn (bool $state): string => $state ? 'success' : 'danger'),
             ])
-            ->defaultSort('pivot.created_at', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->headerActions([
                 AttachAction::make()
                     ->preloadRecordSelect()
