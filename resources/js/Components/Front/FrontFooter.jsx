@@ -54,7 +54,7 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
     return (
         <footer id={id} className="site-footer navbar navbar-expand-lg">
             <div className="container-fluid flex-column">
-                <div className="w-100 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-4 gap-3">
+                <div className="w-100 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-2 gap-3">
                     <p>{site?.opening_hours ?? 'Juego Responsable'}</p>
                     <p>{site?.address ?? contact.address ?? 'Seguridad Garantizada'}</p>
                     <p>{contact.phone ?? 'Atencion 24/7'}</p>
@@ -100,9 +100,9 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
                                 </a>
                             </li>
                         ))}
+                        <li><a className="nav-link" disabled tabindex="-1">{siteSetting?.site_name ?? 'Klivip'} &copy; {new Date().getFullYear()}</a></li>
                     </ul>
                 )}
-                <p className="text-center mb-0">{siteSetting?.site_name ?? 'Klivip'} &copy; {new Date().getFullYear()}</p>
             </div>
         </footer>
     );

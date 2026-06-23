@@ -43,6 +43,12 @@ class User extends Authenticatable implements FilamentUser
             ->withTimestamps();
     }
 
+    public function coupons(): BelongsToMany
+    {
+        return $this->belongsToMany(Coupon::class)
+            ->withTimestamps();
+    }
+
     public function hasRole(UserRole $role): bool
     {
         return $this->role === $role;

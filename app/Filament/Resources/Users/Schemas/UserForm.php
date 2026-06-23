@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use App\Enums\UserRole;
+use App\Models\Coupon;
 use App\Models\Site;
 use App\Models\User;
 use Filament\Forms\Components\Select;
@@ -61,6 +62,21 @@ class UserForm
                         }
 
                         return $query->pluck('name', 'id')->all();
+                    }),
+                Select::make('coupons')
+                    ->label('Cupones')
+                    ->multiple()
+                    ->relationship('coupons', 'code')
+                    ->preload()
+                    ->searchable()
+                    ->options(function () use ($authUser): array {
+                        $query = Coupon::query()->orderBy('code');
+
+                        if ($authUser instanceof User && ! $authUser->isSuperAdmin()) {
+                            $query->whereIn('site_id', $authUser->sites()->select('sites.id'));
+                        }
+
+                        return $query->pluck('code', 'id')->all();
                     }),
             ]);
     }
