@@ -21,6 +21,7 @@ class UserCouponsController extends Controller
         $customer = Auth::guard('customer')->user();
 
         $paginatedCoupons = Coupon::query()
+            ->whereHas('users', fn ($query) => $query->whereKey($customer?->id))
             ->where('site_id', $site->id)
             ->where('is_active', true)
             ->where(function ($query): void {
@@ -81,6 +82,7 @@ class UserCouponsController extends Controller
 
         $coupon = Coupon::query()
             ->where('id', (int) $couponId)
+            ->whereHas('users', fn ($query) => $query->whereKey($customer?->id))
             ->where('site_id', $site->id)
             ->where('is_active', true)
             ->where(function ($query): void {
@@ -96,6 +98,7 @@ class UserCouponsController extends Controller
 
         if ($coupon === null) {
             $coupon = Coupon::query()
+                ->whereHas('users', fn ($query) => $query->whereKey($customer?->id))
                 ->where('site_id', $site->id)
                 ->where('is_active', true)
                 ->where(function ($query): void {
