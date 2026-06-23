@@ -19,6 +19,7 @@ class CouponQrRedeemController extends Controller
         /** @var Site $site */
         $site = $request->attributes->get('currentSite');
         $qr_token = $request->route('token');
+        /** @var User $customer */
         $customer = Auth::guard('customer')->user();
 
         Log::info("Attempting to redeem coupon with token: {$qr_token} for site: {$site->name} (site_id: {$site->id})");
@@ -40,7 +41,7 @@ class CouponQrRedeemController extends Controller
             ], 404);
         }
 
-        if ($customer instanceof User && $coupon->users()->whereKey($customer->id)->whereNotNull('redeemed_at')->exists()) {
+        if ($coupon->users()->whereKey($customer->id)->whereNotNull('redeemed_at')->exists()) {
             return response()->view('coupon-redeem-result', [
                 'status' => 'already-redeemed',
                 'title' => 'Cupón ya cobrado',
@@ -100,19 +101,18 @@ class CouponQrRedeemController extends Controller
             ], 422);
         }
 
-        if ($customer instanceof User) {
-            $redeemCode = 'KV-'.now()->format('Ymd-His').'-'.Str::upper(Str::random(4));
-            $coupon->users()->syncWithoutDetaching([
-                $customer->id => [
-                    'redeemed_at' => now(),
-                    'redeem_code' => $redeemCode,
-                ],
-            ]);
-        }
+        $redeemCode = 'KV-'.now()->format('Ymd-His').'-'.Str::upper(Str::random(4));
+
+        $coupon->users()->syncWithoutDetaching([
+            $customer->id => [
+                'redeemed_at' => now(),
+                'redeem_code' => $redeemCode,
+            ],
+        ]);
 
         $coupon->refresh();
 
-        $response = [
+        return response()->view('coupon-redeem-result', [
             'status' => 'redeemed',
             'title' => 'Cupón cobrado',
             'message' => 'El cupón fue cobrado correctamente.',
@@ -120,12 +120,7 @@ class CouponQrRedeemController extends Controller
             'siteName' => $site->name,
             'usedCount' => $coupon->used_count,
             'maxUses' => $coupon->max_uses,
-        ];
-
-        if ($customer instanceof User) {
-            $response['redeemCode'] = $redeemCode;
-        }
-
-        return response()->view('coupon-redeem-result', $response);
+            'redeemCode' => $redeemCode,
+        ]);
     }
 }

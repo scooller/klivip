@@ -17,57 +17,58 @@ $publicBaseDomains = [
 foreach ($publicBaseDomains as $baseDomain) {
     $routeNamePrefix = $baseDomain === 'klivip.test'
         ? 'front.user'
-        : 'front.user.' . str_replace('.', '_', $baseDomain);
+        : 'front.user.'.str_replace('.', '_', $baseDomain);
 
-    Route::domain('{site}.' . $baseDomain)
+    Route::domain('{site}.'.$baseDomain)
         ->where(['site' => '[A-Za-z0-9-]+'])
         ->middleware([ResolveSiteFromHost::class])
         ->group(function () use ($routeNamePrefix): void {
             Route::get('/', UserController::class);
             Route::get('/principal', PrincipalController::class)
                 ->middleware('auth:customer')
-                ->name($routeNamePrefix . '.principal');
+                ->name($routeNamePrefix.'.principal');
             Route::get('/programacion', ScheduleController::class)
                 ->middleware('auth:customer')
-                ->name($routeNamePrefix . '.schedule');
+                ->name($routeNamePrefix.'.schedule');
             Route::get('/usuario', UserController::class)->name($routeNamePrefix);
             Route::get('/cupones/qr/{token}', CouponQrRedeemController::class)
+                ->middleware('auth:customer')
                 ->where('token', '[A-Za-z0-9_-]+')
-                ->name($routeNamePrefix . '.coupons.qr-redeem');
+                ->name($routeNamePrefix.'.coupons.qr-redeem');
             Route::post('/usuario/perfil', [UserController::class, 'updateProfile'])
                 ->middleware('auth:customer')
-                ->name($routeNamePrefix . '.profile.update');
+                ->name($routeNamePrefix.'.profile.update');
             Route::post('/usuario/perfil/unlock/otp/request', [UserController::class, 'requestProfileUnlockOtp'])
                 ->middleware('auth:customer')
-                ->name($routeNamePrefix . '.profile.unlock.otp.request');
+                ->name($routeNamePrefix.'.profile.unlock.otp.request');
             Route::post('/usuario/perfil/unlock/otp/verify', [UserController::class, 'verifyProfileUnlockOtp'])
                 ->middleware('auth:customer')
-                ->name($routeNamePrefix . '.profile.unlock.otp.verify');
+                ->name($routeNamePrefix.'.profile.unlock.otp.verify');
             Route::post('/usuario/perfil/unlock/link/request', [UserController::class, 'requestProfileUnlockLink'])
                 ->middleware('auth:customer')
-                ->name($routeNamePrefix . '.profile.unlock.link.request');
+                ->name($routeNamePrefix.'.profile.unlock.link.request');
             Route::get('/usuario/perfil/unlock/link/{token}', [UserController::class, 'consumeProfileUnlockLink'])
                 ->middleware(['auth:customer', 'signed'])
-                ->name($routeNamePrefix . '.profile.unlock.link');
+                ->name($routeNamePrefix.'.profile.unlock.link');
             Route::get('/usuario/cupones', [UserCouponsController::class, 'index'])
                 ->middleware('auth:customer')
-                ->name($routeNamePrefix . '.coupons.index');
+                ->name($routeNamePrefix.'.coupons.index');
             Route::get('/usuario/cupones/{couponId}', [UserCouponsController::class, 'show'])
                 ->middleware('auth:customer')
                 ->whereNumber('couponId')
-                ->name($routeNamePrefix . '.coupons.show');
+                ->name($routeNamePrefix.'.coupons.show');
             Route::post('/usuario/login', [CustomerSessionController::class, 'store'])
                 ->middleware('guest:customer')
-                ->name($routeNamePrefix . '.login');
+                ->name($routeNamePrefix.'.login');
             Route::post('/usuario/register', [CustomerSessionController::class, 'register'])
                 ->middleware('guest:customer')
-                ->name($routeNamePrefix . '.register');
+                ->name($routeNamePrefix.'.register');
             Route::post('/usuario/login/verify', [CustomerSessionController::class, 'verify'])
                 ->middleware('guest:customer')
-                ->name($routeNamePrefix . '.login.verify');
+                ->name($routeNamePrefix.'.login.verify');
             Route::post('/usuario/logout', [CustomerSessionController::class, 'destroy'])
                 ->middleware('auth:customer')
-                ->name($routeNamePrefix . '.logout');
+                ->name($routeNamePrefix.'.logout');
         });
 }
 
