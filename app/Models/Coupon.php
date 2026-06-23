@@ -71,6 +71,7 @@ class Coupon extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
+            ->withPivot(['redeemed_at', 'redeem_code'])
             ->withTimestamps();
     }
 

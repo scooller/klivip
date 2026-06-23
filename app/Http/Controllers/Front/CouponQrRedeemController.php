@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\Site;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class CouponQrRedeemController extends Controller
 {
@@ -16,9 +19,10 @@ class CouponQrRedeemController extends Controller
         /** @var Site $site */
         $site = $request->attributes->get('currentSite');
         $qr_token = $request->route('token');
+        $customer = Auth::guard('customer')->user();
 
-        Log::debug("Attempting to redeem coupon with token: {$qr_token} for site: {$site->name} (site_id: {$site->id})");
-        Log::debug("Route parameters", $request->route()?->parameters() ?? []);
+        Log::info("Attempting to redeem coupon with token: {$qr_token} for site: {$site->name} (site_id: {$site->id})");
+        Log::debug('Route parameters', $request->route()?->parameters() ?? []);
 
         $coupon = Coupon::query()
             ->where('site_id', $site->id)
@@ -26,14 +30,36 @@ class CouponQrRedeemController extends Controller
             ->where('qr_token', $qr_token)
             ->first();
 
-        Log::debug("Coupon query result", ['coupon_id' => $coupon?->id, 'coupon_code' => $coupon?->code]);
+        Log::info('Coupon query result', ['coupon_id' => $coupon?->id, 'coupon_code' => $coupon?->code]);
 
         if (! $coupon) {
             return response()->view('coupon-redeem-result', [
                 'status' => 'not-found',
-                'title' => 'Cupon no encontrado',
-                'message' => 'No existe un cupon valido para este codigo QR en este sitio.',
+                'title' => 'Cupón no encontrado',
+                'message' => 'No existe un cupón válido para este código QR en este sitio.',
             ], 404);
+        }
+
+        if ($customer instanceof User && $coupon->users()->whereKey($customer->id)->whereNotNull('redeemed_at')->exists()) {
+            return response()->view('coupon-redeem-result', [
+                'status' => 'already-redeemed',
+                'title' => 'Cupón ya cobrado',
+                'message' => 'Ya has cobrado este cupón anteriormente.',
+                'couponCode' => $coupon->code,
+                'siteName' => $site->name,
+            ], 422);
+        }
+
+        if ($coupon->max_uses !== null && $coupon->used_count >= $coupon->max_uses) {
+            return response()->view('coupon-redeem-result', [
+                'status' => 'max-uses-reached',
+                'title' => 'Cupón agotado',
+                'message' => 'Este cupón ya alcanzó el límite máximo de usos.',
+                'couponCode' => $coupon->code,
+                'siteName' => $site->name,
+                'usedCount' => $coupon->used_count,
+                'maxUses' => $coupon->max_uses,
+            ], 422);
         }
 
         if (! $coupon->isValidNow()) {
@@ -41,8 +67,8 @@ class CouponQrRedeemController extends Controller
 
             return response()->view('coupon-redeem-result', [
                 'status' => 'invalid',
-                'title' => 'Cupon no disponible',
-                'message' => 'Este cupon no esta activo, expiro o ya alcanzo su limite de usos.',
+                'title' => 'Cupón no disponible',
+                'message' => 'Este cupón no está activo o expiró.',
                 'couponCode' => $coupon->code,
                 'siteName' => $site->name,
             ], 422);
@@ -64,25 +90,42 @@ class CouponQrRedeemController extends Controller
 
         if ($redeemed === 0) {
             Log::debug("Attempting to redeem coupon with token: $qr_token for site: {$site->name} - Coupon could not be redeemed due to concurrent redemption");
+
             return response()->view('coupon-redeem-result', [
                 'status' => 'invalid',
-                'title' => 'Cupon no disponible',
-                'message' => 'No fue posible cobrar este cupon. Intenta nuevamente.',
+                'title' => 'Cupón no disponible',
+                'message' => 'No fue posible cobrar este cupón. Intenta nuevamente.',
                 'couponCode' => $coupon->code,
                 'siteName' => $site->name,
             ], 422);
         }
 
+        if ($customer instanceof User) {
+            $redeemCode = 'KV-'.now()->format('Ymd-His').'-'.Str::upper(Str::random(4));
+            $coupon->users()->syncWithoutDetaching([
+                $customer->id => [
+                    'redeemed_at' => now(),
+                    'redeem_code' => $redeemCode,
+                ],
+            ]);
+        }
+
         $coupon->refresh();
 
-        return response()->view('coupon-redeem-result', [
+        $response = [
             'status' => 'redeemed',
-            'title' => 'Cupon cobrado',
-            'message' => 'El cupon fue cobrado correctamente.',
+            'title' => 'Cupón cobrado',
+            'message' => 'El cupón fue cobrado correctamente.',
             'couponCode' => $coupon->code,
             'siteName' => $site->name,
             'usedCount' => $coupon->used_count,
             'maxUses' => $coupon->max_uses,
-        ]);
+        ];
+
+        if ($customer instanceof User) {
+            $response['redeemCode'] = $redeemCode;
+        }
+
+        return response()->view('coupon-redeem-result', $response);
     }
 }

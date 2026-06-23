@@ -46,6 +46,7 @@ class User extends Authenticatable implements FilamentUser
     public function coupons(): BelongsToMany
     {
         return $this->belongsToMany(Coupon::class)
+            ->withPivot(['redeemed_at', 'redeem_code'])
             ->withTimestamps();
     }
 
