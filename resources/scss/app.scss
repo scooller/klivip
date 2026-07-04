@@ -88,6 +88,10 @@ body {
   background: rgba(11, 8, 35, 0.6)!important;
 }
 
+.form-control::placeholder{
+    color: var(--bs-body-color);
+}
+
 .home-entry-page,
 .user-login-screen {
   position: relative;
@@ -808,7 +812,7 @@ body {
         --card-title-font-size: 2.25rem;
         --card-subtitle-font-size: 1.875rem;
         --card-code-font-size: 5.25rem;
-        --card-meta-font-size: 1.75rem;
+        --card-meta-font-size: 1rem;
     }
 }
 
