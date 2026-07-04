@@ -6,22 +6,17 @@ export default function FrontAppHeader({
     title,
     onBack,
     onOpenMenu,
-    currentTime = '0:00 a.m',
     hideBack = false,
     userName = null,
     userSubtitle = null,
     userAvatarImage = null,
 }) {
     const showUserBlock = hideBack && Boolean(userName);
+    const navClass = !showUserBlock ? 'my-3' : '';
 
     return (
-        <nav className="navbar bg-body-tertiary front-app-header py-2">
-            <div className="container-fluid d-flex flex-column">
-                <div className="small w-100 mb-2">
-                    {currentTime}
-                </div>
-
-                <div className="d-flex align-items-center justify-content-between w-100 gap-2">
+        <nav className="navbar bg-body-tertiary front-app-header py-0">
+            <div className={`container-fluid d-flex align-items-center justify-content-between w-100 gap-2 ${navClass}`}>
                     <div className="d-flex align-items-center flex-shrink-0" style={{ minWidth: '72px' }}>
                         {showUserBlock ? (
                             <div
@@ -29,19 +24,12 @@ export default function FrontAppHeader({
                                 aria-label="Usuario actual"
                             >
                                 <div>
-                                    {userAvatarImage ? (
-                                        <img
-                                            src={userAvatarImage}
-                                            alt={userName}
-                                            className="rounded-circle"
-                                            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                        />
-                                    ) : site?.logo ? (
+                                    {site?.logo ? (
                                         <img
                                             src={site.logo}
                                             alt={site.name ?? userName}
                                             className="rounded-circle"
-                                            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                            style={{ width: 'auto', height: '4rem', objectFit: 'cover' }}
                                         />
                                     ) : (
                                         <div
@@ -84,7 +72,6 @@ export default function FrontAppHeader({
                             <FontAwesomeIcon icon={faBars} />
                         </button>
                     </div>
-                </div>
             </div>
         </nav>
     );

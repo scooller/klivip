@@ -58,18 +58,10 @@ export default function Principal({ site, promotions = [], games = [], banners =
         });
     }, []);
 
-    // Avoid rendering time/date strings during SSR — compute on client only
-    const [currentTime, setCurrentTime] = useState('');
     const [drawDate, setDrawDate] = useState('');
 
     useEffect(() => {
         const updateTimes = () => {
-            setCurrentTime(new Intl.DateTimeFormat('es-CL', {
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true,
-            }).format(new Date()));
-
             setDrawDate(new Intl.DateTimeFormat('es-CL', {
                 day: '2-digit',
                 month: '2-digit',
@@ -180,7 +172,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
             preserveScroll: true,
             onFinish: () => {
                 setIsMenuOpen(false);
-                router.visit('/');
+                router.visit('/cuenta');
             },
         });
     };
@@ -189,18 +181,17 @@ export default function Principal({ site, promotions = [], games = [], banners =
         <>
             <Head title={`${sharedSite.name} | Principal`} />
 
-            <div className="home-main-page">
+            <div className="home-main-page d-flex flex-column min-vh-100">
                 <FrontAppHeader
                     site={sharedSite}
                     title={null}
-                    currentTime={currentTime}
                     hideBack
                     userName={customer?.name ?? 'Invitado'}
                     userSubtitle={site?.name ?? 'Sala'}
                     onOpenMenu={() => setIsMenuOpen(true)}
                 />
 
-                <main className="home-main-content container mx-auto g-0">
+                <main className="home-main-content container mx-auto g-0 p-0 flex-grow-1">
                     <section className="banner-slide home-banner" aria-label="Banner principal">
                         <div id="bannerHome" className="carousel slide" ref={(el) => { carouselRefs.current[0] = el; }}>
                             <div className="carousel-inner">

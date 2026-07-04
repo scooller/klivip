@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
@@ -43,11 +44,30 @@ class User extends Authenticatable implements FilamentUser
             ->withTimestamps();
     }
 
-    public function coupons(): BelongsToMany
+    // Nuevas relaciones del sistema de sorteos
+    public function couponRedemptions(): HasMany
     {
-        return $this->belongsToMany(Coupon::class)
-            ->withPivot(['redeemed_at', 'redeem_code'])
-            ->withTimestamps();
+        return $this->hasMany(CouponRedemption::class);
+    }
+
+    public function sweepstakeCoupons(): HasMany
+    {
+        return $this->hasMany(SweepstakeCoupon::class);
+    }
+
+    public function validSweepstakeCoupons(): HasMany
+    {
+        return $this->hasMany(SweepstakeCoupon::class)
+            ->where('is_voided', false)
+            ->whereNull('deleted_at');
+    }
+
+    public function getCouponsCountInSweepstake(Sweepstake $sweepstake): int
+    {
+        return $this->couponRedemptions()
+            ->where('sweepstake_id', $sweepstake->id)
+            ->where('is_voided', false)
+            ->sum('coupon_count');
     }
 
     public function hasRole(UserRole $role): bool

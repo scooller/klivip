@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'asset_url' => env('ASSET_URL'),
+
     'admin_domain' => env('ADMIN_DOMAIN', 'admin.klivip.test'),
 
     /*

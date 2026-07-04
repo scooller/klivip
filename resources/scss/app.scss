@@ -1,3 +1,4 @@
+@import 'bootstrap/dist/css/bootstrap.css';
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Rajdhani:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap');
 
 :root {
@@ -703,6 +704,34 @@ body {
     font-family: 'Sora', sans-serif;
     font-size: clamp(1.375rem, 3vw, 1.875rem);
     text-transform: uppercase;
+  }
+}
+
+.coupon-mini {
+  background-image: url('/images/ticket-amarillo.png');
+  background-size: cover;
+  background-position: center;
+  color: var(--brand-violet-950);
+  font-weight: 800;
+  border: none;
+  aspect-ratio: 938 / 1149;
+  min-height: auto;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  &__number {
+    font-size: 3rem;
+  }
+
+  &:hover { transform: scale(1.05); }
+
+  &:focus-visible {
+    outline: 2px solid var(--field-focus-border);
+    outline-offset: 2px;
+  }
+
+  &.is-used {
+    filter: grayscale(0.8);
+    opacity: 0.55;
   }
 }
 

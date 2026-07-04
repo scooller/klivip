@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Enums\CouponType;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
-use App\Models\Coupon;
 use App\Models\Site;
 use App\Models\SiteSetting;
+use App\Models\SweepstakeCoupon;
 use App\Models\User;
 use App\Notifications\FrontProfileUnlockLinkNotification;
 use App\Notifications\FrontProfileUnlockOtpNotification;
@@ -311,7 +310,28 @@ class UserController extends Controller
         $adminPortal = [
             'url' => sprintf('%s://%s', $request->getScheme(), $normalizedAdminDomain),
         ];
-        $activeCoupons = $this->resolveActiveCoupons($site);
+
+        $recentCoupons = $customer instanceof User
+            ? SweepstakeCoupon::query()
+                ->with(['sweepstake:id,name,slug,draw_at,prize_description'])
+                ->where('user_id', $customer->id)
+                ->where('is_voided', false)
+                ->orderByDesc('created_at')
+                ->limit(6)
+                ->get()
+                ->map(fn (SweepstakeCoupon $coupon): array => [
+                    'id' => $coupon->id,
+                    'number' => $coupon->coupon_number,
+                    'is_used' => $coupon->is_used,
+                    'obtained_at' => $coupon->created_at?->format('d/m/Y H:i'),
+                    'sweepstake_name' => $coupon->sweepstake?->name ?? 'Sorteo',
+                    'sweepstake_slug' => $coupon->sweepstake?->slug ?? '',
+                    'prize' => $coupon->sweepstake?->prize_description,
+                    'draw_at' => $coupon->sweepstake?->draw_at?->format('d/m/Y H:i'),
+                ])
+                ->values()
+                ->all()
+            : [];
 
         return Inertia::render('User', [
             'site' => [
@@ -339,48 +359,8 @@ class UserController extends Controller
                     ],
                 ],
             ],
-            'activeCoupons' => $activeCoupons,
+            'activeCoupons' => $recentCoupons,
         ]);
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function resolveActiveCoupons(Site $site): array
-    {
-        return Coupon::query()
-            ->where('site_id', $site->id)
-            ->where('is_active', true)
-            ->where(function ($query): void {
-                $query->whereNull('valid_from')->orWhere('valid_from', '<=', now());
-            })
-            ->where(function ($query): void {
-                $query->whereNull('valid_to')->orWhere('valid_to', '>=', now());
-            })
-            ->where(function ($query): void {
-                $query->whereNull('max_uses')->orWhereColumn('used_count', '<', 'max_uses');
-            })
-            ->orderBy('valid_to')
-            ->orderByDesc('created_at')
-            ->limit(20)
-            ->get()
-            ->map(function (Coupon $coupon) use ($site): array {
-                $typeLabel = $coupon->type instanceof CouponType
-                    ? $coupon->type->label()
-                    : (string) $coupon->type;
-
-                return [
-                    'id' => $coupon->id,
-                    'site_name' => $site->name,
-                    'code' => $coupon->code,
-                    'type_label' => $typeLabel,
-                    'draw_label' => mb_strtoupper($typeLabel),
-                    'valid_to' => $coupon->valid_to?->format('d/m/Y - H:i'),
-                    'message' => $coupon->message,
-                ];
-            })
-            ->values()
-            ->all();
     }
 
     private function normalizePhone(string $value): ?string

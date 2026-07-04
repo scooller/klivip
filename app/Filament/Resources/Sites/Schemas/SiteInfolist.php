@@ -26,10 +26,6 @@ class SiteInfolist
                     ->state(fn (Site $record): string => $record->url)
                     ->url(fn (Site $record): string => $record->url)
                     ->openUrlInNewTab(),
-                TextEntry::make('games.title')
-                    ->label('Juegos')
-                    ->badge()
-                    ->separator(', '),
                 IconEntry::make('is_active')
                     ->boolean(),
                 TextEntry::make('created_at')

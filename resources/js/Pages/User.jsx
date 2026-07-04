@@ -1,11 +1,10 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import UserBenefitsCard from '../Components/Front/UserBenefitsCard';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import UserSessionCard from '../Components/Front/UserSessionCard';
 import UserWelcomeCard from '../Components/Front/UserWelcomeCard';
 import FrontFooter from '../Components/Front/FrontFooter';
-import CouponDetailModal from '../Components/Front/CouponDetailModal';
+import CouponMini from '../Components/Front/CouponMini';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faBarcode, faPersonCircleCheck, faUserPen, faUsersSlash } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
@@ -51,27 +50,10 @@ export default function User({ site, activeCoupons = [] }) {
     };
     const [isChangingUser, setIsChangingUser] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [selectedCoupon, setSelectedCoupon] = useState(null);
+
     const [isRegistering, setIsRegistering] = useState(false);
     const isOtpPending = loginRequiresOtp && Boolean(otpLogin.pending) && !isChangingUser;
     const [feedback, setFeedback] = useState(null);
-
-    const [currentTime, setCurrentTime] = useState('');
-
-    useEffect(() => {
-        const updateTime = () => {
-            setCurrentTime(new Intl.DateTimeFormat('es-CL', {
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true,
-            }).format(new Date()));
-        };
-
-        updateTime();
-        const interval = setInterval(updateTime, 60 * 1000);
-
-        return () => clearInterval(interval);
-    }, []);
 
     const loginForm = useForm({
         identifier: otpLogin.identifier ?? '',
@@ -219,7 +201,6 @@ export default function User({ site, activeCoupons = [] }) {
                     <div className="user-login-glow user-login-glow--bottom" aria-hidden="true" />
 
                     <main className="user-login-shell d-flex flex-column gap-3">
-                        <span className="user-login-hour">{currentTime}</span>
 
                         <section className="user-login-card d-flex flex-column gap-3" aria-label="Acceso principal">
                             <div className="user-login-brand" aria-hidden="true">
@@ -424,16 +405,15 @@ export default function User({ site, activeCoupons = [] }) {
         <>
             <Head title={`Usuario | ${site.name}`} />
 
-            <div className="casino-layout">
+            <div className="casino-layout d-flex flex-column min-vh-100">
                 <FrontAppHeader
                     site={sharedSite}
                     title="Mi Cuenta"
-                    currentTime={currentTime}
-                    onBack={() => router.visit('/principal')}
+                    onBack={() => router.visit('/')}
                     onOpenMenu={() => setIsMenuOpen(true)}
                 />
 
-                <main className="casino-content d-flex flex-column gap-3">
+                <main className="casino-content d-flex flex-column gap-3 flex-grow-1">
                     {feedback ? (
                         <div className="alert alert-info feedback-callout" role="alert">
                             <strong>{feedback.title}</strong>
@@ -448,18 +428,36 @@ export default function User({ site, activeCoupons = [] }) {
                     </div>
 
                     <section id="mis-cupones" className="user-coupons-section d-flex flex-column gap-3">
-                        <UserBenefitsCard
-                            activeCoupons={activeCoupons.slice(0, 2)}
-                            onCouponSelect={(coupon) => {
-                                if (!coupon?.id) {
-                                    return;
-                                }
+                        <div className="d-flex align-items-center justify-content-between">
+                            <h3 className="mb-0 fw-bold">
+                                <FontAwesomeIcon icon={faBarcode} className="me-2" />
+                                Mis Cupones
+                            </h3>
+                            <button
+                                className="btn btn-outline-warning btn-sm"
+                                onClick={() => router.visit('/usuario/cupones')}
+                            >
+                                Ver todos
+                            </button>
+                        </div>
 
-                                setSelectedCoupon(coupon);
-                            }}
-                            actionLabel="Ver todos los cupones"
-                            onAction={() => router.visit('/usuario/cupones')}
-                        />
+                        {activeCoupons.length > 0 ? (
+                            <div className="row row-cols-2 row-cols-md-3 g-2">
+                                {activeCoupons.map((coupon) => (
+                                    <div key={coupon.id} className="col">
+                                        <CouponMini
+                                            number={coupon.number}
+                                            isUsed={coupon.is_used}
+                                            onClick={null}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="alert alert-info text-center m-0" role="alert">
+                                <p className="mb-0">No tienes cupones activos todavía.</p>
+                            </div>
+                        )}
                     </section>
                 </main>
 
@@ -476,11 +474,6 @@ export default function User({ site, activeCoupons = [] }) {
                     onLogout={handleLogout}
                 />
 
-                <CouponDetailModal
-                    coupon={selectedCoupon}
-                    open={selectedCoupon !== null}
-                    onClose={() => setSelectedCoupon(null)}
-                />
             </div>
         </>
     );

@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Site extends Model
 {
     /** @use HasFactory<SiteFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * @var list<string>
@@ -19,6 +20,7 @@ class Site extends Model
     protected $fillable = [
         'name',
         'slug',
+        'description',
         'logo',
         'links',
         'content',
@@ -51,26 +53,9 @@ class Site extends Model
         return $url ?? $base;
     }
 
-    public function coupons(): HasMany
-    {
-        return $this->hasMany(Coupon::class);
-    }
-
-    public function promotions(): HasMany
-    {
-        return $this->hasMany(Promotion::class);
-    }
-
     public function banners(): BelongsToMany
     {
         return $this->belongsToMany(Banner::class)
-            ->withTimestamps();
-    }
-
-    public function games(): BelongsToMany
-    {
-        return $this->belongsToMany(Game::class)
-            ->withPivot('sort_order')
             ->withTimestamps();
     }
 
@@ -78,5 +63,26 @@ class Site extends Model
     {
         return $this->belongsToMany(User::class)
             ->withTimestamps();
+    }
+
+    // Nuevas relaciones del sistema de sorteos
+    public function sweepstakes(): HasMany
+    {
+        return $this->hasMany(Sweepstake::class);
+    }
+
+    public function activeSweepstakes(): HasMany
+    {
+        return $this->hasMany(Sweepstake::class)
+            ->where('is_active', true)
+            ->where('is_published', true);
+    }
+
+    /**
+     * Scope para filtrar sites activos
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }

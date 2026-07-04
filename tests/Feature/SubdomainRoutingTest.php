@@ -29,7 +29,7 @@ class SubdomainRoutingTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->get('http://sitio1.klivip.test/');
+        $response = $this->get('http://sitio1.klivip.test/cuenta');
 
         $response->assertOk();
         $response->assertSee('Sitio 1');
@@ -67,7 +67,7 @@ class SubdomainRoutingTest extends TestCase
 
         $site->games()->attach($game->id, ['sort_order' => 1]);
 
-        $response = $this->get('http://sitio-promo.klivip.test/');
+        $response = $this->get('http://sitio-promo.klivip.test/cuenta');
 
         $response->assertOk();
         $response->assertSee('"component":"User"', false);
@@ -130,7 +130,7 @@ class SubdomainRoutingTest extends TestCase
             'remember' => true,
         ]);
 
-        $verifyResponse->assertRedirect('http://sitio-login.klivip.test/principal');
+        $verifyResponse->assertRedirect('http://sitio-login.klivip.test/');
         $this->assertAuthenticatedAs($customer, 'customer');
     }
 
@@ -180,7 +180,7 @@ class SubdomainRoutingTest extends TestCase
             'identifier' => 'direct@example.com',
         ]);
 
-        $response->assertRedirect('http://sitio-login.klivip.test/principal');
+        $response->assertRedirect('http://sitio-login.klivip.test/');
         $this->assertAuthenticatedAs($customer, 'customer');
     }
 

@@ -81,8 +81,8 @@ class BannerForm
                             }
                         },
                     )
-                    ->visible(fn(Get $get): bool => $get('scope') === BannerScope::Sites->value)
-                    ->required(fn(Get $get): bool => $get('scope') === BannerScope::Sites->value),
+                    ->visible(fn (Get $get): bool => $get('scope') === BannerScope::Sites->value)
+                    ->required(fn (Get $get): bool => $get('scope') === BannerScope::Sites->value),
                 Select::make('section')
                     ->label('Sección')
                     ->required()
@@ -90,6 +90,7 @@ class BannerForm
                         'home' => 'Inicio',
                         'events' => 'Eventos',
                         'games' => 'Juegos',
+                        'sweepstakes' => 'Sorteos',
                     ]),
                 TextInput::make('sort_order')
                     ->label('Orden')

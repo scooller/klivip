@@ -52,14 +52,24 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
     const contact = siteSetting?.contact ?? {};
 
     return (
-        <footer id={id} className="site-footer navbar navbar-expand-lg">
+        <footer id={id} className="site-footer mt-auto">
             <div className="container-fluid flex-column">
                 <div className="w-100 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-2 gap-3">
-                    <p>{site?.opening_hours ?? 'Juego Responsable'}</p>
-                    <p>{site?.address ?? contact.address ?? 'Seguridad Garantizada'}</p>
-                    <p>{contact.phone ?? 'Atencion 24/7'}</p>
+                    <ul className="list-group list-group-horizontal">
+                        <li className="list-group-item">{site?.opening_hours ?? 'Juego Responsable'}</li>
+                        <li className="list-group-item">{site?.address ?? contact.address ?? 'Seguridad Garantizada'}</li>
+                        {contact.phone && (
+                            <li className="list-group-item">
+                                <a href={`tel:${contact.phone}`} className="nav-link p-0">
+                                    {contact.phone}
+                                </a>
+                            </li>
+                        )}
+                    </ul>
                     <div className="social-links">
-                        <span>Siguenos</span>
+                        {social.facebook && social.instagram && social.twitter && social.linkedin && social.youtube && (
+                            <span className="me-2">Siguenos</span>
+                        )}
                         {social.facebook ? (
                             <a href={social.facebook} className="nav-link" target="_blank" rel="noopener noreferrer">
                                 <FontAwesomeIcon icon={faFacebookF} />

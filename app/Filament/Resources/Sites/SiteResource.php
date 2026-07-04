@@ -6,8 +6,6 @@ use App\Filament\Resources\Sites\Pages\CreateSite;
 use App\Filament\Resources\Sites\Pages\EditSite;
 use App\Filament\Resources\Sites\Pages\ListSites;
 use App\Filament\Resources\Sites\Pages\ViewSite;
-use App\Filament\Resources\Sites\RelationManagers\GamesRelationManager;
-use App\Filament\Resources\Sites\RelationManagers\PromotionsRelationManager;
 use App\Filament\Resources\Sites\Schemas\SiteForm;
 use App\Filament\Resources\Sites\Schemas\SiteInfolist;
 use App\Filament\Resources\Sites\Tables\SitesTable;
@@ -57,10 +55,7 @@ class SiteResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            PromotionsRelationManager::class,
-            GamesRelationManager::class,
-        ];
+        return [];
     }
 
     public static function getPages(): array

@@ -90,7 +90,7 @@ class CustomerSessionController extends Controller
             Auth::guard('customer')->login($customer, $request->boolean('remember'));
             $request->session()->regenerate();
 
-            return redirect('/principal');
+            return redirect()->intended('/');
         }
 
         $site = $this->resolveSite($request);
@@ -169,7 +169,7 @@ class CustomerSessionController extends Controller
         Auth::guard('customer')->login($customer, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        return redirect('/principal');
+        return redirect()->intended('/');
     }
 
     public function destroy(Request $request): RedirectResponse

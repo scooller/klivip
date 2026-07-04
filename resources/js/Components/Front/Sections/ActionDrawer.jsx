@@ -10,7 +10,7 @@ import {
 import { router } from '@inertiajs/react';
 
 const NAV_ITEMS = [
-    { route: '/principal', icon: faTrophy, label: 'Principal' },
+    { route: '/', icon: faTrophy, label: 'Principal' },
     // { route: '/programacion', icon: faGift, label: 'Sorteos' },
     { route: '/usuario/cupones', icon: faTicket, label: 'Mis cupones' },
     { route: '/usuario', icon: faPenToSquare, label: 'Editar perfil' },

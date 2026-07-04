@@ -101,29 +101,12 @@ export default function Schedule({ site, calendarDays = [] }) {
         setSelectedDateIso(firstCurrentMonthDay ?? null);
     }, [calendarWeeks]);
 
-    const [currentTime, setCurrentTime] = useState('');
-
-    useEffect(() => {
-        const updateTime = () => {
-            setCurrentTime(new Intl.DateTimeFormat('es-CL', {
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true,
-            }).format(new Date()));
-        };
-
-        updateTime();
-        const interval = setInterval(updateTime, 60 * 1000);
-
-        return () => clearInterval(interval);
-    }, []);
-
     const handleLogout = () => {
         router.post('/usuario/logout', {}, {
             preserveScroll: true,
             onFinish: () => {
                 setIsMenuOpen(false);
-                router.visit('/');
+                router.visit('/cuenta');
             },
         });
     };
@@ -136,12 +119,11 @@ export default function Schedule({ site, calendarDays = [] }) {
                 <FrontAppHeader
                     site={sharedSite}
                     title="Toda la Programacion"
-                    currentTime={currentTime}
-                    onBack={() => router.visit('/principal')}
+                    onBack={() => router.visit('/')}
                     onOpenMenu={() => setIsMenuOpen(true)}
                 />
 
-                <main className="home-main-content container-fluid">
+                <main className="home-main-content container-fluid p-0">
                     <section className="home-panel d-flex flex-column gap-3" aria-label="Calendario de programacion">
                         <div className="home-panel-heading d-flex flex-wrap gap-2 align-items-center">
                             <h2>Calendario</h2>
