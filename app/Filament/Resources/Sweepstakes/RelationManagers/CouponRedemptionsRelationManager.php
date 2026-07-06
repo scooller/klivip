@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Sweepstakes\RelationManagers;
 
+use App\Filament\Exports\CouponRedemptionsExport;
+use App\Filament\Exports\HasCsvExportAction;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -12,6 +14,8 @@ use Filament\Tables\Table;
 
 class CouponRedemptionsRelationManager extends RelationManager
 {
+    use HasCsvExportAction;
+
     protected static string $relationship = 'couponRedemptions';
 
     protected static ?string $title = 'Redenciones';
@@ -73,6 +77,13 @@ class CouponRedemptionsRelationManager extends RelationManager
                     ->action(function (array $data, $record) {
                         $record->void($data['reason'], auth()->user());
                     }),
+            ])
+            ->headerActions([
+                $this->makeCsvExportAction(
+                    CouponRedemptionsExport::class,
+                    fn () => CouponRedemptionsExport::forSweepstake($this->getOwnerRecord()->id),
+                    'redenciones-sorteo'
+                ),
             ]);
     }
 }

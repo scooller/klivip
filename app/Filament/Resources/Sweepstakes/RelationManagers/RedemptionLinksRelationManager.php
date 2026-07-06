@@ -99,6 +99,64 @@ class RedemptionLinksRelationManager extends RelationManager
                     ->label('Tipo de origen'),
             ])
             ->recordActions([
+                Action::make('viewQr')
+                    ->label('Ver QR')
+                    ->icon('heroicon-o-eye')
+                    ->color('gray')
+                    ->modalHeading(fn ($record) => "QR — {$record->title}")
+                    ->modalSubmitActionLabel('Descargar QR')
+                    ->modalCancelActionLabel('Cerrar')
+                    ->modalContent(function ($record) {
+                        $site = $record->sweepstake->site;
+                        $redemptionUrl = str_replace(
+                            '://',
+                            "://{$site->slug}.",
+                            config('app.url')
+                        )."/redimir/{$record->code}";
+
+                        $qrSvg = QrCode::format('svg')
+                            ->size(300)
+                            ->margin(2)
+                            ->errorCorrection('H')
+                            ->generate($redemptionUrl);
+
+                        return view('filament.actions.show-coupon-qr-code', [
+                            'qrSvg' => $qrSvg,
+                            'url' => $redemptionUrl,
+                        ]);
+                    })
+                    ->action(function ($record) {
+                        $site = $record->sweepstake->site;
+                        $redemptionUrl = str_replace(
+                            '://',
+                            "://{$site->slug}.",
+                            config('app.url')
+                        )."/redimir/{$record->code}";
+
+                        $qrCode = QrCode::format('png')
+                            ->size(400)
+                            ->margin(10)
+                            ->errorCorrection('H')
+                            ->generate($redemptionUrl);
+
+                        $filename = "qr-{$record->code}.png";
+
+                        Storage::disk('public')->put("qrs/{$filename}", $qrCode);
+
+                        $downloadUrl = Storage::disk('public')->url("qrs/{$filename}");
+
+                        Notification::make()
+                            ->success()
+                            ->title('QR generado')
+                            ->body('El código QR se ha generado correctamente')
+                            ->actions([
+                                Action::make('download')
+                                    ->label('Descargar')
+                                    ->url($downloadUrl)
+                                    ->openUrlInNewTab(),
+                            ])
+                            ->send();
+                    }),
                 Action::make('downloadQr')
                     ->label('Descargar QR')
                     ->icon('heroicon-o-qr-code')

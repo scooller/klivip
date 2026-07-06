@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Users\RelationManagers;
 
+use App\Filament\Exports\CouponRedemptionsExport;
+use App\Filament\Exports\HasCsvExportAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -10,6 +12,8 @@ use Filament\Tables\Table;
 
 class SweepstakeCouponsRelationManager extends RelationManager
 {
+    use HasCsvExportAction;
+
     protected static string $relationship = 'sweepstakeCoupons';
 
     protected static ?string $title = 'Cupones de sorteo';
@@ -20,7 +24,7 @@ class SweepstakeCouponsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('coupon_number')
                     ->label('Número')
-                    ->formatStateUsing(fn($state): string => str_pad((string) $state, 4, '0', STR_PAD_LEFT))
+                    ->formatStateUsing(fn ($state): string => str_pad((string) $state, 4, '0', STR_PAD_LEFT))
                     ->sortable(),
                 TextColumn::make('sweepstake.name')
                     ->label('Sorteo')
@@ -38,15 +42,22 @@ class SweepstakeCouponsRelationManager extends RelationManager
             ])
             ->filters([
                 Filter::make('valid')
-                    ->query(fn($query) => $query->where('is_voided', false))
+                    ->query(fn ($query) => $query->where('is_voided', false))
                     ->label('Solo válidos'),
                 Filter::make('voided')
-                    ->query(fn($query) => $query->where('is_voided', true))
+                    ->query(fn ($query) => $query->where('is_voided', true))
                     ->label('Solo anulados'),
                 Filter::make('unused')
-                    ->query(fn($query) => $query->where('is_used', false))
+                    ->query(fn ($query) => $query->where('is_used', false))
                     ->label('Sin usar'),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->headerActions([
+                $this->makeCsvExportAction(
+                    CouponRedemptionsExport::class,
+                    fn () => CouponRedemptionsExport::forUser($this->getOwnerRecord()->id),
+                    'redenciones-usuario'
+                ),
+            ]);
     }
 }
