@@ -57,7 +57,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email:rfc,dns', 'max:255', 'confirmed', Rule::unique('users', 'email')->ignore($customer->id)],
             'phone' => ['required', 'string', 'max:25'],
-            'birth_date' => ['required', 'date', 'before_or_equal:'.$adultLimitDate],
+            'birth_date' => ['required', 'date', 'before_or_equal:' . $adultLimitDate],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ], [
             'email.confirmed' => 'El correo y la confirmacion de correo deben coincidir.',
@@ -106,6 +106,35 @@ class UserController extends Controller
         $request->session()->forget(self::PROFILE_UNLOCK_SESSION_KEY);
 
         return back()->with('customer_profile_status', 'updated');
+    }
+
+    public function destroyProfile(Request $request): RedirectResponse
+    {
+        $customer = Auth::guard('customer')->user();
+
+        if (! $customer instanceof User) {
+            return back()->withErrors([
+                'profile' => 'No encontramos una sesion valida.',
+            ]);
+        }
+
+        if (! $this->hasActiveProfileUnlock($request)) {
+            return back()->withErrors([
+                'profile' => 'Debes desbloquear el perfil antes de eliminarlo.',
+            ]);
+        }
+
+        if ($customer->avatar_path !== null) {
+            Storage::disk('public')->delete($customer->avatar_path);
+        }
+
+        Auth::guard('customer')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        $customer->delete();
+
+        return redirect('/')->with('customer_profile_status', 'deleted');
     }
 
     public function requestProfileUnlockOtp(Request $request): RedirectResponse
@@ -313,31 +342,31 @@ class UserController extends Controller
 
         $recentCoupons = $customer instanceof User
             ? SweepstakeCoupon::query()
-                ->with(['sweepstake:id,name,slug,draw_at,prize_description'])
-                ->where('user_id', $customer->id)
-                ->where('is_voided', false)
-                ->orderByDesc('created_at')
-                ->limit(6)
-                ->get()
-                ->map(fn (SweepstakeCoupon $coupon): array => [
-                    'id' => $coupon->id,
-                    'number' => $coupon->coupon_number,
-                    'is_used' => $coupon->is_used,
-                    'obtained_at' => $coupon->created_at?->format('d/m/Y H:i'),
-                    'sweepstake_name' => $coupon->sweepstake?->name ?? 'Sorteo',
-                    'sweepstake_slug' => $coupon->sweepstake?->slug ?? '',
-                    'prize' => $coupon->sweepstake?->prize_description,
-                    'draw_at' => $coupon->sweepstake?->draw_at?->format('d/m/Y H:i'),
-                ])
-                ->values()
-                ->all()
+            ->with(['sweepstake:id,name,slug,draw_at,prize_description'])
+            ->where('user_id', $customer->id)
+            ->where('is_voided', false)
+            ->orderByDesc('created_at')
+            ->limit(6)
+            ->get()
+            ->map(fn(SweepstakeCoupon $coupon): array => [
+                'id' => $coupon->id,
+                'number' => $coupon->coupon_number,
+                'is_used' => $coupon->is_used,
+                'obtained_at' => $coupon->created_at?->format('d/m/Y H:i'),
+                'sweepstake_name' => $coupon->sweepstake?->name ?? 'Sorteo',
+                'sweepstake_slug' => $coupon->sweepstake?->slug ?? '',
+                'prize' => $coupon->sweepstake?->prize_description,
+                'draw_at' => $coupon->sweepstake?->draw_at?->format('d/m/Y H:i'),
+            ])
+            ->values()
+            ->all()
             : [];
 
         return Inertia::render('User', [
             'site' => [
                 'name' => $site->name,
                 'slug' => $site->slug,
-                'logo' => $site->logo ? asset('storage/'.$site->logo) : null,
+                'logo' => $site->logo ? asset('storage/' . $site->logo) : null,
                 'content' => $site->content,
                 'address' => $site->address,
                 'opening_hours' => $site->opening_hours,
@@ -371,7 +400,7 @@ class UserController extends Controller
             return null;
         }
 
-        return '+'.$digits;
+        return '+' . $digits;
     }
 
     private function resolveAvatarUrl(?string $avatarPath): ?string
@@ -380,7 +409,7 @@ class UserController extends Controller
             return null;
         }
 
-        return asset('storage/'.$avatarPath);
+        return asset('storage/' . $avatarPath);
     }
 
     /**
@@ -463,7 +492,7 @@ class UserController extends Controller
     private function maskEmail(string $email): string
     {
         if (! str_contains($email, '@')) {
-            return mb_substr($email, 0, 3).str_repeat('*', max(mb_strlen($email) - 3, 3));
+            return mb_substr($email, 0, 3) . str_repeat('*', max(mb_strlen($email) - 3, 3));
         }
 
         [$localPart, $domainPart] = explode('@', $email, 2);
@@ -482,6 +511,6 @@ class UserController extends Controller
         $visiblePrefix = mb_substr($phone, 0, 3);
         $hiddenLength = max(mb_strlen($phone) - 3, 0);
 
-        return $visiblePrefix.str_repeat('*', $hiddenLength);
+        return $visiblePrefix . str_repeat('*', $hiddenLength);
     }
 }

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faBars, faTicket, faTrophy, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { router } from '@inertiajs/react';
 
 export default function FrontAppHeader({
     site,
@@ -66,11 +67,40 @@ export default function FrontAppHeader({
                     <div className="d-flex justify-content-end flex-shrink-0" style={{ minWidth: '72px' }}>
                         <button
                             type="button"
-                            className="btn btn-outline-secondary btn-sm"
+                            className="btn btn-outline-secondary btn-sm d-md-none"
                             onClick={onOpenMenu}
                         >
                             <FontAwesomeIcon icon={faBars} />
                         </button>
+                    <nav className="d-none d-md-flex gap-2 align-items-center">
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
+                                title="Principal"
+                                onClick={() => router.visit('/')}
+                            >
+                                <FontAwesomeIcon icon={faTrophy} />
+                                <span className="d-none d-lg-inline">Principal</span>
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
+                                title="Mis Cupones"
+                                onClick={() => router.visit('/usuario/cupones')}
+                            >
+                                <FontAwesomeIcon icon={faTicket} />
+                                <span className="d-none d-lg-inline">Cupones</span>
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
+                                title="Mi Perfil"
+                                onClick={() => router.visit('/usuario')}
+                            >
+                                <FontAwesomeIcon icon={faCircleUser} />
+                                <span className="d-none d-lg-inline">Perfil</span>
+                            </button>
+                        </nav>
                     </div>
             </div>
         </nav>

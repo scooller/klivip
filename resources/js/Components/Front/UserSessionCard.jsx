@@ -1,8 +1,8 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import BaseCard from './primitives/BaseCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBarcode, faPersonCircleCheck, faPersonWalkingDashedLineArrowRight, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faBarcode, faPersonCircleCheck, faPersonWalkingDashedLineArrowRight, faRightFromBracket, faUserSlash } from '@fortawesome/free-solid-svg-icons';
 
 function formatPhone(rawValue) {
     if (rawValue.includes('@') || /[a-zA-Z]/.test(rawValue)) {
@@ -36,6 +36,8 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
     const hideBirthDate = Boolean(profileUnlock?.hideBirthDate);
     const [avatarPreview, setAvatarPreview] = useState(null);
     const [unlockFeedback, setUnlockFeedback] = useState(null);
+    const [confirmingDelete, setConfirmingDelete] = useState(false);
+    const [deleteError, setDeleteError] = useState(null);
     const form = useForm({
         name: customer?.name ?? '',
         email: customer?.email ?? '',
@@ -90,6 +92,28 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
 
     const handleFieldChange = (field, value) => {
         form.setData(field, value);
+    };
+
+    const handleRequestDelete = () => {
+        setDeleteError(null);
+        setConfirmingDelete(true);
+    };
+
+    const handleCancelDelete = () => {
+        setConfirmingDelete(false);
+        setDeleteError(null);
+    };
+
+    const handleConfirmDelete = () => {
+        setDeleteError(null);
+
+        router.delete('/usuario/perfil', {
+            preserveScroll: true,
+            onError: (errors) => {
+                setConfirmingDelete(false);
+                setDeleteError(errors.profile ?? 'No se pudo eliminar el perfil. Intenta nuevamente.');
+            },
+        });
     };
 
     const handleSubmit = (event) => {
@@ -342,6 +366,35 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                 <button className="block-action btn btn-primary" type="submit" disabled={form.processing}>
                     Guardar cambios
                 </button>
+
+                {deleteError ? (
+                    <div className="feedback-callout alert alert-danger" role="alert">
+                        <strong>No se pudo borrar el perfil</strong>
+                        <p className="mb-0">{deleteError}</p>
+                    </div>
+                ) : null}
+
+                {confirmingDelete ? (
+                    <div className="feedback-callout alert alert-warning" role="alert">
+                        <strong>Confirmar eliminacion</strong>
+                        <p className="mb-0">
+                            Estas a punto de borrar tu perfil permanentemente. Se eliminaran tus datos,
+                            cupones y redenciones. Esta accion no se puede deshacer.
+                        </p>
+                        <div className="d-flex gap-2 mt-2">
+                            <button className="btn btn-danger btn-sm" type="button" onClick={handleConfirmDelete}>
+                                <FontAwesomeIcon icon={faUserSlash} /> Si, borrar mi perfil
+                            </button>
+                            <button className="btn btn-outline-secondary btn-sm" type="button" onClick={handleCancelDelete}>
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <button className="block-action btn btn-outline-danger" type="button" onClick={handleRequestDelete}>
+                        <FontAwesomeIcon icon={faUserSlash} /> Borrar perfil
+                    </button>
+                )}
 
                 <button className="block-action btn btn-danger" type="button" onClick={onLogout}>
                     Cerrar sesion

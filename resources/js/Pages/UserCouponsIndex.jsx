@@ -1,6 +1,6 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faCircleCheck, faQrcode, faTicket, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faCircleCheck, faQrcode, faTicket, faTrophy, faGifts } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useRef, useState } from 'react';
 import { Modal } from 'bootstrap';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
@@ -183,7 +183,7 @@ export default function UserCouponsIndex({ site, groupedCoupons = [], pagination
 
                                     {group.prize && (
                                         <p className="text-secondary small mb-3">
-                                            <FontAwesomeIcon icon={faTrophy} className="me-1" />
+                                            <FontAwesomeIcon icon={faGifts} className="me-1" />
                                             Premio: {group.prize}
                                         </p>
                                     )}

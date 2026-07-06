@@ -41,6 +41,9 @@ foreach ($publicBaseDomains as $baseDomain) {
             Route::post('/usuario/perfil', [UserController::class, 'updateProfile'])
                 ->middleware('auth:customer')
                 ->name($routeNamePrefix . '.profile.update');
+            Route::delete('/usuario/perfil', [UserController::class, 'destroyProfile'])
+                ->middleware('auth:customer')
+                ->name($routeNamePrefix . '.profile.destroy');
             Route::post('/usuario/perfil/unlock/otp/request', [UserController::class, 'requestProfileUnlockOtp'])
                 ->middleware('auth:customer')
                 ->name($routeNamePrefix . '.profile.unlock.otp.request');

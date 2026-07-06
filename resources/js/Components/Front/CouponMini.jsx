@@ -26,7 +26,7 @@ export default function CouponMini({
                 }
             }}
         >
-            <span className="coupon-mini__number">{paddedNumber}</span>
+            <span className="coupon-mini__number text-center">Cupon<h2>{paddedNumber}</h2></span>
             {isUsed && showLabel && (
                 <small className="coupon-mini__label">Usado</small>
             )}
