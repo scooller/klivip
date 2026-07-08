@@ -62,6 +62,9 @@ foreach ($publicBaseDomains as $baseDomain) {
             Route::post('/usuario/register', [CustomerSessionController::class, 'register'])
                 ->middleware('guest:customer')
                 ->name($routeNamePrefix . '.register');
+            Route::post('/usuario/register/verify', [CustomerSessionController::class, 'verifyRegistration'])
+                ->middleware('guest:customer')
+                ->name($routeNamePrefix . '.register.verify');
             Route::post('/usuario/login/verify', [CustomerSessionController::class, 'verify'])
                 ->middleware('guest:customer')
                 ->name($routeNamePrefix . '.login.verify');

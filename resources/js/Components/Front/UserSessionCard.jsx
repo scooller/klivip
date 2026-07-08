@@ -130,10 +130,13 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
         unlockForm.post('/usuario/perfil/unlock/otp/request', {
             preserveScroll: true,
             onSuccess: () => {
+                const message = customer?.phone
+                    ? 'Revisa tus mensajes SMS e ingresa el codigo para desbloquear la edicion.'
+                    : 'Revisa tu correo e ingresa el codigo para desbloquear la edicion.';
                 setUnlockFeedback({
                     variant: 'success',
                     title: 'Codigo enviado',
-                    description: 'Revisa tu correo e ingresa el codigo para desbloquear la edicion.',
+                    description: message,
                 });
             },
         });

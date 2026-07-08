@@ -137,7 +137,7 @@ class UserController extends Controller
         return redirect('/')->with('customer_profile_status', 'deleted');
     }
 
-    public function requestProfileUnlockOtp(Request $request): RedirectResponse
+    public function requestProfileUnlockOtp(Request $request, \App\Services\PreludeService $preludeService): RedirectResponse
     {
         $customer = Auth::guard('customer')->user();
 
@@ -164,28 +164,39 @@ class UserController extends Controller
 
         RateLimiter::hit($requestKey, 60);
 
-        $otpCode = Str::upper(Str::random(6));
-        $cacheKey = $this->profileUnlockOtpCacheKey($customer->id, $site->slug);
+        if ($customer->phone) {
+            $verificationId = $preludeService->sendSmsVerification($customer->phone);
+            
+            if (!$verificationId) {
+                RateLimiter::clear($requestKey);
+                return back()->withErrors([
+                    'profile_unlock' => 'No se pudo enviar el SMS de desbloqueo. Intenta nuevamente.',
+                ]);
+            }
+        } else {
+            $otpCode = Str::upper(Str::random(6));
+            $cacheKey = $this->profileUnlockOtpCacheKey($customer->id, $site->slug);
 
-        Cache::put($cacheKey, [
-            'code_hash' => Hash::make($otpCode),
-        ], now()->addMinutes(self::PROFILE_UNLOCK_OTP_DURATION_MINUTES));
+            Cache::put($cacheKey, [
+                'code_hash' => Hash::make($otpCode),
+            ], now()->addMinutes(self::PROFILE_UNLOCK_OTP_DURATION_MINUTES));
 
-        try {
-            $customer->notify(new FrontProfileUnlockOtpNotification($otpCode, $site->name));
-        } catch (TransportExceptionInterface $exception) {
-            Cache::forget($cacheKey);
-            RateLimiter::clear($requestKey);
+            try {
+                $customer->notify(new FrontProfileUnlockOtpNotification($otpCode, $site->name));
+            } catch (TransportExceptionInterface $exception) {
+                Cache::forget($cacheKey);
+                RateLimiter::clear($requestKey);
 
-            return back()->withErrors([
-                'profile_unlock' => 'No se pudo enviar el codigo de desbloqueo. Intenta nuevamente.',
-            ]);
+                return back()->withErrors([
+                    'profile_unlock' => 'No se pudo enviar el codigo de desbloqueo. Intenta nuevamente.',
+                ]);
+            }
         }
 
         return back()->with('customer_profile_unlock_status', 'otp_sent');
     }
 
-    public function verifyProfileUnlockOtp(Request $request): RedirectResponse
+    public function verifyProfileUnlockOtp(Request $request, \App\Services\PreludeService $preludeService): RedirectResponse
     {
         if (! (bool) SiteSetting::get('enable_profile_unlock_otp', true)) {
             return back()->withErrors([
@@ -194,7 +205,7 @@ class UserController extends Controller
         }
 
         $payload = $request->validate([
-            'otp_code' => ['required', 'alpha_num:6'],
+            'otp_code' => ['required', 'string'],
         ]);
 
         $customer = Auth::guard('customer')->user();
@@ -206,17 +217,29 @@ class UserController extends Controller
         }
 
         $site = $this->resolveSite($request);
-        $cacheKey = $this->profileUnlockOtpCacheKey($customer->id, $site->slug);
-        $otpPayload = Cache::get($cacheKey);
 
-        if (! is_array($otpPayload) || ! isset($otpPayload['code_hash']) || ! Hash::check((string) $payload['otp_code'], (string) $otpPayload['code_hash'])) {
-            return back()->withErrors([
-                'profile_unlock_otp' => 'El codigo no es valido o ya expiro.',
-            ]);
+        if ($customer->phone) {
+            $isValid = $preludeService->validateSmsVerification($customer->phone, $payload['otp_code']);
+            if (!$isValid) {
+                return back()->withErrors([
+                    'profile_unlock_otp' => 'El codigo SMS no es valido o ya expiro.',
+                ]);
+            }
+            RateLimiter::clear($this->profileUnlockOtpRequestKey($customer->id, $site->slug));
+        } else {
+            $cacheKey = $this->profileUnlockOtpCacheKey($customer->id, $site->slug);
+            $otpPayload = Cache::get($cacheKey);
+
+            if (! is_array($otpPayload) || ! isset($otpPayload['code_hash']) || ! Hash::check((string) $payload['otp_code'], (string) $otpPayload['code_hash'])) {
+                return back()->withErrors([
+                    'profile_unlock_otp' => 'El codigo no es valido o ya expiro.',
+                ]);
+            }
+
+            Cache::forget($cacheKey);
+            RateLimiter::clear($this->profileUnlockOtpRequestKey($customer->id, $site->slug));
         }
 
-        Cache::forget($cacheKey);
-        RateLimiter::clear($this->profileUnlockOtpRequestKey($customer->id, $site->slug));
         $this->activateProfileUnlock($request);
 
         return back()->with('customer_profile_unlock_status', 'unlocked');

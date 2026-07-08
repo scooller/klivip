@@ -8,6 +8,7 @@ use App\Models\Site;
 use App\Models\SiteSetting;
 use App\Models\User;
 use App\Notifications\FrontCustomerOtpNotification;
+use App\Services\PreludeService;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class CustomerSessionController extends Controller
 {
-    public function register(Request $request): RedirectResponse
+    public function register(Request $request, PreludeService $preludeService): RedirectResponse
     {
         $adultLimitDate = CarbonImmutable::now()->subYears(18)->toDateString();
 
@@ -52,12 +53,50 @@ class CustomerSessionController extends Controller
             ]);
         }
 
+        $verificationId = $preludeService->sendSmsVerification($normalizedPhone);
+
+        if (!$verificationId) {
+            return back()->withErrors([
+                'phone' => 'No se pudo enviar el SMS de verificación a este número.',
+            ]);
+        }
+
+        $request->session()->put('customer_registration_payload', array_merge($payload, ['phone' => $normalizedPhone]));
+        $request->session()->put('customer_registration_phone', $normalizedPhone);
+
+        return back()->with('customer_registration_status', 'pending_verification');
+    }
+
+    public function verifyRegistration(Request $request, PreludeService $preludeService): RedirectResponse
+    {
+        $request->validate([
+            'otp_code' => ['required', 'string'],
+        ]);
+
+        $payload = $request->session()->get('customer_registration_payload');
+        $phone = $request->session()->get('customer_registration_phone');
+
+        if (!$payload || !$phone) {
+            return back()->withErrors([
+                'otp_code' => 'La sesion de registro expiro. Intenta registrarte de nuevo.',
+            ]);
+        }
+
+        $isValid = $preludeService->validateSmsVerification($phone, $request->input('otp_code'));
+
+        if (!$isValid) {
+            return back()->withErrors([
+                'otp_code' => 'El codigo SMS no es valido o ha expirado.',
+            ]);
+        }
+
         $site = $this->resolveSite($request);
 
         $customer = User::create([
             'name' => trim((string) $payload['name']),
             'email' => mb_strtolower(trim((string) $payload['email'])),
-            'phone' => $normalizedPhone,
+            'phone' => $phone,
+            'phone_verified_at' => now(),
             'birth_date' => $payload['birth_date'],
             'password' => Hash::make(Str::random(40)),
             'role' => UserRole::User,
@@ -65,10 +104,15 @@ class CustomerSessionController extends Controller
 
         $customer->sites()->syncWithoutDetaching([$site->id]);
 
-        return back()->with('customer_registration_status', 'created');
+        $request->session()->forget(['customer_registration_payload', 'customer_registration_phone']);
+
+        Auth::guard('customer')->login($customer, true);
+        $request->session()->regenerate();
+
+        return redirect()->intended('/')->with('customer_registration_status', 'verified');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, PreludeService $preludeService): RedirectResponse
     {
         $credentials = $request->validate([
             'identifier' => ['required', 'string', 'max:255'],
@@ -94,40 +138,64 @@ class CustomerSessionController extends Controller
         }
 
         $site = $this->resolveSite($request);
-        $requestKey = $this->otpRequestKey($site->slug, $customer->email);
+        $normalizedPhone = $this->normalizePhone($identifier);
 
-        if (RateLimiter::tooManyAttempts($requestKey, 1)) {
-            return back()->withErrors([
-                'identifier' => 'Espera un momento antes de solicitar un nuevo codigo.',
+        if ($normalizedPhone !== null && $customer->phone === $normalizedPhone) {
+            // Login with phone -> Use Prelude SMS
+            $verificationId = $preludeService->sendSmsVerification($normalizedPhone);
+
+            if (!$verificationId) {
+                return back()->withErrors([
+                    'identifier' => 'No se pudo enviar el codigo SMS por Prelude.',
+                ]);
+            }
+
+            $request->session()->put([
+                'customer_otp_identifier' => $identifier,
+                'customer_otp_email' => $customer->email,
+                'customer_otp_phone' => $normalizedPhone,
+                'customer_otp_method' => 'sms',
+                'customer_otp_remember' => $request->boolean('remember'),
             ]);
-        }
 
-        RateLimiter::hit($requestKey, 60);
+        } else {
+            // Login with email -> Use native notification
+            $requestKey = $this->otpRequestKey($site->slug, $customer->email);
 
-        $otpCode = Str::upper(Str::random(6));
-        $cacheKey = $this->otpCacheKey($site->slug, $customer->email);
+            if (RateLimiter::tooManyAttempts($requestKey, 1)) {
+                return back()->withErrors([
+                    'identifier' => 'Espera un momento antes de solicitar un nuevo codigo.',
+                ]);
+            }
 
-        Cache::put($cacheKey, [
-            'user_id' => $customer->getKey(),
-            'code_hash' => Hash::make($otpCode),
-        ], now()->addMinutes(10));
+            RateLimiter::hit($requestKey, 60);
 
-        $request->session()->put([
-            'customer_otp_identifier' => $identifier,
-            'customer_otp_email' => $customer->email,
-            'customer_otp_expires_at' => now()->addMinutes(10)->timestamp,
-            'customer_otp_remember' => $request->boolean('remember'),
-        ]);
+            $otpCode = Str::upper(Str::random(6));
+            $cacheKey = $this->otpCacheKey($site->slug, $customer->email);
 
-        try {
-            $customer->notify(new FrontCustomerOtpNotification($otpCode, $site->name));
-        } catch (TransportExceptionInterface $exception) {
-            Cache::forget($cacheKey);
-            RateLimiter::clear($requestKey);
+            Cache::put($cacheKey, [
+                'user_id' => $customer->getKey(),
+                'code_hash' => Hash::make($otpCode),
+            ], now()->addMinutes(10));
 
-            return back()->withErrors([
-                'identifier' => 'No se pudo enviar el codigo de acceso. Revisa la configuracion de correo e intenta nuevamente.',
+            $request->session()->put([
+                'customer_otp_identifier' => $identifier,
+                'customer_otp_email' => $customer->email,
+                'customer_otp_method' => 'email',
+                'customer_otp_expires_at' => now()->addMinutes(10)->timestamp,
+                'customer_otp_remember' => $request->boolean('remember'),
             ]);
+
+            try {
+                $customer->notify(new FrontCustomerOtpNotification($otpCode, $site->name));
+            } catch (TransportExceptionInterface $exception) {
+                Cache::forget($cacheKey);
+                RateLimiter::clear($requestKey);
+
+                return back()->withErrors([
+                    'identifier' => 'No se pudo enviar el codigo de acceso por correo.',
+                ]);
+            }
         }
 
         $request->session()->flash('customer_otp_status', 'sent');
@@ -135,11 +203,11 @@ class CustomerSessionController extends Controller
         return back();
     }
 
-    public function verify(Request $request): RedirectResponse
+    public function verify(Request $request, PreludeService $preludeService): RedirectResponse
     {
         $credentials = $request->validate([
             'identifier' => ['required', 'string', 'max:255'],
-            'otp_code' => ['required', 'alpha_num:6'],
+            'otp_code' => ['required', 'string'],
             'remember' => ['sometimes', 'boolean'],
         ]);
 
@@ -153,17 +221,31 @@ class CustomerSessionController extends Controller
         }
 
         $site = $this->resolveSite($request);
-        $cacheKey = $this->otpCacheKey($site->slug, $customer->email);
-        $otpPayload = Cache::get($cacheKey);
+        $method = $request->session()->get('customer_otp_method');
+        $phone = $request->session()->get('customer_otp_phone');
 
-        if (! is_array($otpPayload) || ! isset($otpPayload['code_hash']) || ! Hash::check((string) $credentials['otp_code'], (string) $otpPayload['code_hash'])) {
-            return back()->withErrors([
-                'otp_code' => 'El codigo no es valido o ya expiro.',
-            ]);
+        if ($method === 'sms' && $phone !== null) {
+            $isValid = $preludeService->validateSmsVerification($phone, $credentials['otp_code']);
+            
+            if (!$isValid) {
+                return back()->withErrors([
+                    'otp_code' => 'El codigo SMS no es valido o ya expiro.',
+                ]);
+            }
+        } else {
+            $cacheKey = $this->otpCacheKey($site->slug, $customer->email);
+            $otpPayload = Cache::get($cacheKey);
+
+            if (! is_array($otpPayload) || ! isset($otpPayload['code_hash']) || ! Hash::check((string) $credentials['otp_code'], (string) $otpPayload['code_hash'])) {
+                return back()->withErrors([
+                    'otp_code' => 'El codigo no es valido o ya expiro.',
+                ]);
+            }
+
+            Cache::forget($cacheKey);
+            RateLimiter::clear($this->otpRequestKey($site->slug, $customer->email));
         }
 
-        Cache::forget($cacheKey);
-        RateLimiter::clear($this->otpRequestKey($site->slug, $customer->email));
         $this->clearOtpSession($request);
 
         Auth::guard('customer')->login($customer, $request->boolean('remember'));
@@ -235,6 +317,8 @@ class CustomerSessionController extends Controller
         $request->session()->forget([
             'customer_otp_identifier',
             'customer_otp_email',
+            'customer_otp_phone',
+            'customer_otp_method',
             'customer_otp_expires_at',
             'customer_otp_remember',
         ]);

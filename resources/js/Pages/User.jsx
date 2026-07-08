@@ -69,6 +69,11 @@ export default function User({ site, activeCoupons = [] }) {
         birth_date: '',
     });
 
+    const [isRegistrationOtpPending, setIsRegistrationOtpPending] = useState(false);
+    const registerVerifyForm = useForm({
+        otp_code: '',
+    });
+
     const [adultMaxBirthDate, setAdultMaxBirthDate] = useState('');
 
     useEffect(() => {
@@ -93,7 +98,7 @@ export default function User({ site, activeCoupons = [] }) {
                     variant: 'success',
                     title: loginRequiresOtp ? 'Codigo enviado' : 'Acceso concedido',
                     description: loginRequiresOtp
-                        ? 'Revisa tu correo y escribe el codigo de acceso para continuar.'
+                        ? 'Revisa tus mensajes SMS o tu correo y escribe el codigo de acceso para continuar.'
                         : 'Ingresaste correctamente con tu cuenta.',
                 });
             },
@@ -102,7 +107,7 @@ export default function User({ site, activeCoupons = [] }) {
                     variant: 'danger',
                     title: loginRequiresOtp ? 'No se pudo enviar el codigo' : 'No se pudo iniciar sesion',
                     description: loginRequiresOtp
-                        ? 'Revisa tu correo e intenta nuevamente.'
+                        ? 'Verifica tus datos e intenta nuevamente.'
                         : 'Revisa tus datos e intenta nuevamente.',
                 });
             },
@@ -144,18 +149,11 @@ export default function User({ site, activeCoupons = [] }) {
         registerForm.post('/usuario/register', {
             preserveScroll: true,
             onSuccess: () => {
-                const registeredEmail = registerForm.data.email;
-
-                setIsRegistering(false);
-                setIsChangingUser(false);
-                loginForm.setData('identifier', registeredEmail);
-                loginForm.setData('otp_code', '');
-                registerForm.reset();
-
+                setIsRegistrationOtpPending(true);
                 setFeedback({
                     variant: 'success',
-                    title: 'Registro exitoso',
-                    description: 'Tu cuenta fue creada. Ahora solicita tu codigo para acceder.',
+                    title: 'Codigo enviado',
+                    description: 'Revisa tus mensajes SMS y escribe el codigo para verificar tu cuenta.',
                 });
             },
             onError: () => {
@@ -163,6 +161,35 @@ export default function User({ site, activeCoupons = [] }) {
                     variant: 'danger',
                     title: 'No se pudo completar el registro',
                     description: 'Revisa los datos del formulario e intenta nuevamente.',
+                });
+            },
+        });
+    };
+
+    const handleVerifyRegistration = (event) => {
+        event?.preventDefault();
+        setFeedback(null);
+
+        registerVerifyForm.post('/usuario/register/verify', {
+            preserveScroll: true,
+            onSuccess: () => {
+                setIsRegistering(false);
+                setIsRegistrationOtpPending(false);
+                setIsChangingUser(false);
+                registerForm.reset();
+                registerVerifyForm.reset();
+
+                setFeedback({
+                    variant: 'success',
+                    title: 'Registro exitoso',
+                    description: 'Tu cuenta ha sido verificada y has iniciado sesión.',
+                });
+            },
+            onError: () => {
+                setFeedback({
+                    variant: 'danger',
+                    title: 'Codigo invalido',
+                    description: 'El codigo ingresado no es valido o expiro. Intenta nuevamente.',
                 });
             },
         });
@@ -212,95 +239,145 @@ export default function User({ site, activeCoupons = [] }) {
                             </div>
 
                             {isRegistering ? (
-                                <form className="user-login-form-shell user-register-form-shell d-flex flex-column gap-3" onSubmit={handleRegisterCustomer}>
-                                    <label htmlFor="register-name" className="form-label">Nombre Completo</label>
-                                    <input
-                                        id="register-name"
-                                        className="form-control user-phone-input user-register-input"
-                                        type="text"
-                                        autoComplete="name"
-                                        placeholder="Carlos Silva"
-                                        value={registerForm.data.name}
-                                        onInput={(event) => registerForm.setData('name', event.target.value)}
-                                    />
+                                isRegistrationOtpPending ? (
+                                    <form className="user-login-form-shell user-register-form-shell d-flex flex-column gap-3" onSubmit={handleVerifyRegistration}>
+                                        <label htmlFor="register-otp-entry" className="form-label">Codigo de verificacion (SMS):</label>
+                                        <input
+                                            id="register-otp-entry"
+                                            className="form-control user-phone-input"
+                                            type="text"
+                                            inputMode="text"
+                                            autoComplete="one-time-code"
+                                            placeholder="ABC123"
+                                            value={registerVerifyForm.data.otp_code}
+                                            onInput={(event) => registerVerifyForm.setData('otp_code', event.target.value)}
+                                        />
 
-                                    <label htmlFor="register-email" className="form-label">E-mail</label>
-                                    <input
-                                        id="register-email"
-                                        className="form-control user-phone-input user-register-input"
-                                        type="email"
-                                        autoComplete="email"
-                                        placeholder="correo@ejemplo.com"
-                                        value={registerForm.data.email}
-                                        onInput={(event) => registerForm.setData('email', event.target.value)}
-                                    />
+                                        {feedback ? (
+                                            <div className="alert alert-info feedback-callout" role="alert">
+                                                <strong>{feedback.title}</strong>
+                                                <p className="mb-0">{feedback.description}</p>
+                                            </div>
+                                        ) : null}
 
-                                    <label htmlFor="register-email-confirmation" className="form-label">Confirma su E-mail</label>
-                                    <input
-                                        id="register-email-confirmation"
-                                        className="form-control user-phone-input user-register-input"
-                                        type="email"
-                                        autoComplete="email"
-                                        placeholder="correo@ejemplo.com"
-                                        value={registerForm.data.email_confirmation}
-                                        onInput={(event) => registerForm.setData('email_confirmation', event.target.value)}
-                                    />
+                                        {registerVerifyForm.errors.otp_code ? (
+                                            <div className="alert alert-danger feedback-callout" role="alert">
+                                                <strong>Error</strong>
+                                                <p className="mb-0">{registerVerifyForm.errors.otp_code}</p>
+                                            </div>
+                                        ) : null}
 
-                                    <label htmlFor="register-phone" className="form-label">Numero de Telefono</label>
-                                    <input
-                                        id="register-phone"
-                                        className="form-control user-phone-input user-register-input"
-                                        type="text"
-                                        autoComplete="tel"
-                                        placeholder="+56 9 1548 2685"
-                                        value={registerForm.data.phone}
-                                        onInput={(event) => registerForm.setData('phone', formatPhone(event.target.value))}
-                                    />
+                                        <button
+                                            className="user-login-primary btn btn-primary btn-lg w-100"
+                                            type="submit"
+                                            disabled={registerVerifyForm.processing}
+                                        >
+                                            <FontAwesomeIcon icon={faPersonCircleCheck} /> Verificar codigo
+                                        </button>
 
-                                    <label htmlFor="register-birth-date" className="form-label">Fecha de Nacimiento</label>
-                                    <input
-                                        id="register-birth-date"
-                                        className="form-control user-phone-input user-register-input"
-                                        type="date"
-                                        max={adultMaxBirthDate}
-                                        value={registerForm.data.birth_date}
-                                        onInput={(event) => registerForm.setData('birth_date', event.target.value)}
-                                    />
+                                        <button
+                                            className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
+                                            type="button"
+                                            disabled={registerVerifyForm.processing}
+                                            onClick={() => {
+                                                setIsRegistrationOtpPending(false);
+                                                setFeedback(null);
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faArrowLeft} /> Volver al registro
+                                        </button>
+                                    </form>
+                                ) : (
+                                    <form className="user-login-form-shell user-register-form-shell d-flex flex-column gap-3" onSubmit={handleRegisterCustomer}>
+                                        <label htmlFor="register-name" className="form-label">Nombre Completo</label>
+                                        <input
+                                            id="register-name"
+                                            className="form-control user-phone-input user-register-input"
+                                            type="text"
+                                            autoComplete="name"
+                                            placeholder="Carlos Silva"
+                                            value={registerForm.data.name}
+                                            onInput={(event) => registerForm.setData('name', event.target.value)}
+                                        />
 
-                                    {feedback ? (
-                                        <div className="alert alert-info feedback-callout" role="alert">
-                                            <strong>{feedback.title}</strong>
-                                            <p className="mb-0">{feedback.description}</p>
-                                        </div>
-                                    ) : null}
+                                        <label htmlFor="register-email" className="form-label">E-mail</label>
+                                        <input
+                                            id="register-email"
+                                            className="form-control user-phone-input user-register-input"
+                                            type="email"
+                                            autoComplete="email"
+                                            placeholder="correo@ejemplo.com"
+                                            value={registerForm.data.email}
+                                            onInput={(event) => registerForm.setData('email', event.target.value)}
+                                        />
 
-                                    {registerErrorMessage ? (
-                                        <div className="alert alert-danger feedback-callout" role="alert">
-                                            <strong>Error de registro</strong>
-                                            <p className="mb-0">{registerErrorMessage}</p>
-                                        </div>
-                                    ) : null}
+                                        <label htmlFor="register-email-confirmation" className="form-label">Confirma su E-mail</label>
+                                        <input
+                                            id="register-email-confirmation"
+                                            className="form-control user-phone-input user-register-input"
+                                            type="email"
+                                            autoComplete="email"
+                                            placeholder="correo@ejemplo.com"
+                                            value={registerForm.data.email_confirmation}
+                                            onInput={(event) => registerForm.setData('email_confirmation', event.target.value)}
+                                        />
 
-                                    <button
-                                        className="user-login-primary btn btn-primary btn-lg w-100"
-                                        type="submit"
-                                        disabled={registerForm.processing}
-                                    >
-                                        <FontAwesomeIcon icon={faUserPen} /> Registrarme
-                                    </button>
+                                        <label htmlFor="register-phone" className="form-label">Numero de Telefono</label>
+                                        <input
+                                            id="register-phone"
+                                            className="form-control user-phone-input user-register-input"
+                                            type="text"
+                                            autoComplete="tel"
+                                            placeholder="+56 9 1548 2685"
+                                            value={registerForm.data.phone}
+                                            onInput={(event) => registerForm.setData('phone', formatPhone(event.target.value))}
+                                        />
 
-                                    <button
-                                        className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
-                                        type="button"
-                                        disabled={registerForm.processing}
-                                        onClick={() => {
-                                            setIsRegistering(false);
-                                            setFeedback(null);
-                                        }}
-                                    >
-                                        <FontAwesomeIcon icon={faArrowLeft} /> Volver al acceso
-                                    </button>
-                                </form>
+                                        <label htmlFor="register-birth-date" className="form-label">Fecha de Nacimiento</label>
+                                        <input
+                                            id="register-birth-date"
+                                            className="form-control user-phone-input user-register-input"
+                                            type="date"
+                                            max={adultMaxBirthDate}
+                                            value={registerForm.data.birth_date}
+                                            onInput={(event) => registerForm.setData('birth_date', event.target.value)}
+                                        />
+
+                                        {feedback ? (
+                                            <div className="alert alert-info feedback-callout" role="alert">
+                                                <strong>{feedback.title}</strong>
+                                                <p className="mb-0">{feedback.description}</p>
+                                            </div>
+                                        ) : null}
+
+                                        {registerErrorMessage ? (
+                                            <div className="alert alert-danger feedback-callout" role="alert">
+                                                <strong>Error de registro</strong>
+                                                <p className="mb-0">{registerErrorMessage}</p>
+                                            </div>
+                                        ) : null}
+
+                                        <button
+                                            className="user-login-primary btn btn-primary btn-lg w-100"
+                                            type="submit"
+                                            disabled={registerForm.processing}
+                                        >
+                                            <FontAwesomeIcon icon={faUserPen} /> Registrarme
+                                        </button>
+
+                                        <button
+                                            className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
+                                            type="button"
+                                            disabled={registerForm.processing}
+                                            onClick={() => {
+                                                setIsRegistering(false);
+                                                setFeedback(null);
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faArrowLeft} /> Volver al acceso
+                                        </button>
+                                    </form>
+                                )
                             ) : (
                                 <form className="user-login-form-shell d-flex flex-column gap-3" onSubmit={isOtpPending ? handleVerifyOtp : handleRequestOtp}>
                                     <label htmlFor="customer-phone-entry" className="form-label">Numero de Telefono / Email:</label>
