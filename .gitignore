@@ -33,3 +33,7 @@ AGENTS.md
 boost.json
 /assets
 /.qwen
+/.agents
+/graphify-out
+GEMINI.md
+/.gemini

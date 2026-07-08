@@ -261,7 +261,7 @@ class UserController extends Controller
         $unlockUrl = URL::temporarySignedRoute(
             $unlockRouteName,
             now()->addMinutes(self::PROFILE_UNLOCK_LINK_DURATION_MINUTES),
-            ['token' => $rawToken],
+            ['site' => $site->slug, 'token' => $rawToken],
         );
 
         try {

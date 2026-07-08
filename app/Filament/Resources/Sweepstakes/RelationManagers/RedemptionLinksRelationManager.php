@@ -34,7 +34,7 @@ class RedemptionLinksRelationManager extends RelationManager
                     ->relationship('redemptionSource', 'name')
                     ->required()
                     ->default(fn () => RedemptionSource::where('code', 'link')->first()?->id)
-                    ->options(RedemptionSource::whereIn('code', ['link', 'qr', 'manual'])->pluck('name', 'id'))
+                    ->options(fn () => RedemptionSource::whereIn('code', ['link', 'qr', 'manual'])->pluck('name', 'id')->toArray())
                     ->selectablePlaceholder(false)
                     ->label('Tipo'),
                 TextInput::make('code')
@@ -211,7 +211,7 @@ class RedemptionLinksRelationManager extends RelationManager
                             ->relationship('redemptionSource', 'name')
                             ->required()
                             ->default(fn () => RedemptionSource::where('code', 'link')->first()?->id)
-                            ->options(RedemptionSource::whereIn('code', ['link', 'qr', 'manual'])->pluck('name', 'id'))
+                            ->options(fn () => RedemptionSource::whereIn('code', ['link', 'qr', 'manual'])->pluck('name', 'id')->toArray())
                             ->selectablePlaceholder(false)
                             ->label('Tipo'),
                         TextInput::make('title')
@@ -272,9 +272,9 @@ class RedemptionLinksRelationManager extends RelationManager
                     ->form([
                         Select::make('redemption_source_id')
                             ->label('Tipo')
-                            ->options(RedemptionSource::whereIn('code', ['link', 'qr', 'manual'])->pluck('name', 'id'))
+                            ->options(fn () => RedemptionSource::whereIn('code', ['link', 'qr', 'manual'])->pluck('name', 'id')->toArray())
                             ->required()
-                            ->default(RedemptionSource::where('code', 'qr')->first()?->id)
+                            ->default(fn () => RedemptionSource::where('code', 'qr')->first()?->id)
                             ->selectablePlaceholder(false),
                         TextInput::make('batch_name')
                             ->label('Nombre del lote')
