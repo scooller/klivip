@@ -176,11 +176,7 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
     if (!isUnlocked) {
         return (
             <BaseCard
-                title={(
-                    // <span>
-                    //     <span className="badge rounded-pill bg-secondary">Perfil protegido</span>
-                    // </span>
-                )}
+
             >
                 <div className="profile-editor d-flex flex-column gap-3">
                     <div className="profile-editor-avatar d-flex flex-column gap-3">
