@@ -177,18 +177,18 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
         return (
             <BaseCard
                 title={(
-                    <span>
-                        <span className="badge rounded-pill bg-secondary">Perfil protegido</span>
-                    </span>
+                    // <span>
+                    //     <span className="badge rounded-pill bg-secondary">Perfil protegido</span>
+                    // </span>
                 )}
             >
                 <div className="profile-editor d-flex flex-column gap-3">
                     <div className="profile-editor-avatar d-flex flex-column gap-3">
                         <div className="profile-editor-avatar-image">
                             {customer?.avatar_url ? (
-                                <img src={customer.avatar_url} alt={customer?.name || 'Avatar'} className="rounded-circle" style={{width: '100px', height: '100px', objectFit: 'cover'}} />
+                                <img src={customer.avatar_url} alt={customer?.name || 'Avatar'} className="rounded-circle" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                             ) : (
-                                <div className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style={{width: '100px', height: '100px', fontSize: '48px'}}>
+                                <div className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style={{ width: '100px', height: '100px', fontSize: '48px' }}>
                                     {avatarInitial}
                                 </div>
                             )}
@@ -276,9 +276,9 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                 <div className="profile-editor-avatar d-flex flex-column gap-3">
                     <div className="profile-editor-avatar-image">
                         {avatarPreview || customer?.avatar_url ? (
-                            <img src={avatarPreview ?? customer?.avatar_url} alt={form.data.name || 'Avatar'} className="rounded-circle" style={{width: '100px', height: '100px', objectFit: 'cover'}} />
+                            <img src={avatarPreview ?? customer?.avatar_url} alt={form.data.name || 'Avatar'} className="rounded-circle" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                         ) : (
-                            <div className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style={{width: '100px', height: '100px', fontSize: '48px'}}>
+                            <div className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style={{ width: '100px', height: '100px', fontSize: '48px' }}>
                                 {avatarInitial}
                             </div>
                         )}

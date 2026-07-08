@@ -55,11 +55,11 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
         <footer id={id} className="site-footer mt-auto">
             <div className="container-fluid flex-column">
                 <div className="w-100 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-2 gap-3">
-                    <ul className="list-group list-group-horizontal">
-                        <li className="list-group-item">{site?.opening_hours ?? 'Juego Responsable'}</li>
-                        <li className="list-group-item">{site?.address ?? contact.address ?? 'Seguridad Garantizada'}</li>
+                    <ul className="list-group list-group-horizontal list-group-flush border-0">
+                        <li className="list-group-item border-0">{site?.opening_hours ?? 'Juego Responsable'}</li>
+                        <li className="list-group-item border-0">{site?.address ?? contact.address ?? 'Seguridad Garantizada'}</li>
                         {contact.phone && (
-                            <li className="list-group-item">
+                            <li className="list-group-item border-0">
                                 <a href={`tel:${contact.phone}`} className="nav-link p-0">
                                     {contact.phone}
                                 </a>
@@ -110,7 +110,7 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
                                 </a>
                             </li>
                         ))}
-                        <li><a className="nav-link" disabled tabindex="-1">{siteSetting?.site_name ?? 'Klivip'} &copy; {new Date().getFullYear()}</a></li>
+                        {/* <li><a className="nav-link" disabled tabindex="-1">{siteSetting?.site_name ?? 'Klivip'} &copy; {new Date().getFullYear()}</a></li> */}
                     </ul>
                 )}
             </div>

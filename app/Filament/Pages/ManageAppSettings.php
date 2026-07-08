@@ -227,6 +227,32 @@ class ManageAppSettings extends Page implements HasForms
                                     ])
                                     ->columns(1),
                             ]),
+
+                        Tabs\Tab::make('Pop-up')
+                            ->icon('heroicon-o-window')
+                            ->schema([
+                                Section::make('Configuración del Pop-up')
+                                    ->description('Configura el pop-up que se mostrará en el home')
+                                    ->schema([
+                                        Toggle::make('popup_enabled')
+                                            ->label('Activar Pop-up')
+                                            ->helperText('Si se activa, se mostrará el pop-up en la página de inicio.'),
+
+                                        FileUpload::make('popup_image')
+                                            ->label('Imagen del Pop-up')
+                                            ->image()
+                                            ->directory('popups')
+                                            ->visibility('public')
+                                            ->helperText('Sube la imagen que se mostrará en el pop-up.'),
+
+                                        TextInput::make('popup_link')
+                                            ->label('Enlace (Opcional)')
+                                            ->url()
+                                            ->placeholder('https://ejemplo.com')
+                                            ->helperText('Enlace a donde dirigirá al hacer clic en el pop-up.'),
+                                    ])
+                                    ->columns(1),
+                            ]),
                     ])
                     ->columnSpanFull(),
             ])

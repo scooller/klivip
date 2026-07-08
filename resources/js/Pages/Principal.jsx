@@ -12,6 +12,8 @@ import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import FrontFooter from '../Components/Front/FrontFooter';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 
+const POPUP_SESSION_KEY = 'klivip_home_popup_shown';
+
 export default function Principal({ site, promotions = [], games = [], banners = [] }) {
     const page = usePage();
     const sharedSite = page.props.site ?? site;
@@ -22,6 +24,9 @@ export default function Principal({ site, promotions = [], games = [], banners =
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [gameSlidesPerPage, setGameSlidesPerPage] = useState(3);
     const carouselRefs = useRef([]);
+    const popupRef = useRef(null);
+    const siteSetting = page.props.siteSetting ?? {};
+    const popupData = siteSetting.popup ?? { enabled: false, image: null, link: null };
 
     useEffect(() => {
         const resolveSlidesPerPage = () => {
@@ -49,14 +54,22 @@ export default function Principal({ site, promotions = [], games = [], banners =
     }, []);
 
     useEffect(() => {
-        import('bootstrap/dist/js/bootstrap.bundle.js').then(({ Carousel }) => {
+        import('bootstrap/dist/js/bootstrap.bundle.js').then(({ Carousel, Modal }) => {
             carouselRefs.current.forEach((el) => {
                 if (el) {
                     new Carousel(el, { ride: 'carousel', interval: 5000 });
                 }
             });
+
+            if (popupData.enabled && popupData.image && popupRef.current) {
+                if (!sessionStorage.getItem(POPUP_SESSION_KEY)) {
+                    const modal = new Modal(popupRef.current);
+                    modal.show();
+                    sessionStorage.setItem(POPUP_SESSION_KEY, 'true');
+                }
+            }
         });
-    }, []);
+    }, [popupData.enabled, popupData.image]);
 
     const [drawDate, setDrawDate] = useState('');
 
@@ -410,6 +423,27 @@ export default function Principal({ site, promotions = [], games = [], banners =
                     customer={customer}
                     onLogout={handleCustomerLogout}
                 />
+
+                {popupData.enabled && popupData.image && (
+                    <div className="modal fade" id="homePopupModal" tabIndex="-1" aria-hidden="true" ref={popupRef}>
+                        <div className="modal-dialog modal-dialog-centered">
+                            <div className="modal-content bg-transparent border-0">
+                                <div className="modal-header border-0 pb-0 justify-content-end">
+                                    <button type="button" className="btn-close btn-close-white shadow-none bg-dark rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close" style={{ zIndex: 10 }}></button>
+                                </div>
+                                <div className="modal-body p-0 position-relative text-center">
+                                    {popupData.link ? (
+                                        <a href={popupData.link} target="_blank" rel="noreferrer">
+                                            <img src={popupData.image} alt="Pop-up" className="img-fluid rounded shadow" />
+                                        </a>
+                                    ) : (
+                                        <img src={popupData.image} alt="Pop-up" className="img-fluid rounded shadow" />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );

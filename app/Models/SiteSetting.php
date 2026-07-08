@@ -31,6 +31,9 @@ class SiteSetting extends Model
         'enable_profile_unlock_otp',
         'enable_profile_unlock_magic_link',
         'hide_birth_date_on_profile',
+        'popup_enabled',
+        'popup_image',
+        'popup_link',
     ];
 
     protected $casts = [
@@ -40,6 +43,7 @@ class SiteSetting extends Model
         'enable_profile_unlock_otp' => 'boolean',
         'enable_profile_unlock_magic_link' => 'boolean',
         'hide_birth_date_on_profile' => 'boolean',
+        'popup_enabled' => 'boolean',
     ];
 
     public static function current(): self
@@ -54,6 +58,7 @@ class SiteSetting extends Model
                 'enable_profile_unlock_otp' => true,
                 'enable_profile_unlock_magic_link' => true,
                 'hide_birth_date_on_profile' => true,
+                'popup_enabled' => false,
             ]
         );
     }
@@ -108,6 +113,11 @@ class SiteSetting extends Model
             'enable_profile_unlock_otp' => (bool) $settings->enable_profile_unlock_otp,
             'enable_profile_unlock_magic_link' => (bool) $settings->enable_profile_unlock_magic_link,
             'hide_birth_date_on_profile' => (bool) $settings->hide_birth_date_on_profile,
+            'popup' => [
+                'enabled' => (bool) $settings->popup_enabled,
+                'image' => $settings->popup_image ? url($settings->popup_image) : null,
+                'link' => $settings->popup_link,
+            ],
         ];
     }
 }

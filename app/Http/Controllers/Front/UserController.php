@@ -336,9 +336,9 @@ class UserController extends Controller
         ];
         $configuredAdminDomain = (string) config('app.admin_domain');
         $normalizedAdminDomain = parse_url($configuredAdminDomain, PHP_URL_HOST) ?: $configuredAdminDomain;
-        $adminPortal = [
+        $adminPortal = ($customer instanceof User && $customer->isPanelUser()) ? [
             'url' => sprintf('%s://%s', $request->getScheme(), $normalizedAdminDomain),
-        ];
+        ] : null;
 
         $recentCoupons = $customer instanceof User
             ? SweepstakeCoupon::query()

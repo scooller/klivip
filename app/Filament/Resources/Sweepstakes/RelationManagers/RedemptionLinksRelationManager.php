@@ -31,12 +31,11 @@ class RedemptionLinksRelationManager extends RelationManager
         return $schema
             ->components([
                 Select::make('redemption_source_id')
-                    ->relationship('redemptionSource', 'name')
+                    ->label('Tipo')
                     ->required()
-                    ->default(fn () => RedemptionSource::where('code', 'link')->first()?->id)
                     ->options(fn () => RedemptionSource::whereIn('code', ['link', 'qr', 'manual'])->pluck('name', 'id')->toArray())
-                    ->selectablePlaceholder(false)
-                    ->label('Tipo'),
+                    ->default(fn () => RedemptionSource::where('code', 'link')->first()?->id)
+                    ->selectablePlaceholder(false),
                 TextInput::make('code')
                     ->required()
                     ->maxLength(100)
@@ -208,12 +207,11 @@ class RedemptionLinksRelationManager extends RelationManager
                             ->live()
                             ->helperText('Usa 1 para un link individual, o más para crear un paquete múltiple.'),
                         Select::make('redemption_source_id')
-                            ->relationship('redemptionSource', 'name')
+                            ->label('Tipo')
                             ->required()
-                            ->default(fn () => RedemptionSource::where('code', 'link')->first()?->id)
                             ->options(fn () => RedemptionSource::whereIn('code', ['link', 'qr', 'manual'])->pluck('name', 'id')->toArray())
-                            ->selectablePlaceholder(false)
-                            ->label('Tipo'),
+                            ->default(fn () => RedemptionSource::where('code', 'link')->first()?->id)
+                            ->selectablePlaceholder(false),
                         TextInput::make('title')
                             ->required()
                             ->maxLength(255)
