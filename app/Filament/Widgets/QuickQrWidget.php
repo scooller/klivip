@@ -19,7 +19,7 @@ class QuickQrWidget extends Widget implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string $view = "filament.widgets.quick-qr-widget";
+    protected string $view = "filament.widgets.quick-qr-widget";
 
     protected static ?int $sort = 2;
 
