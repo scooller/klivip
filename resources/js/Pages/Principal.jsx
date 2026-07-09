@@ -26,6 +26,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [gameSlidesPerPage, setGameSlidesPerPage] = useState(3);
+    const [couponSlidesPerPage, setCouponSlidesPerPage] = useState(4);
     const carouselRefs = useRef([]);
     const popupRef = useRef(null);
     const siteSetting = page.props.siteSetting ?? {};
@@ -35,17 +36,20 @@ export default function Principal({ site, promotions = [], games = [], banners =
         const resolveSlidesPerPage = () => {
             if (window.innerWidth < 768) {
                 setGameSlidesPerPage(1);
+                setCouponSlidesPerPage(1);
 
                 return;
             }
 
             if (window.innerWidth < 1024) {
                 setGameSlidesPerPage(2);
+                setCouponSlidesPerPage(2);
 
                 return;
             }
 
             setGameSlidesPerPage(3);
+            setCouponSlidesPerPage(4);
         };
 
         resolveSlidesPerPage();
@@ -178,11 +182,11 @@ export default function Principal({ site, promotions = [], games = [], banners =
         }
 
         const chunks = [];
-        for (let i = 0; i < pageActiveCoupons.length; i += gameSlidesPerPage) {
-            chunks.push(pageActiveCoupons.slice(i, i + gameSlidesPerPage));
+        for (let i = 0; i < pageActiveCoupons.length; i += couponSlidesPerPage) {
+            chunks.push(pageActiveCoupons.slice(i, i + couponSlidesPerPage));
         }
         return chunks;
-    }, [pageActiveCoupons, gameSlidesPerPage]);
+    }, [pageActiveCoupons, couponSlidesPerPage]);
 
     const weeklyHighlights = useMemo(() => {
         const labels = ['Miercoles', 'Jueves', 'Sabado'];
