@@ -11,7 +11,7 @@ export default function Show({ link, sweepstake, customer = null }) {
         setFeedback(null);
         setProcessing(true);
 
-        router.post(`/redemption/${link.code}/redeem`, {}, {
+        router.post(`/redimir/${link.code}/redeem`, {}, {
             preserveScroll: true,
             onError: (errors) => {
                 setFeedback({

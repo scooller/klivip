@@ -71,11 +71,11 @@ foreach ($publicBaseDomains as $baseDomain) {
             Route::post('/usuario/logout', [CustomerSessionController::class, 'destroy'])
                 ->middleware('auth:customer')
                 ->name($routeNamePrefix . '.logout');
-            Route::get('/redemption/{code}', [RedemptionController::class, 'show'])
+            Route::get('/redimir/{code}', [RedemptionController::class, 'show'])
                 ->middleware('auth:customer')
                 ->where('code', '[A-Za-z0-9_-]+')
                 ->name($routeNamePrefix . '.redemption.show');
-            Route::post('/redemption/{code}/redeem', [RedemptionController::class, 'redeem'])
+            Route::post('/redimir/{code}/redeem', [RedemptionController::class, 'redeem'])
                 ->middleware('auth:customer')
                 ->where('code', '[A-Za-z0-9_-]+')
                 ->name($routeNamePrefix . '.redemption.redeem');
