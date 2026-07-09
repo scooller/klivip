@@ -27,38 +27,80 @@ class CustomerSessionController extends Controller
 
         $payload = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email:rfc,dns', 'max:255', 'confirmed', 'unique:users,email'],
-            'phone' => ['required', 'string', 'max:25'],
+            'email' => ['required_without:phone', 'nullable', 'email:rfc,dns', 'max:255', 'confirmed', 'unique:users,email'],
+            'phone' => ['required_without:email', 'nullable', 'string', 'max:25'],
             'birth_date' => ['required', 'date', 'before_or_equal:' . $adultLimitDate],
         ], [
-            'email.confirmed' => 'El correo y la confirmacion de correo deben coincidir.',
-            'birth_date.before_or_equal' => 'Debes ser mayor de 18 anos para registrarte.',
+            'email.required_without' => 'Debes ingresar un correo electrónico o un número de teléfono.',
+            'phone.required_without' => 'Debes ingresar un correo electrónico o un número de teléfono.',
+            'email.confirmed' => 'El correo y la confirmación de correo deben coincidir.',
+            'birth_date.before_or_equal' => 'Debes ser mayor de 18 años para registrarte.',
         ]);
 
-        $normalizedPhone = $this->normalizePhone((string) $payload['phone']);
+        $normalizedPhone = null;
+        if (!empty($payload['phone'])) {
+            $normalizedPhone = $this->normalizePhone((string) $payload['phone']);
 
-        if ($normalizedPhone === null) {
-            return back()->withErrors([
-                'phone' => 'Ingresa un numero de telefono valido.',
-            ]);
+            if ($normalizedPhone === null) {
+                return back()->withErrors([
+                    'phone' => 'Ingresa un numero de telefono valido.',
+                ]);
+            }
+
+            $phoneExists = User::query()
+                ->where('phone', $normalizedPhone)
+                ->exists();
+
+            if ($phoneExists) {
+                return back()->withErrors([
+                    'phone' => 'Este numero de telefono ya esta registrado.',
+                ]);
+            }
         }
 
-        $phoneExists = User::query()
-            ->where('phone', $normalizedPhone)
-            ->exists();
+        $site = $this->resolveSite($request);
 
-        if ($phoneExists) {
-            return back()->withErrors([
-                'phone' => 'Este numero de telefono ya esta registrado.',
-            ]);
-        }
+        if ($normalizedPhone) {
+            $verificationId = $preludeService->sendSmsVerification($normalizedPhone);
 
-        $verificationId = $preludeService->sendSmsVerification($normalizedPhone);
+            if (!$verificationId) {
+                return back()->withErrors([
+                    'phone' => 'No se pudo enviar el SMS de verificación a este número.',
+                ]);
+            }
+            $request->session()->put('customer_registration_method', 'sms');
+        } else {
+            // Email verification
+            $email = mb_strtolower(trim($payload['email']));
+            $requestKey = 'register-otp-request:' . $site->slug . ':' . sha1($email);
 
-        if (!$verificationId) {
-            return back()->withErrors([
-                'phone' => 'No se pudo enviar el SMS de verificación a este número.',
-            ]);
+            if (RateLimiter::tooManyAttempts($requestKey, 1)) {
+                return back()->withErrors([
+                    'email' => 'Espera un momento antes de solicitar un nuevo codigo.',
+                ]);
+            }
+
+            RateLimiter::hit($requestKey, 60);
+
+            $otpCode = Str::upper(Str::random(6));
+            $cacheKey = 'register-otp:' . $site->slug . ':' . sha1($email);
+
+            Cache::put($cacheKey, [
+                'code_hash' => Hash::make($otpCode),
+            ], now()->addMinutes(10));
+
+            try {
+                \Illuminate\Support\Facades\Notification::route('mail', $email)
+                    ->notify(new FrontCustomerOtpNotification($otpCode, $site->name));
+            } catch (TransportExceptionInterface $exception) {
+                Cache::forget($cacheKey);
+                RateLimiter::clear($requestKey);
+
+                return back()->withErrors([
+                    'email' => 'No se pudo enviar el codigo de confirmacion por correo.',
+                ]);
+            }
+            $request->session()->put('customer_registration_method', 'email');
         }
 
         $request->session()->put('customer_registration_payload', array_merge($payload, ['phone' => $normalizedPhone]));
@@ -75,28 +117,49 @@ class CustomerSessionController extends Controller
 
         $payload = $request->session()->get('customer_registration_payload');
         $phone = $request->session()->get('customer_registration_phone');
+        $method = $request->session()->get('customer_registration_method');
 
-        if (!$payload || !$phone) {
+        if (!$payload) {
             return back()->withErrors([
                 'otp_code' => 'La sesion de registro expiro. Intenta registrarte de nuevo.',
             ]);
         }
 
-        $isValid = $preludeService->validateSmsVerification($phone, $request->input('otp_code'));
+        $site = $this->resolveSite($request);
 
-        if (!$isValid) {
+        if ($method === 'sms' && $phone) {
+            $isValid = $preludeService->validateSmsVerification($phone, $request->input('otp_code'));
+
+            if (!$isValid) {
+                return back()->withErrors([
+                    'otp_code' => 'El codigo SMS no es valido o ha expirado.',
+                ]);
+            }
+        } else if ($method === 'email' && !empty($payload['email'])) {
+            $email = mb_strtolower(trim($payload['email']));
+            $cacheKey = 'register-otp:' . $site->slug . ':' . sha1($email);
+            $otpPayload = Cache::get($cacheKey);
+
+            if (! is_array($otpPayload) || ! isset($otpPayload['code_hash']) || ! Hash::check($request->input('otp_code'), (string) $otpPayload['code_hash'])) {
+                return back()->withErrors([
+                    'otp_code' => 'El codigo no es valido o ya expiro.',
+                ]);
+            }
+
+            Cache::forget($cacheKey);
+            RateLimiter::clear('register-otp-request:' . $site->slug . ':' . sha1($email));
+        } else {
             return back()->withErrors([
-                'otp_code' => 'El codigo SMS no es valido o ha expirado.',
+                'otp_code' => 'Error en el método de verificación.',
             ]);
         }
 
-        $site = $this->resolveSite($request);
-
         $customer = User::create([
             'name' => trim((string) $payload['name']),
-            'email' => mb_strtolower(trim((string) $payload['email'])),
+            'email' => !empty($payload['email']) ? mb_strtolower(trim((string) $payload['email'])) : null,
+            'email_verified_at' => !empty($payload['email']) ? now() : null,
             'phone' => $phone,
-            'phone_verified_at' => now(),
+            'phone_verified_at' => $phone ? now() : null,
             'birth_date' => $payload['birth_date'],
             'password' => Hash::make(Str::random(40)),
             'role' => UserRole::User,
@@ -104,7 +167,7 @@ class CustomerSessionController extends Controller
 
         $customer->sites()->syncWithoutDetaching([$site->id]);
 
-        $request->session()->forget(['customer_registration_payload', 'customer_registration_phone']);
+        $request->session()->forget(['customer_registration_payload', 'customer_registration_phone', 'customer_registration_method']);
 
         Auth::guard('customer')->login($customer, true);
         $request->session()->regenerate();

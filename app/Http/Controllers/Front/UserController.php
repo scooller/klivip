@@ -55,11 +55,13 @@ class UserController extends Controller
 
         $payload = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email:rfc,dns', 'max:255', 'confirmed', Rule::unique('users', 'email')->ignore($customer->id)],
-            'phone' => ['required', 'string', 'max:25'],
+            'email' => ['required_without:phone', 'nullable', 'email:rfc,dns', 'max:255', 'confirmed', Rule::unique('users', 'email')->ignore($customer->id)],
+            'phone' => ['required_without:email', 'nullable', 'string', 'max:25'],
             'birth_date' => ['required', 'date', 'before_or_equal:' . $adultLimitDate],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ], [
+            'email.required_without' => 'Debes ingresar un correo o un numero de telefono.',
+            'phone.required_without' => 'Debes ingresar un correo o un numero de telefono.',
             'email.confirmed' => 'El correo y la confirmacion de correo deben coincidir.',
             'birth_date.before_or_equal' => 'Debes ser mayor de 18 anos.',
             'avatar.image' => 'El avatar debe ser una imagen valida.',

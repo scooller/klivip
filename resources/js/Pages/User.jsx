@@ -149,11 +149,14 @@ export default function User({ site, activeCoupons = [] }) {
         registerForm.post('/usuario/register', {
             preserveScroll: true,
             onSuccess: () => {
+                const isSms = Boolean(registerForm.data.phone);
                 setIsRegistrationOtpPending(true);
                 setFeedback({
                     variant: 'success',
                     title: 'Codigo enviado',
-                    description: 'Revisa tus mensajes SMS y escribe el codigo para verificar tu cuenta.',
+                    description: isSms
+                        ? 'Revisa tus mensajes SMS y escribe el codigo para verificar tu cuenta.'
+                        : 'Revisa tu correo y escribe el codigo para verificar tu cuenta.',
                 });
             },
             onError: () => {
