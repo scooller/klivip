@@ -3,6 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use FinityLabs\FinMail\Helpers\TokenValue;
+use FinityLabs\FinMail\Mail\TemplateMail;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -25,14 +27,14 @@ class FrontProfileUnlockLinkNotification extends Notification
         return ['mail'];
     }
 
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(object $notifiable): TemplateMail
     {
-        return (new MailMessage)
-            ->subject('Link para desbloquear perfil')
-            ->greeting('Hola')
-            ->line("Solicitaste desbloquear la edicion de perfil en {$this->siteName}.")
-            ->action('Desbloquear perfil', $this->unlockUrl)
-            ->line('Este enlace expira en 15 minutos y solo puede usarse una vez.');
+        return TemplateMail::make('customer-profile-unlock-link', app()->getLocale())
+            ->models([
+                'user' => $notifiable,
+                'unlock_url' => new TokenValue($this->unlockUrl),
+                'site_name' => $this->siteName,
+            ]);
     }
 
     /**

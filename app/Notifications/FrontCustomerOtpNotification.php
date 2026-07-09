@@ -3,6 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use FinityLabs\FinMail\Helpers\TokenValue;
+use FinityLabs\FinMail\Mail\TemplateMail;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -25,14 +27,13 @@ class FrontCustomerOtpNotification extends Notification
         return ['mail'];
     }
 
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(object $notifiable): TemplateMail
     {
-        return (new MailMessage)
-            ->subject('Tu codigo de acceso')
-            ->greeting('Hola')
-            ->line("Tu codigo de acceso para {$this->siteName} es:")
-            ->line($this->code)
-            ->line('Este codigo expira en 10 minutos.')
-            ->line('Si no solicitaste este acceso, puedes ignorar este mensaje.');
+        return TemplateMail::make('customer-otp', app()->getLocale())
+            ->models([
+                'user' => $notifiable,
+                'code' => new TokenValue($this->code),
+                'site_name' => $this->siteName,
+            ]);
     }
 }

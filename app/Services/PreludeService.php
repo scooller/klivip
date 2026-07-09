@@ -98,4 +98,21 @@ class PreludeService
             return false;
         }
     }
+
+    /**
+     * Placeholder for generic SMS sending (Prelude Verify API does not natively support custom SMS).
+     * Prevents Fatal Errors when called from jobs.
+     *
+     * @param string $phone
+     * @param string $message
+     * @return bool
+     */
+    public function sendSms(string $phone, string $message): bool
+    {
+        Log::warning('Attempted to send custom SMS via Prelude, but Prelude Verify API is only for OTP.', [
+            'phone' => $phone,
+            'message' => $message,
+        ]);
+        return false;
+    }
 }

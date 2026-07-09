@@ -3,6 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use FinityLabs\FinMail\Helpers\TokenValue;
+use FinityLabs\FinMail\Mail\TemplateMail;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -25,14 +27,14 @@ class FrontProfileUnlockOtpNotification extends Notification
         return ['mail'];
     }
 
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(object $notifiable): TemplateMail
     {
-        return (new MailMessage)
-            ->subject('Codigo para desbloquear perfil')
-            ->greeting('Hola')
-            ->line("Tu codigo para desbloquear la edicion de perfil en {$this->siteName} es:")
-            ->line($this->code)
-            ->line('Este codigo expira en 10 minutos y es de un solo uso.');
+        return TemplateMail::make('customer-profile-unlock-otp', app()->getLocale())
+            ->models([
+                'user' => $notifiable,
+                'code' => new TokenValue($this->code),
+                'site_name' => $this->siteName,
+            ]);
     }
 
     /**
