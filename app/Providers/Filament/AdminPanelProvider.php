@@ -48,6 +48,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentLogViewer::make(),
+                \FinityLabs\FinMail\FinMailPlugin::make(),
             ])
             ->middleware([
                 EncryptCookies::class,

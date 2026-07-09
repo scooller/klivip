@@ -172,6 +172,8 @@ class CustomerSessionController extends Controller
         Auth::guard('customer')->login($customer, true);
         $request->session()->regenerate();
 
+        event(new \App\Events\CustomerRegistered($customer));
+
         return redirect()->intended('/')->with('customer_registration_status', 'verified');
     }
 

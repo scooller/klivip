@@ -105,6 +105,8 @@ class UserController extends Controller
             'avatar_path' => $avatarPath,
         ]);
 
+        event(new \App\Events\CustomerProfileUpdated($customer));
+
         $request->session()->forget(self::PROFILE_UNLOCK_SESSION_KEY);
 
         return back()->with('customer_profile_status', 'updated');

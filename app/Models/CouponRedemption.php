@@ -15,6 +15,7 @@ class CouponRedemption extends Model
     protected $fillable = [
         'sweepstake_id',
         'redemption_link_id',
+        'automatic_reward_id',
         'user_id',
         'user_email',
         'user_phone',
@@ -52,6 +53,11 @@ class CouponRedemption extends Model
     public function redemptionLink(): BelongsTo
     {
         return $this->belongsTo(RedemptionLink::class);
+    }
+
+    public function automaticReward(): BelongsTo
+    {
+        return $this->belongsTo(AutomaticReward::class);
     }
 
     public function user(): BelongsTo

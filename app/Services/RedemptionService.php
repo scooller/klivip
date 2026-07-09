@@ -98,6 +98,8 @@ class RedemptionService
                 'numbers' => [$startNumber, $endNumber],
             ]);
 
+            \App\Jobs\SendCouponNotificationJob::dispatch($redemption);
+
             return $redemption;
         });
     }
@@ -153,6 +155,76 @@ class RedemptionService
                 'reason' => $reason,
                 'voided_by' => $voidedBy->id,
             ]);
+        });
+    }
+    public function grantAutomaticReward(User $user, \App\Models\AutomaticReward $reward, Sweepstake $sweepstake): ?CouponRedemption
+    {
+        if (! $sweepstake->isAvailable()) {
+            Log::warning('Cannot grant automatic reward: Sweepstake is not available', ['sweepstake_id' => $sweepstake->id, 'reward_id' => $reward->id]);
+            return null;
+        }
+
+        if ($sweepstake->hasUserReachedLimit($user, $reward->coupon_amount)) {
+            Log::warning('Cannot grant automatic reward: User reached sweepstake limit', ['sweepstake_id' => $sweepstake->id, 'user_id' => $user->id]);
+            return null;
+        }
+
+        return DB::transaction(function () use ($reward, $sweepstake, $user) {
+            $lockedSweepstake = Sweepstake::lockForUpdate()->find($sweepstake->id);
+
+            if (! $lockedSweepstake->hasAvailableSlots($reward->coupon_amount)) {
+                Log::warning('Cannot grant automatic reward: Sweepstake limit reached', ['sweepstake_id' => $sweepstake->id]);
+                return null;
+            }
+
+            $startNumber = $lockedSweepstake->last_coupon_number + 1;
+            $endNumber = $startNumber + $reward->coupon_amount - 1;
+
+            $redemption = CouponRedemption::create([
+                'sweepstake_id' => $lockedSweepstake->id,
+                'automatic_reward_id' => $reward->id,
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'user_phone' => $user->phone ?? null,
+                'user_name' => $user->name ?? null,
+                'coupon_count' => $reward->coupon_amount,
+                'coupon_start_number' => $startNumber,
+                'coupon_end_number' => $endNumber,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'redemption_channel' => 'automatic_reward',
+                'device_info' => null,
+            ]);
+
+            $coupons = collect();
+            for ($i = $startNumber; $i <= $endNumber; $i++) {
+                $coupons->push([
+                    'sweepstake_id' => $lockedSweepstake->id,
+                    'redemption_id' => $redemption->id,
+                    'user_id' => $user->id,
+                    'coupon_number' => $i,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            SweepstakeCoupon::insert($coupons->toArray());
+
+            $lockedSweepstake->update([
+                'last_coupon_number' => $endNumber,
+            ]);
+
+            Log::info('Automatic reward coupons granted', [
+                'redemption_id' => $redemption->id,
+                'reward_id' => $reward->id,
+                'user_id' => $user->id,
+                'coupon_count' => $reward->coupon_amount,
+                'numbers' => [$startNumber, $endNumber],
+            ]);
+
+            \App\Jobs\SendCouponNotificationJob::dispatch($redemption);
+
+            return $redemption;
         });
     }
 }
