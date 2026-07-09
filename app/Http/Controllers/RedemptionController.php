@@ -16,7 +16,7 @@ class RedemptionController extends Controller
         private RedemptionService $redemptionService
     ) {}
 
-    public function show(string $code, Request $request)
+    public function show(string $site, string $code, Request $request)
     {
         try {
             $link = RedemptionLink::with(['sweepstake', 'redemptionSource'])
@@ -52,7 +52,7 @@ class RedemptionController extends Controller
         }
     }
 
-    public function redeem(string $code, RedeemCouponRequest $request)
+    public function redeem(string $site, string $code, RedeemCouponRequest $request)
     {
         try {
             $customer = $request->user('customer');
