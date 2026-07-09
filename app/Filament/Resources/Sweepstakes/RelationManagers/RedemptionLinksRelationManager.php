@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Resources\Sweepstakes\RelationManagers;
+use FilamentSchemasComponentsUtilitiesSet;
 
 use App\Models\RedemptionSource;
 use Filament\Actions\Action;
@@ -263,69 +264,66 @@ class RedemptionLinksRelationManager extends RelationManager
                                 : 'Se creó el link/QR correctamente.')
                             ->send();
                     }),
-                Action::make('generateBatchQr')
-                    ->label('Generar Lote de QRs')
-                    ->icon('heroicon-o-cube')
+                Action::make('generateQr')
+                    ->label('Generar QR')
+                    ->icon('heroicon-o-qr-code')
                     ->color('success')
                     ->form([
-                        Select::make('redemption_source_id')
-                            ->label('Tipo')
-                            ->options(fn () => RedemptionSource::whereIn('code', ['link', 'qr', 'manual'])->pluck('name', 'id')->toArray())
-                            ->required()
-                            ->default(fn () => RedemptionSource::where('code', 'qr')->first()?->id)
-                            ->selectablePlaceholder(false),
+                        Select::make('qr_bonus_id')
+                            ->label('Usar Bono QR (Plantilla)')
+                            ->options(\App\Models\QrBonus::pluck('name', 'id'))
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, $state) {
+                                if ($state) {
+                                    $bonus = \App\Models\QrBonus::find($state);
+                                    if ($bonus) {
+                                        $set('coupon_count', $bonus->coupon_count);
+                                        $set('max_redemptions', $bonus->max_redemptions);
+                                    }
+                                }
+                            })
+                            ->placeholder('Seleccionar un bono (opcional)'),
                         TextInput::make('batch_name')
-                            ->label('Nombre del lote')
+                            ->label('Nombre del QR')
                             ->required()
-                            ->placeholder('Ej: Campaña Julio 2025')
+                            ->placeholder('Ej: Evento Julio 2025')
                             ->maxLength(255),
-                        TextInput::make('quantity')
-                            ->label('Cantidad de QRs')
-                            ->required()
-                            ->numeric()
-                            ->minValue(1)
-                            ->maxValue(5000)
-                            ->default(100)
-                            ->helperText('Máximo 5000 QRs por lote'),
                         TextInput::make('coupon_count')
                             ->label('Cupones por QR')
                             ->required()
                             ->numeric()
                             ->minValue(1)
                             ->default(1)
-                            ->helperText('Cupones que genera cada QR al canjear'),
+                            ->helperText('Cupones que genera este QR al canjear'),
                         TextInput::make('max_redemptions')
                             ->label('Máximo de redenciones por QR')
                             ->numeric()
                             ->minValue(1)
                             ->default(1)
-                            ->helperText('Cuántas veces se puede usar cada QR'),
+                            ->helperText('Cuántas veces se puede usar este QR'),
                     ])
                     ->action(function (array $data) {
                         $sweepstake = $this->getOwnerRecord();
+                        
+                        $code = Str::random(12);
+                        
+                        // Force redemption source to QR
+                        $qrSource = RedemptionSource::where('code', 'qr')->first();
 
-                        $createdCount = 0;
-
-                        for ($i = 0; $i < $data['quantity']; $i++) {
-                            $code = Str::random(12);
-
-                            $sweepstake->redemptionLinks()->create([
-                                'redemption_source_id' => $data['redemption_source_id'],
-                                'code' => $code,
-                                'title' => $data['batch_name'].' #'.($i + 1),
-                                'description' => "Lote: {$data['batch_name']}",
-                                'coupon_count' => $data['coupon_count'],
-                                'max_redemptions' => $data['max_redemptions'],
-                                'is_active' => true,
-                            ]);
-
-                            $createdCount++;
-                        }
+                        $sweepstake->redemptionLinks()->create([
+                            'redemption_source_id' => $qrSource ? $qrSource->id : null,
+                            'code' => $code,
+                            'title' => $data['batch_name'],
+                            'description' => "Generado desde admin",
+                            'coupon_count' => $data['coupon_count'],
+                            'max_redemptions' => $data['max_redemptions'],
+                            'is_active' => true,
+                        ]);
 
                         Notification::make()
                             ->success()
-                            ->title('Lote generado exitosamente')
-                            ->body("Se crearon {$createdCount} QRs en el lote '{$data['batch_name']}'")
+                            ->title('QR generado exitosamente')
+                            ->body("Se creó el QR '{$data['batch_name']}'")
                             ->send();
                     }),
                 Action::make('downloadBatchQr')

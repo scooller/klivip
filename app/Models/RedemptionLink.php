@@ -14,6 +14,17 @@ class RedemptionLink extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected static function booted(): void
+    {
+        static::deleting(function (RedemptionLink $link) {
+            // Delete associated coupons first
+            foreach ($link->couponRedemptions as $redemption) {
+                $redemption->sweepstakeCoupons()->delete();
+                $redemption->delete();
+            }
+        });
+    }
+
     protected $fillable = [
         'sweepstake_id',
         'redemption_source_id',
