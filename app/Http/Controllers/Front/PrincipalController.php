@@ -6,6 +6,8 @@ use App\Enums\BannerScope;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Site;
+use App\Models\SweepstakeCoupon;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -23,6 +25,28 @@ class PrincipalController extends Controller
         $customer = Auth::guard('customer')->user();
 
         $banners = $this->resolveActiveBanners($site);
+
+        $recentCoupons = $customer instanceof User
+            ? SweepstakeCoupon::query()
+                ->with(['sweepstake:id,name,slug,draw_at,prize_description'])
+                ->where('user_id', $customer->id)
+                ->where('is_voided', false)
+                ->orderByDesc('created_at')
+                ->limit(6)
+                ->get()
+                ->map(fn (SweepstakeCoupon $coupon): array => [
+                    'id' => $coupon->id,
+                    'number' => $coupon->coupon_number,
+                    'is_used' => $coupon->is_used,
+                    'obtained_at' => $coupon->created_at?->format('d/m/Y H:i'),
+                    'sweepstake_name' => $coupon->sweepstake?->name ?? 'Sorteo',
+                    'sweepstake_slug' => $coupon->sweepstake?->slug ?? '',
+                    'prize' => $coupon->sweepstake?->prize_description,
+                    'draw_at' => $coupon->sweepstake?->draw_at?->format('d/m/Y H:i'),
+                ])
+                ->values()
+                ->all()
+            : [];
 
         return Inertia::render('Principal', [
             'site' => [
@@ -43,6 +67,7 @@ class PrincipalController extends Controller
                     'email' => $customer->email,
                 ] : null,
             ],
+            'activeCoupons' => $recentCoupons,
         ]);
     }
 

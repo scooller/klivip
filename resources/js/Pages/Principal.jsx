@@ -6,20 +6,23 @@ import {
     faGift,
     faTrophy,
     faUsers,
+    faBarcode,
 } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import FrontFooter from '../Components/Front/FrontFooter';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
+import CouponMini from '../Components/Front/CouponMini';
 
 const POPUP_SESSION_KEY = 'klivip_home_popup_shown';
 
-export default function Principal({ site, promotions = [], games = [], banners = [] }) {
+export default function Principal({ site, promotions = [], games = [], banners = [], activeCoupons = [] }) {
     const page = usePage();
     const sharedSite = page.props.site ?? site;
     const pagePromotions = page.props.promotions ?? promotions;
     const pageGames = page.props.games ?? games;
     const pageBanners = page.props.banners ?? banners;
+    const pageActiveCoupons = page.props.activeCoupons ?? activeCoupons;
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [gameSlidesPerPage, setGameSlidesPerPage] = useState(3);
@@ -169,6 +172,18 @@ export default function Principal({ site, promotions = [], games = [], banners =
         }));
     }, [featuredSlides]);
 
+    const couponChunks = useMemo(() => {
+        if (!pageActiveCoupons || pageActiveCoupons.length === 0) {
+            return [];
+        }
+
+        const chunks = [];
+        for (let i = 0; i < pageActiveCoupons.length; i += gameSlidesPerPage) {
+            chunks.push(pageActiveCoupons.slice(i, i + gameSlidesPerPage));
+        }
+        return chunks;
+    }, [pageActiveCoupons, gameSlidesPerPage]);
+
     const weeklyHighlights = useMemo(() => {
         const labels = ['Miercoles', 'Jueves', 'Sabado'];
 
@@ -277,6 +292,55 @@ export default function Principal({ site, promotions = [], games = [], banners =
                             </button>
                         </div>
                     </section>
+
+                    {couponChunks.length > 0 && (
+                        <section className="home-panel user-coupons-section d-flex flex-column gap-3" aria-label="Mis Cupones">
+                            <div className="home-panel-heading d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                <h2 className="mb-0 fw-bold">
+                                    <FontAwesomeIcon icon={faBarcode} className="me-2" />
+                                    Mis Cupones
+                                </h2>
+                                <button
+                                    className="btn btn-outline-warning btn-sm"
+                                    onClick={() => router.visit('/usuario/cupones')}
+                                >
+                                    Ver todos los cupones
+                                </button>
+                            </div>
+
+                            <div id="couponsCarousel" className="carousel slide" ref={(el) => { carouselRefs.current[2] = el; }}>
+                                <div className="carousel-inner">
+                                    {couponChunks.map((chunk, index) => (
+                                        <div key={`coupon-slide-${index}`} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+                                            <div className="row g-2 justify-content-center px-4">
+                                                {chunk.map((coupon) => (
+                                                    <div key={coupon.id} className="col">
+                                                        <CouponMini
+                                                            number={coupon.number}
+                                                            isUsed={coupon.is_used}
+                                                            onClick={null}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                {couponChunks.length > 1 && (
+                                    <>
+                                        <button className="carousel-control-prev w-auto" type="button" data-bs-target="#couponsCarousel" data-bs-slide="prev">
+                                            <span className="carousel-control-prev-icon" aria-hidden="true" style={{ filter: 'invert(1)' }}></span>
+                                            <span className="visually-hidden">Anterior</span>
+                                        </button>
+                                        <button className="carousel-control-next w-auto" type="button" data-bs-target="#couponsCarousel" data-bs-slide="next">
+                                            <span className="carousel-control-next-icon" aria-hidden="true" style={{ filter: 'invert(1)' }}></span>
+                                            <span className="visually-hidden">Siguiente</span>
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </section>
+                    )}
 
                     {/* <section className="home-panel d-flex flex-column gap-3">
                         <div className="home-panel-heading d-flex flex-wrap gap-2 align-items-center">
