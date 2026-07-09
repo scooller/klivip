@@ -170,7 +170,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
     const nextDrawCards = useMemo(() => {
         return featuredSlides.slice(0, 3).map((slide, index) => ({
             id: slide.id,
-            title: `Cupon ${String(index + 125).padStart(6, '0')}`,
+            title: `Cupon ${String(index + 125).padStart(5, '0')}`,
             subtitle: slide.badge,
             note: slide.title,
         }));
@@ -322,6 +322,8 @@ export default function Principal({ site, promotions = [], games = [], banners =
                                                         <CouponMini
                                                             number={coupon.number}
                                                             isUsed={coupon.is_used}
+                                                            sweepstakeName={coupon.sweepstake_name}
+                                                            date={coupon.obtained_at ? `Cobrado: ${coupon.obtained_at}` : (coupon.draw_at ? `Sorteo: ${coupon.draw_at}` : null)}
                                                             onClick={null}
                                                         />
                                                     </div>

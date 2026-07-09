@@ -4,7 +4,7 @@ export default function CouponCard({
 }) {
     const isClickable = onClick != null;
 
-    const paddedNumber = String(coupon.number).padStart(4, '0');
+    const paddedNumber = String(coupon.number).padStart(5, '0');
 
     return (
         <div

@@ -194,6 +194,8 @@ export default function UserCouponsIndex({ site, groupedCoupons = [], pagination
                                                 <CouponMini
                                                     number={coupon.number}
                                                     isUsed={coupon.is_used}
+                                                    sweepstakeName={group.sweepstake_name}
+                                                    date={coupon.obtained_at ? `Cobrado: ${coupon.obtained_at}` : (group.draw_at ? `Sorteo: ${group.draw_at}` : null)}
                                                     onClick={() => setSelectedCoupon({
                                                         ...coupon,
                                                         sweepstake_name: group.sweepstake_name,
@@ -305,7 +307,7 @@ export default function UserCouponsIndex({ site, groupedCoupons = [], pagination
                                                           color: '#04072a',
                                                           minWidth: '50px',
                                                       }}>
-                                                    {String(number).padStart(4, '0')}
+                                                    {String(number).padStart(5, '0')}
                                                 </span>
                                             ))}
                                         </div>

@@ -528,6 +528,8 @@ export default function User({ site, activeCoupons = [] }) {
                                         <CouponMini
                                             number={coupon.number}
                                             isUsed={coupon.is_used}
+                                            sweepstakeName={coupon.sweepstake_name}
+                                            date={coupon.obtained_at ? `Cobrado: ${coupon.obtained_at}` : (coupon.draw_at ? `Sorteo: ${coupon.draw_at}` : null)}
                                             onClick={null}
                                         />
                                     </div>
