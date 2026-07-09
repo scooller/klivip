@@ -10,7 +10,7 @@ export default function UserWelcomeCard({ site, adminPortal = null }) {
                 )}
                 <div dangerouslySetInnerHTML={{ __html: site.content && site.content !== '<p></p>' ? site.content : '<p class="text-center">Accede o crea tu cuenta para guardar favoritos y recibir promociones.</p>' }} />
                 {/* <p className="text-white text-center">
-                    {site.address ?? 'Sitio oficial'} · {site.opening_hours ?? 'Atencion 24/7'}
+                    <span dangerouslySetInnerHTML={{ __html: site.address ?? 'Sitio oficial' }} /> · <span dangerouslySetInnerHTML={{ __html: site.opening_hours ?? 'Atencion 24/7' }} />
                 </p> */}
                 {adminPortal?.url && (
                     <button

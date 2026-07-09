@@ -56,8 +56,8 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
             <div className="container-fluid flex-column">
                 <div className="w-100 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-2 gap-3">
                     <ul className="list-group list-group-horizontal list-group-flush border-0">
-                        <li className="list-group-item border-0">{site?.opening_hours ?? 'Juego Responsable'}</li>
-                        <li className="list-group-item border-0">{site?.address ?? contact.address ?? 'Seguridad Garantizada'}</li>
+                        <li className="list-group-item border-0" dangerouslySetInnerHTML={{ __html: site?.opening_hours ?? 'Juego Responsable' }} />
+                        <li className="list-group-item border-0" dangerouslySetInnerHTML={{ __html: site?.address ?? contact.address ?? 'Seguridad Garantizada' }} />
                         {contact.phone && (
                             <li className="list-group-item border-0">
                                 <a href={`tel:${contact.phone}`} className="nav-link p-0">
