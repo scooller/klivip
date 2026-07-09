@@ -28,21 +28,21 @@ class QrBonusResource extends Resource
     {
         return $schema
             ->components([
-                \Filament\Schemas\Components\TextInput::make('name')
+                \Filament\Forms\Components\TextInput::make('name')
                     ->label('Nombre del Bono')
                     ->required()
                     ->maxLength(255),
-                \Filament\Schemas\Components\Textarea::make('description')
+                \Filament\Forms\Components\Textarea::make('description')
                     ->label('Descripción')
                     ->maxLength(65535)
                     ->columnSpanFull(),
-                \Filament\Schemas\Components\TextInput::make('coupon_count')
+                \Filament\Forms\Components\TextInput::make('coupon_count')
                     ->label('Cupones por QR')
                     ->required()
                     ->numeric()
                     ->minValue(1)
                     ->default(1),
-                \Filament\Schemas\Components\TextInput::make('max_redemptions')
+                \Filament\Forms\Components\TextInput::make('max_redemptions')
                     ->label('Máximo de redenciones')
                     ->numeric()
                     ->minValue(1)
