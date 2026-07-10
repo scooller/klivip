@@ -67,8 +67,6 @@ class QrBonusResource extends Resource
                 TextColumn::make('max_redemptions')
                     ->label('Max Redenciones')
                     ->numeric()
-                    ->minValue(1)
-                    ->default(1)
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Creado')
