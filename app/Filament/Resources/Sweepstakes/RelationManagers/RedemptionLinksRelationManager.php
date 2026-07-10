@@ -194,7 +194,7 @@ class RedemptionLinksRelationManager extends RelationManager
                             ])
                             ->send();
                     }),
-                \Filament\Tables\Actions\DeleteAction::make()
+                \Filament\Actions\DeleteAction::make()
                     ->label('Borrar'),
             ])
             ->headerActions([
