@@ -19,22 +19,15 @@ function formatPhone(rawValue) {
 
     const digitsOnly = rawValue.replace(/\D/g, '').slice(0, 11);
 
-    if (digitsOnly.length <= 2) {
-        return digitsOnly ? `+${digitsOnly}` : '';
+    if (digitsOnly.length <= 1) {
+        return digitsOnly;
     }
 
-    const country = digitsOnly.slice(0, 2);
-    const remainder = digitsOnly.slice(2);
-
-    if (remainder.length <= 1) {
-        return `+${country} ${remainder}`;
+    if (digitsOnly.length <= 5) {
+        return `${digitsOnly[0]} ${digitsOnly.slice(1)}`;
     }
 
-    if (remainder.length <= 5) {
-        return `+${country} ${remainder[0]} ${remainder.slice(1)}`;
-    }
-
-    return `+${country} ${remainder[0]} ${remainder.slice(1, 5)} ${remainder.slice(5, 9)}`;
+    return `${digitsOnly[0]} ${digitsOnly.slice(1, 5)} ${digitsOnly.slice(5, 9)}`;
 }
 
 export default function User({ site, activeCoupons = [] }) {
@@ -82,6 +75,9 @@ export default function User({ site, activeCoupons = [] }) {
 
     const [adultMaxBirthDate, setAdultMaxBirthDate] = useState('');
 
+    const [loginCountryPrefix, setLoginCountryPrefix] = useState('+56');
+    const [registerCountryPrefix, setRegisterCountryPrefix] = useState('+56');
+
     useEffect(() => {
         const date = new Date();
         date.setFullYear(date.getFullYear() - 18);
@@ -97,6 +93,14 @@ export default function User({ site, activeCoupons = [] }) {
         event?.preventDefault();
         setFeedback(null);
         setIsChangingUser(false);
+
+        loginForm.transform((data) => ({
+            ...data,
+            identifier: (data.identifier && !data.identifier.includes('@') && !/[a-zA-Z]/.test(data.identifier))
+                ? `${loginCountryPrefix} ${data.identifier}`
+                : data.identifier
+        }));
+
         loginForm.post('/usuario/login', {
             preserveScroll: true,
             onSuccess: () => {
@@ -169,7 +173,8 @@ export default function User({ site, activeCoupons = [] }) {
 
         registerForm.transform((data) => ({
             ...data,
-            email_confirmation: isPhonePriority ? '' : confirmValue
+            email_confirmation: isPhonePriority ? '' : confirmValue,
+            phone: data.phone ? `${registerCountryPrefix} ${data.phone}` : ''
         }));
 
         registerForm.post('/usuario/register', {
@@ -268,49 +273,58 @@ export default function User({ site, activeCoupons = [] }) {
                             </div>
 
                             {isRegistering ? (
-                                    <form className="user-login-form-shell user-register-form-shell d-flex flex-column gap-3" onSubmit={handleRegisterCustomer}>
-                                        <label htmlFor="register-name" className="form-label">Nombre Completo</label>
-                                        <input
-                                            id="register-name"
-                                            className="form-control user-phone-input user-register-input"
-                                            type="text"
-                                            autoComplete="name"
-                                            placeholder="Carlos Silva"
-                                            value={registerForm.data.name}
-                                            onInput={(event) => registerForm.setData('name', event.target.value)}
-                                        />
+                                <form className="user-login-form-shell user-register-form-shell d-flex flex-column gap-3" onSubmit={handleRegisterCustomer}>
+                                    <label htmlFor="register-name" className="form-label">Nombre Completo</label>
+                                    <input
+                                        id="register-name"
+                                        className="form-control user-phone-input user-register-input"
+                                        type="text"
+                                        autoComplete="name"
+                                        placeholder="Carlos Silva"
+                                        value={registerForm.data.name}
+                                        onInput={(event) => registerForm.setData('name', event.target.value)}
+                                    />
 
-                                        <label htmlFor="register-phone" className="form-label">Numero de Telefono</label>
+                                    <label htmlFor="register-phone" className="form-label">Numero de Telefono</label>
+                                    <div className="input-group">
+                                        <select 
+                                            className="form-select user-phone-input" 
+                                            style={{ maxWidth: '110px', textAlign: 'center' }}
+                                            value={registerCountryPrefix}
+                                            onChange={(e) => setRegisterCountryPrefix(e.target.value)}
+                                        >
+                                            <option value="+56">🇨🇱 +56</option>
+                                            <option value="+54">🇦🇷 +54</option>
+                                            <option value="+51">🇵🇪 +51</option>
+                                            <option value="+57">🇨🇴 +57</option>
+                                            <option value="+52">🇲🇽 +52</option>
+                                        </select>
                                         <input
                                             id="register-phone"
                                             className="form-control user-phone-input user-register-input"
                                             type="text"
                                             autoComplete="tel"
-                                            placeholder="+56 9 1548 2685"
+                                            placeholder="9 1548 2685"
                                             value={registerForm.data.phone}
                                             onInput={(event) => registerForm.setData('phone', formatPhone(event.target.value))}
                                         />
+                                    </div>
 
-                                        <label htmlFor="register-email" className="form-label">E-mail</label>
-                                        <input
-                                            id="register-email"
-                                            className="form-control user-phone-input user-register-input"
-                                            type="email"
-                                            autoComplete="email"
-                                            placeholder="correo@ejemplo.com"
-                                            value={registerForm.data.email}
-                                            onInput={(event) => registerForm.setData('email', event.target.value)}
-                                        />
+                                    {(registerForm.data.email || registerForm.data.phone) ? (() => {
+                                        const isPhonePriority = Boolean(registerForm.data.phone);
+                                        const confirmLabel = isPhonePriority ? 'Confirma tu Numero de Telefono' : 'Confirma tu E-mail';
+                                        const confirmType = isPhonePriority ? 'text' : 'email';
+                                        const confirmPlaceholder = isPhonePriority ? '9 1548 2685' : 'correo@ejemplo.com';
 
-                                        {(registerForm.data.email || registerForm.data.phone) ? (() => {
-                                            const isPhonePriority = Boolean(registerForm.data.phone);
-                                            const confirmLabel = isPhonePriority ? 'Confirma tu Numero de Telefono' : 'Confirma tu E-mail';
-                                            const confirmType = isPhonePriority ? 'text' : 'email';
-                                            const confirmPlaceholder = isPhonePriority ? '+56 9 1548 2685' : 'correo@ejemplo.com';
-
-                                            return (
-                                                <>
-                                                    <label htmlFor="register-confirmation" className="form-label">{confirmLabel}</label>
+                                        return (
+                                            <>
+                                                <label htmlFor="register-confirmation" className="form-label">{confirmLabel}</label>
+                                                <div className={isPhonePriority ? "input-group" : ""}>
+                                                    {isPhonePriority && (
+                                                        <span className="input-group-text user-phone-input border-end-0 bg-transparent text-white" style={{ minWidth: '110px', justifyContent: 'center' }}>
+                                                            {registerCountryPrefix}
+                                                        </span>
+                                                    )}
                                                     <input
                                                         id="register-confirmation"
                                                         className="form-control user-phone-input user-register-input"
@@ -320,74 +334,103 @@ export default function User({ site, activeCoupons = [] }) {
                                                         value={confirmValue}
                                                         onInput={(event) => setConfirmValue(isPhonePriority ? formatPhone(event.target.value) : event.target.value)}
                                                     />
-                                                </>
-                                            );
-                                        })() : null}
+                                                </div>
+                                            </>
+                                        );
+                                    })() : null}
 
-                                        <label htmlFor="register-birth-date" className="form-label">Fecha de Nacimiento</label>
-                                        <input
-                                            id="register-birth-date"
-                                            className="form-control user-phone-input user-register-input"
-                                            type="date"
-                                            max={adultMaxBirthDate}
-                                            value={registerForm.data.birth_date}
-                                            onInput={(event) => registerForm.setData('birth_date', event.target.value)}
-                                        />
+                                    <label htmlFor="register-email" className="form-label">E-mail</label>
+                                    <input
+                                        id="register-email"
+                                        className="form-control user-phone-input user-register-input"
+                                        type="email"
+                                        autoComplete="email"
+                                        placeholder="correo@ejemplo.com"
+                                        value={registerForm.data.email}
+                                        onInput={(event) => registerForm.setData('email', event.target.value)}
+                                    />
 
-                                        {feedback ? (
-                                            <div className="alert alert-info feedback-callout" role="alert">
-                                                <strong>{feedback.title}</strong>
-                                                <p className="mb-0">{feedback.description}</p>
-                                            </div>
-                                        ) : null}
+                                    <label htmlFor="register-birth-date" className="form-label">Fecha de Nacimiento</label>
+                                    <input
+                                        id="register-birth-date"
+                                        className="form-control user-phone-input user-register-input"
+                                        type="date"
+                                        max={adultMaxBirthDate}
+                                        value={registerForm.data.birth_date}
+                                        onInput={(event) => registerForm.setData('birth_date', event.target.value)}
+                                    />
 
-                                        {confirmError ? (
-                                            <div className="alert alert-danger feedback-callout" role="alert">
-                                                <strong>Error de validación</strong>
-                                                <p className="mb-0">{confirmError}</p>
-                                            </div>
-                                        ) : null}
+                                    {feedback ? (
+                                        <div className="alert alert-info feedback-callout" role="alert">
+                                            <strong>{feedback.title}</strong>
+                                            <p className="mb-0">{feedback.description}</p>
+                                        </div>
+                                    ) : null}
 
-                                        {registerErrorMessage ? (
-                                            <div className="alert alert-danger feedback-callout" role="alert">
-                                                <strong>Error de registro</strong>
-                                                <p className="mb-0">{registerErrorMessage}</p>
-                                            </div>
-                                        ) : null}
+                                    {confirmError ? (
+                                        <div className="alert alert-danger feedback-callout" role="alert">
+                                            <strong>Error de validación</strong>
+                                            <p className="mb-0">{confirmError}</p>
+                                        </div>
+                                    ) : null}
 
-                                        <button
-                                            className="user-login-primary btn btn-primary btn-lg w-100"
-                                            type="submit"
-                                            disabled={registerForm.processing}
-                                        >
-                                            <FontAwesomeIcon icon={faUserPen} /> Registrarme
-                                        </button>
+                                    {registerErrorMessage ? (
+                                        <div className="alert alert-danger feedback-callout" role="alert">
+                                            <strong>Error de registro</strong>
+                                            <p className="mb-0">{registerErrorMessage}</p>
+                                        </div>
+                                    ) : null}
 
-                                        <button
-                                            className="user-login-secondary btn btn-outline-light btn-lg w-100"
-                                            type="button"
-                                            disabled={registerForm.processing}
-                                            onClick={() => {
-                                                setIsRegistering(false);
-                                                setFeedback(null);
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowLeft} /> Volver al acceso
-                                        </button>
-                                    </form>
+                                    <button
+                                        className="user-login-primary btn btn-primary btn-lg w-100"
+                                        type="submit"
+                                        disabled={registerForm.processing}
+                                    >
+                                        <FontAwesomeIcon icon={faUserPen} /> Registrarme
+                                    </button>
+
+                                    <button
+                                        className="user-login-secondary btn btn-outline-light btn-lg w-100"
+                                        type="button"
+                                        disabled={registerForm.processing}
+                                        onClick={() => {
+                                            setIsRegistering(false);
+                                            setFeedback(null);
+                                        }}
+                                    >
+                                        <FontAwesomeIcon icon={faArrowLeft} /> Volver al acceso
+                                    </button>
+                                </form>
                             ) : (
                                 <form className="user-login-form-shell d-flex flex-column gap-3" onSubmit={handleRequestOtp}>
                                     <label htmlFor="customer-phone-entry" className="form-label">Numero de Telefono / Email:</label>
-                                    <input
-                                        id="customer-phone-entry"
-                                        className="form-control user-phone-input"
-                                        type="text"
-                                        value={loginForm.data.identifier}
-                                        autoComplete="username"
-                                        placeholder="Numero de telefono o email"
-                                        disabled={loginForm.processing}
-                                        onInput={(event) => loginForm.setData('identifier', formatPhone(event.target.value))}
-                                    />
+                                    <div className="input-group">
+                                        {(!loginForm.data.identifier || (!loginForm.data.identifier.includes('@') && !/[a-zA-Z]/.test(loginForm.data.identifier))) && (
+                                            <select 
+                                                className="form-select user-phone-input" 
+                                                style={{ maxWidth: '110px', textAlign: 'center' }}
+                                                value={loginCountryPrefix}
+                                                onChange={(e) => setLoginCountryPrefix(e.target.value)}
+                                                disabled={loginForm.processing}
+                                            >
+                                                <option value="+56">🇨🇱 +56</option>
+                                                <option value="+54">🇦🇷 +54</option>
+                                                <option value="+51">🇵🇪 +51</option>
+                                                <option value="+57">🇨🇴 +57</option>
+                                                <option value="+52">🇲🇽 +52</option>
+                                            </select>
+                                        )}
+                                        <input
+                                            id="customer-phone-entry"
+                                            className="form-control user-phone-input"
+                                            type="text"
+                                            value={loginForm.data.identifier}
+                                            autoComplete="username"
+                                            placeholder="Telefono o email"
+                                            disabled={loginForm.processing}
+                                            onInput={(event) => loginForm.setData('identifier', formatPhone(event.target.value))}
+                                        />
+                                    </div>
 
                                     {feedback && !isOtpPending && !isRegistrationOtpPending ? (
                                         <div className="alert alert-info feedback-callout" role="alert">

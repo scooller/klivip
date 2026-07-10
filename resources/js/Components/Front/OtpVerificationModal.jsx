@@ -39,8 +39,14 @@ export default function OtpVerificationModal({
 
             if (instance) {
                 instance.hide();
-                Modal.getInstance(modalRef.current)?.dispose();
+                instance.dispose();
             }
+
+            // Forced cleanup to avoid stale backdrop when unmounting (e.g., Inertia navigation)
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
 
             instanceRef.current = null;
         };
@@ -66,18 +72,18 @@ export default function OtpVerificationModal({
     return (
         <div className="modal fade" ref={modalRef} tabIndex="-1" aria-hidden="true" data-bs-backdrop="static">
             <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content p-2">
+                <div className="modal-content user-login-shell p-2 border-0 shadow">
                     <div className="modal-header border-0 pb-0">
-                        <h5 className="modal-title fw-bold text-dark">{title}</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        <h5 className="modal-title fw-bold text-white">{title}</h5>
+                        <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
-                    <div className="modal-body text-dark">
+                    <div className="modal-body text-white">
                         <form className="d-flex flex-column gap-3" onSubmit={onSubmit}>
                             <div>
                                 <label htmlFor="otp-entry" className="form-label">Código de verificación:</label>
                                 <input
                                     id="otp-entry"
-                                    className="form-control"
+                                    className="form-control user-phone-input"
                                     type="text"
                                     inputMode="text"
                                     autoComplete="one-time-code"
@@ -112,7 +118,7 @@ export default function OtpVerificationModal({
                                 </button>
                                 {mode === 'login' && onResend && (
                                     <button
-                                        className="btn btn-outline-secondary w-100"
+                                        className="btn btn-outline-light w-100"
                                         type="button"
                                         disabled={form.processing}
                                         onClick={onResend}
@@ -122,7 +128,7 @@ export default function OtpVerificationModal({
                                     </button>
                                 )}
                                 <button
-                                    className="btn btn-outline-secondary w-100"
+                                    className="btn btn-outline-light w-100"
                                     type="button"
                                     data-bs-dismiss="modal"
                                 >
