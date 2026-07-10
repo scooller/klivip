@@ -84,6 +84,29 @@ class CouponRedemptionsRelationManager extends RelationManager
                     fn () => CouponRedemptionsExport::forSweepstake($this->getOwnerRecord()->id),
                     'redenciones-sorteo'
                 ),
+            ])
+            ->bulkActions([
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\BulkAction::make('void_multiple')
+                        ->label('Anular seleccionados')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->form([
+                            Textarea::make('reason')
+                                ->label('Motivo general')
+                                ->required()
+                                ->rows(3),
+                        ])
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records, array $data) {
+                            $user = auth()->user();
+                            foreach ($records as $record) {
+                                if (! $record->is_voided) {
+                                    $record->void($data['reason'], $user);
+                                }
+                            }
+                        }),
+                ]),
             ]);
     }
 }

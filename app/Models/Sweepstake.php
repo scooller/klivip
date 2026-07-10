@@ -45,6 +45,13 @@ class Sweepstake extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Sweepstake $sweepstake) {
+            $sweepstake->sweepstakeCoupons()->delete();
+        });
+    }
+
     // Relaciones
     public function site(): BelongsTo
     {

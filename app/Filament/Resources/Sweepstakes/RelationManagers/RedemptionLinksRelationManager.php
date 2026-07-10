@@ -402,6 +402,11 @@ class RedemptionLinksRelationManager extends RelationManager
                             ])
                             ->send();
                     }),
+            ])
+            ->bulkActions([
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 }
