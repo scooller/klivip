@@ -16,8 +16,9 @@ class AutomaticRewardsTest extends TestCase
 
     public function test_user_gets_coupons_on_registration_if_reward_active()
     {
-        $sweepstake = Sweepstake::factory()->create([
-            'status' => \App\Enums\SweepstakeStatus::Active,
+        $sweepstake = Sweepstake::factory()->started()->create([
+            'is_active' => true,
+            'is_published' => true,
         ]);
 
         $reward = AutomaticReward::create([

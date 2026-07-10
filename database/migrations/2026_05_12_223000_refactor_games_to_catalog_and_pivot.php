@@ -9,13 +9,13 @@ return new class extends Migration
 {
     public function up(): void
     {
+        $this->dropGamesSiteIdSortOrderIndex();
+
         if (Schema::hasColumn('games', 'site_id')) {
             Schema::table('games', function (Blueprint $table) {
                 $table->dropConstrainedForeignId('site_id');
             });
         }
-
-        $this->dropGamesSiteIdSortOrderIndex();
 
         if (! Schema::hasTable('game_site')) {
             Schema::create('game_site', function (Blueprint $table) {
@@ -41,8 +41,8 @@ return new class extends Migration
 
         $this->dropGamesSiteIdSortOrderIndex();
 
-        $indexExists = collect(DB::select('SHOW INDEX FROM games'))
-            ->pluck('Key_name')
+        $indexExists = collect(Schema::getIndexes('games'))
+            ->pluck('name')
             ->contains('games_site_id_sort_order_index');
 
         if (! $indexExists) {
@@ -54,8 +54,8 @@ return new class extends Migration
 
     private function dropGamesSiteIdSortOrderIndex(): void
     {
-        $indexExists = collect(DB::select('SHOW INDEX FROM games'))
-            ->pluck('Key_name')
+        $indexExists = collect(Schema::getIndexes('games'))
+            ->pluck('name')
             ->contains('games_site_id_sort_order_index');
 
         if ($indexExists) {

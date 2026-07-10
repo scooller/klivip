@@ -2,11 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Enums\PromotionScope;
-use App\Models\Game;
-use App\Models\Promotion;
 use App\Models\Site;
 use App\Models\SiteSetting;
+use App\Models\Sweepstake;
 use App\Models\User;
 use App\Notifications\FrontCustomerOtpNotification;
 use App\Notifications\FrontProfileUnlockOtpNotification;
@@ -37,12 +35,12 @@ class SubdomainRoutingTest extends TestCase
 
     public function test_it_returns_404_for_missing_subdomain_site(): void
     {
-        $response = $this->get('http://inexistente.klivip.test/');
+        $response = $this->get('http://inexistente.klivip.test/usuario');
 
         $response->assertNotFound();
     }
 
-    public function test_it_renders_site_related_promotions_and_games(): void
+    public function test_it_renders_site_related_sweepstakes(): void
     {
         $this->withoutVite();
 
@@ -52,20 +50,11 @@ class SubdomainRoutingTest extends TestCase
             'is_active' => true,
         ]);
 
-        Promotion::factory()->create([
+        Sweepstake::factory()->create([
             'site_id' => $site->id,
-            'scope' => PromotionScope::Site,
-            'offer_label' => 'Promo 2x1',
-            'title' => 'Promo del sitio',
             'is_active' => true,
+            'is_published' => true,
         ]);
-
-        $game = Game::factory()->featured()->create([
-            'title' => 'Ruleta VIP',
-            'is_active' => true,
-        ]);
-
-        $site->games()->attach($game->id, ['sort_order' => 1]);
 
         $response = $this->get('http://sitio-promo.klivip.test/cuenta');
 
@@ -130,7 +119,7 @@ class SubdomainRoutingTest extends TestCase
             'remember' => true,
         ]);
 
-        $verifyResponse->assertRedirect('http://sitio-login.klivip.test/');
+        $verifyResponse->assertRedirect('http://sitio-login.klivip.test');
         $this->assertAuthenticatedAs($customer, 'customer');
     }
 
@@ -180,7 +169,7 @@ class SubdomainRoutingTest extends TestCase
             'identifier' => 'direct@example.com',
         ]);
 
-        $response->assertRedirect('http://sitio-login.klivip.test/');
+        $response->assertRedirect('http://sitio-login.klivip.test');
         $this->assertAuthenticatedAs($customer, 'customer');
     }
 
@@ -226,6 +215,7 @@ class SubdomainRoutingTest extends TestCase
 
         $customer = User::factory()->create([
             'email' => 'customer@laravel.com',
+            'phone' => null,
             'birth_date' => now()->subYears(24)->toDateString(),
         ]);
 

@@ -194,6 +194,8 @@ class RedemptionLinksRelationManager extends RelationManager
                             ])
                             ->send();
                     }),
+                \Filament\Tables\Actions\DeleteAction::make()
+                    ->label('Borrar'),
             ])
             ->headerActions([
                 CreateAction::make()
@@ -217,6 +219,7 @@ class RedemptionLinksRelationManager extends RelationManager
                         TextInput::make('title')
                             ->required()
                             ->maxLength(255)
+                            ->default(fn (\Filament\Resources\RelationManagers\RelationManager $livewire) => $livewire->getOwnerRecord()->name)
                             ->helperText(fn ($get) => intval($get('quantity')) > 1
                                 ? 'Se añadirá #1, #2, etc. automáticamente (ej: "Pack Fidelidad #3")'
                                 : 'Título visible para el usuario'),
@@ -288,6 +291,7 @@ class RedemptionLinksRelationManager extends RelationManager
                         TextInput::make('batch_name')
                             ->label('Nombre del QR')
                             ->required()
+                            ->default(fn (\Filament\Resources\RelationManagers\RelationManager $livewire) => $livewire->getOwnerRecord()->name)
                             ->placeholder('Ej: Evento Julio 2025')
                             ->maxLength(255),
                         TextInput::make('coupon_count')
