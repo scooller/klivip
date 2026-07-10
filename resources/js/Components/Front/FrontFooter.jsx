@@ -55,7 +55,7 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
         <footer id={id} className="site-footer mt-auto">
             <div className="container-fluid flex-column">
                 <div className="w-100 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-2 gap-3">
-                    <ul className="list-group list-group-horizontal list-group-flush border-0">
+                    <ul className="list-group list-group-horizontal list-group-flush border-0 m-0 p-0">
                         <li className="list-group-item border-0" dangerouslySetInnerHTML={{ __html: site?.opening_hours ?? 'Juego Responsable' }} />
                         <li className="list-group-item border-0" dangerouslySetInnerHTML={{ __html: site?.address ?? contact.address ?? 'Seguridad Garantizada' }} />
                         {contact.phone && (
@@ -99,7 +99,7 @@ export default function FrontFooter({ site, id = 'section-soporte' }) {
                 </div>
                 <hr className="w-100" />
                 {site?.links?.length > 0 && (
-                    <ul className="nav justify-content-center py-2">
+                    <ul className="nav justify-content-center p-0 m-0">
                         {site.links.map((link) => (
                             <li key={link.url} className="nav-item">
                                 <a className="nav-link" href={link.url} target="_blank" rel="noopener noreferrer">

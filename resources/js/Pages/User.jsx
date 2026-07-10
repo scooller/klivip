@@ -6,6 +6,8 @@ import UserWelcomeCard from '../Components/Front/UserWelcomeCard';
 import FrontFooter from '../Components/Front/FrontFooter';
 import CouponMini from '../Components/Front/CouponMini';
 import CouponDetailModal from '../Components/Front/CouponDetailModal';
+import OtpVerificationModal from '../Components/Front/OtpVerificationModal';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faBarcode, faPersonCircleCheck, faUserPen, faUsersSlash } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
@@ -70,6 +72,8 @@ export default function User({ site, activeCoupons = [] }) {
         phone: '',
         birth_date: '',
     });
+    const [confirmValue, setConfirmValue] = useState('');
+    const [confirmError, setConfirmError] = useState(null);
 
     const [isRegistrationOtpPending, setIsRegistrationOtpPending] = useState(false);
     const registerVerifyForm = useForm({
@@ -147,8 +151,26 @@ export default function User({ site, activeCoupons = [] }) {
     const handleRegisterCustomer = (event) => {
         event?.preventDefault();
         setFeedback(null);
+        setConfirmError(null);
 
-        registerForm.post('/usuario/register', {
+        const isPhonePriority = Boolean(registerForm.data.phone);
+        if (isPhonePriority) {
+            const formattedConfirm = formatPhone(confirmValue);
+            if (formattedConfirm !== registerForm.data.phone) {
+                setConfirmError('El número de teléfono y la confirmación no coinciden.');
+                return;
+            }
+        } else if (registerForm.data.email) {
+            if (confirmValue !== registerForm.data.email) {
+                setConfirmError('El correo y la confirmación no coinciden.');
+                return;
+            }
+        }
+
+        registerForm.transform((data) => ({
+            ...data,
+            email_confirmation: isPhonePriority ? '' : confirmValue
+        })).post('/usuario/register', {
             preserveScroll: true,
             onSuccess: () => {
                 const isSms = Boolean(registerForm.data.phone);
@@ -244,55 +266,6 @@ export default function User({ site, activeCoupons = [] }) {
                             </div>
 
                             {isRegistering ? (
-                                isRegistrationOtpPending ? (
-                                    <form className="user-login-form-shell user-register-form-shell d-flex flex-column gap-3" onSubmit={handleVerifyRegistration}>
-                                        <label htmlFor="register-otp-entry" className="form-label">Codigo de verificacion (SMS):</label>
-                                        <input
-                                            id="register-otp-entry"
-                                            className="form-control user-phone-input"
-                                            type="text"
-                                            inputMode="text"
-                                            autoComplete="one-time-code"
-                                            placeholder="ABC123"
-                                            value={registerVerifyForm.data.otp_code}
-                                            onInput={(event) => registerVerifyForm.setData('otp_code', event.target.value)}
-                                        />
-
-                                        {feedback ? (
-                                            <div className="alert alert-info feedback-callout" role="alert">
-                                                <strong>{feedback.title}</strong>
-                                                <p className="mb-0">{feedback.description}</p>
-                                            </div>
-                                        ) : null}
-
-                                        {registerVerifyForm.errors.otp_code ? (
-                                            <div className="alert alert-danger feedback-callout" role="alert">
-                                                <strong>Error</strong>
-                                                <p className="mb-0">{registerVerifyForm.errors.otp_code}</p>
-                                            </div>
-                                        ) : null}
-
-                                        <button
-                                            className="user-login-primary btn btn-primary btn-lg w-100"
-                                            type="submit"
-                                            disabled={registerVerifyForm.processing}
-                                        >
-                                            <FontAwesomeIcon icon={faPersonCircleCheck} /> Verificar codigo
-                                        </button>
-
-                                        <button
-                                            className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
-                                            type="button"
-                                            disabled={registerVerifyForm.processing}
-                                            onClick={() => {
-                                                setIsRegistrationOtpPending(false);
-                                                setFeedback(null);
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowLeft} /> Volver al registro
-                                        </button>
-                                    </form>
-                                ) : (
                                     <form className="user-login-form-shell user-register-form-shell d-flex flex-column gap-3" onSubmit={handleRegisterCustomer}>
                                         <label htmlFor="register-name" className="form-label">Nombre Completo</label>
                                         <input
@@ -316,17 +289,6 @@ export default function User({ site, activeCoupons = [] }) {
                                             onInput={(event) => registerForm.setData('email', event.target.value)}
                                         />
 
-                                        <label htmlFor="register-email-confirmation" className="form-label">Confirma su E-mail</label>
-                                        <input
-                                            id="register-email-confirmation"
-                                            className="form-control user-phone-input user-register-input"
-                                            type="email"
-                                            autoComplete="email"
-                                            placeholder="correo@ejemplo.com"
-                                            value={registerForm.data.email_confirmation}
-                                            onInput={(event) => registerForm.setData('email_confirmation', event.target.value)}
-                                        />
-
                                         <label htmlFor="register-phone" className="form-label">Numero de Telefono</label>
                                         <input
                                             id="register-phone"
@@ -337,6 +299,28 @@ export default function User({ site, activeCoupons = [] }) {
                                             value={registerForm.data.phone}
                                             onInput={(event) => registerForm.setData('phone', formatPhone(event.target.value))}
                                         />
+
+                                        {(registerForm.data.email || registerForm.data.phone) ? (() => {
+                                            const isPhonePriority = Boolean(registerForm.data.phone);
+                                            const confirmLabel = isPhonePriority ? 'Confirma tu Numero de Telefono' : 'Confirma tu E-mail';
+                                            const confirmType = isPhonePriority ? 'text' : 'email';
+                                            const confirmPlaceholder = isPhonePriority ? '+56 9 1548 2685' : 'correo@ejemplo.com';
+
+                                            return (
+                                                <>
+                                                    <label htmlFor="register-confirmation" className="form-label">{confirmLabel}</label>
+                                                    <input
+                                                        id="register-confirmation"
+                                                        className="form-control user-phone-input user-register-input"
+                                                        type={confirmType}
+                                                        autoComplete="off"
+                                                        placeholder={confirmPlaceholder}
+                                                        value={confirmValue}
+                                                        onInput={(event) => setConfirmValue(isPhonePriority ? formatPhone(event.target.value) : event.target.value)}
+                                                    />
+                                                </>
+                                            );
+                                        })() : null}
 
                                         <label htmlFor="register-birth-date" className="form-label">Fecha de Nacimiento</label>
                                         <input
@@ -352,6 +336,13 @@ export default function User({ site, activeCoupons = [] }) {
                                             <div className="alert alert-info feedback-callout" role="alert">
                                                 <strong>{feedback.title}</strong>
                                                 <p className="mb-0">{feedback.description}</p>
+                                            </div>
+                                        ) : null}
+
+                                        {confirmError ? (
+                                            <div className="alert alert-danger feedback-callout" role="alert">
+                                                <strong>Error de validación</strong>
+                                                <p className="mb-0">{confirmError}</p>
                                             </div>
                                         ) : null}
 
@@ -371,7 +362,7 @@ export default function User({ site, activeCoupons = [] }) {
                                         </button>
 
                                         <button
-                                            className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
+                                            className="user-login-secondary btn btn-outline-light btn-lg w-100"
                                             type="button"
                                             disabled={registerForm.processing}
                                             onClick={() => {
@@ -382,9 +373,8 @@ export default function User({ site, activeCoupons = [] }) {
                                             <FontAwesomeIcon icon={faArrowLeft} /> Volver al acceso
                                         </button>
                                     </form>
-                                )
                             ) : (
-                                <form className="user-login-form-shell d-flex flex-column gap-3" onSubmit={isOtpPending ? handleVerifyOtp : handleRequestOtp}>
+                                <form className="user-login-form-shell d-flex flex-column gap-3" onSubmit={handleRequestOtp}>
                                     <label htmlFor="customer-phone-entry" className="form-label">Numero de Telefono / Email:</label>
                                     <input
                                         id="customer-phone-entry"
@@ -393,48 +383,18 @@ export default function User({ site, activeCoupons = [] }) {
                                         value={loginForm.data.identifier}
                                         autoComplete="username"
                                         placeholder="Numero de telefono o email"
-                                        disabled={isOtpPending || loginForm.processing}
+                                        disabled={loginForm.processing}
                                         onInput={(event) => loginForm.setData('identifier', formatPhone(event.target.value))}
                                     />
 
-                                    {isOtpPending ? (
-                                        <button
-                                            className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
-                                            type="button"
-                                            onClick={() => {
-                                                setIsChangingUser(true);
-                                                setFeedback(null);
-                                                loginForm.reset('otp_code');
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faUsersSlash} /> Cambiar usuario
-                                        </button>
-                                    ) : null}
-
-                                    {isOtpPending ? (
-                                        <>
-                                            <label htmlFor="customer-otp-entry" className="form-label">Codigo de acceso:</label>
-                                            <input
-                                                id="customer-otp-entry"
-                                                className="form-control user-phone-input"
-                                                type="text"
-                                                inputMode="text"
-                                                autoComplete="one-time-code"
-                                                placeholder="ABC123"
-                                                value={loginForm.data.otp_code}
-                                                onInput={(event) => loginForm.setData('otp_code', event.target.value)}
-                                            />
-                                        </>
-                                    ) : null}
-
-                                    {feedback ? (
+                                    {feedback && !isOtpPending && !isRegistrationOtpPending ? (
                                         <div className="alert alert-info feedback-callout" role="alert">
                                             <strong>{feedback.title}</strong>
                                             <p className="mb-0">{feedback.description}</p>
                                         </div>
                                     ) : null}
 
-                                    {loginErrorMessage ? (
+                                    {loginErrorMessage && !isOtpPending ? (
                                         <div className="alert alert-danger feedback-callout" role="alert">
                                             <strong>Error de autenticacion</strong>
                                             <p className="mb-0">{loginErrorMessage}</p>
@@ -446,39 +406,46 @@ export default function User({ site, activeCoupons = [] }) {
                                         type="submit"
                                         disabled={loginForm.processing}
                                     >
-                                        <FontAwesomeIcon icon={faPersonCircleCheck} /> {isOtpPending ? 'Verificar codigo' : 'Acceder'}
+                                        <FontAwesomeIcon icon={faPersonCircleCheck} /> {loginRequiresOtp ? 'Enviar codigo' : 'Acceder a mi cuenta'}
                                     </button>
 
-                                    {isOtpPending ? (
-                                        <button
-                                            className="user-login-secondary btn btn-outline-secondary btn-lg w-100"
-                                            type="button"
-                                            disabled={loginForm.processing}
-                                            onClick={() => handleRequestOtp()}
-                                        >
-                                            <FontAwesomeIcon icon={faBarcode} /> Reenviar codigo
-                                        </button>
-                                    ) : (
-                                        <>
-                                            <p className="user-login-copy">Aun no estas registrado?</p>
+                                    <>
+                                        <p className="user-login-copy">Aun no estas registrado?</p>
 
-                                            <button
-                                                className="user-login-secondary btn btn-primary btn-lg w-100"
-                                                type="button"
-                                                onClick={() => {
-                                                    setIsRegistering(true);
-                                                    setFeedback(null);
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faUserPen} /> Registrarme
-                                            </button>
-                                        </>
-                                    )}
+                                        <button
+                                            className="user-login-secondary btn btn-primary btn-lg w-100"
+                                            type="button"
+                                            onClick={() => {
+                                                setIsRegistering(true);
+                                                setFeedback(null);
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faUserPen} /> Registrarme
+                                        </button>
+                                    </>
                                 </form>
                             )}
                         </section>
                     </main>
                 </div>
+                <OtpVerificationModal
+                    open={isRegistrationOtpPending || isOtpPending}
+                    mode={isRegistrationOtpPending ? 'register' : 'login'}
+                    form={isRegistrationOtpPending ? registerVerifyForm : loginForm}
+                    feedback={feedback}
+                    onSubmit={isRegistrationOtpPending ? handleVerifyRegistration : handleVerifyOtp}
+                    onResend={handleRequestOtp}
+                    onClose={() => {
+                        if (isRegistrationOtpPending) {
+                            setIsRegistrationOtpPending(false);
+                            setFeedback(null);
+                        } else {
+                            setIsChangingUser(true);
+                            setFeedback(null);
+                            loginForm.reset('otp_code');
+                        }
+                    }}
+                />
             </>
         );
     }

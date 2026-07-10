@@ -27,7 +27,10 @@ class CustomerSessionController extends Controller
 
         $payload = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required_without:phone', 'nullable', 'email:rfc,dns', 'max:255', 'confirmed', 'unique:users,email'],
+            'email' => array_filter([
+                'required_without:phone', 'nullable', 'email:rfc,dns', 'max:255', 'unique:users,email',
+                empty($request->input('phone')) ? 'confirmed' : null
+            ]),
             'phone' => ['required_without:email', 'nullable', 'string', 'max:25'],
             'birth_date' => ['required', 'date', 'before_or_equal:' . $adultLimitDate],
         ], [
