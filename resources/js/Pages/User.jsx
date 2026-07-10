@@ -170,7 +170,9 @@ export default function User({ site, activeCoupons = [] }) {
         registerForm.transform((data) => ({
             ...data,
             email_confirmation: isPhonePriority ? '' : confirmValue
-        })).post('/usuario/register', {
+        }));
+
+        registerForm.post('/usuario/register', {
             preserveScroll: true,
             onSuccess: () => {
                 const isSms = Boolean(registerForm.data.phone);
