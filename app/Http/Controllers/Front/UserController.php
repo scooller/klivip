@@ -384,10 +384,28 @@ class UserController extends Controller
                 'sweepstake_slug' => $coupon->sweepstake?->slug ?? '',
                 'prize' => $coupon->sweepstake?->prize_description,
                 'draw_at' => $coupon->sweepstake?->draw_at?->format('d/m/Y H:i'),
+                'draw_at_date' => $coupon->sweepstake?->draw_at,
             ])
+            : collect([]);
+
+        $groupedCoupons = collect($recentCoupons)
+            ->groupBy('sweepstake_slug')
+            ->map(fn (\Illuminate\Support\Collection $items): array => [
+                'sweepstake_name' => $items->first()['sweepstake_name'],
+                'sweepstake_slug' => $items->first()['sweepstake_slug'],
+                'prize' => $items->first()['prize'],
+                'draw_at' => $items->first()['draw_at'],
+                'draw_at_date' => $items->first()['draw_at_date'],
+                'coupons' => $items->map(fn (array $c): array => [
+                    'id' => $c['id'],
+                    'number' => $c['number'],
+                    'is_used' => $c['is_used'],
+                    'obtained_at' => $c['obtained_at'],
+                ])->values()->all(),
+            ])
+            ->sortBy('draw_at_date')
             ->values()
-            ->all()
-            : [];
+            ->all();
 
         return Inertia::render('User', [
             'site' => [
@@ -415,7 +433,7 @@ class UserController extends Controller
                     ],
                 ],
             ],
-            'activeCoupons' => $recentCoupons,
+            'activeCoupons' => $groupedCoupons,
         ]);
     }
 

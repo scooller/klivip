@@ -75,7 +75,7 @@ export default function UserCouponsIndex({ site, groupedCoupons = [], pagination
         });
     };
 
-    const totalCoupons = groupedCoupons.reduce(
+    const totalCoupons = pagination?.total ?? groupedCoupons.reduce(
         (sum, group) => sum + group.coupons.length,
         0,
     );

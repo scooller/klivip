@@ -522,16 +522,26 @@ export default function User({ site, activeCoupons = [] }) {
                         </div>
 
                         {activeCoupons.length > 0 ? (
-                            <div className="row row-cols-2 row-cols-md-3 g-2">
-                                {activeCoupons.map((coupon) => (
-                                    <div key={coupon.id} className="col">
-                                        <CouponMini
-                                            number={coupon.number}
-                                            isUsed={coupon.is_used}
-                                            sweepstakeName={coupon.sweepstake_name}
-                                            date={coupon.obtained_at ? `Cobrado: ${coupon.obtained_at}` : (coupon.draw_at ? `Sorteo: ${coupon.draw_at}` : null)}
-                                            onClick={null}
-                                        />
+                            <div className="d-flex flex-column gap-4">
+                                {activeCoupons.map((group) => (
+                                    <div key={group.sweepstake_slug} className="sweepstake-group">
+                                        <div className="d-flex align-items-center justify-content-between mb-2">
+                                            <h5 className="mb-0 fw-bold text-secondary">{group.sweepstake_name}</h5>
+                                            {group.draw_at && <span className="badge bg-warning text-dark">Sorteo: {group.draw_at}</span>}
+                                        </div>
+                                        <div className="row row-cols-2 row-cols-md-3 g-2">
+                                            {group.coupons.map((coupon) => (
+                                                <div key={coupon.id} className="col">
+                                                    <CouponMini
+                                                        number={coupon.number}
+                                                        isUsed={coupon.is_used}
+                                                        sweepstakeName={group.sweepstake_name}
+                                                        date={coupon.obtained_at ? `Cobrado: ${coupon.obtained_at}` : (group.draw_at ? `Sorteo: ${group.draw_at}` : null)}
+                                                        onClick={null}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 ))}
                             </div>

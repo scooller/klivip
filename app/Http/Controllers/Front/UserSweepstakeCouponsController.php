@@ -40,6 +40,7 @@ class UserSweepstakeCouponsController extends Controller
                 'sweepstake_slug' => $items->first()['sweepstake_slug'],
                 'prize' => $items->first()['prize'],
                 'draw_at' => $items->first()['draw_at'],
+                'draw_at_date' => $items->first()['draw_at_date'],
                 'coupons' => $items->map(fn (array $c): array => [
                     'id' => $c['id'],
                     'number' => $c['number'],
@@ -47,6 +48,7 @@ class UserSweepstakeCouponsController extends Controller
                     'obtained_at' => $c['obtained_at'],
                 ])->values()->all(),
             ])
+            ->sortBy('draw_at_date')
             ->values()
             ->all();
 
@@ -138,6 +140,7 @@ class UserSweepstakeCouponsController extends Controller
             'sweepstake_slug' => $sweepstake?->slug ?? '',
             'prize' => $sweepstake?->prize_description,
             'draw_at' => $sweepstake?->draw_at?->format('d/m/Y H:i'),
+            'draw_at_date' => $sweepstake?->draw_at,
         ];
     }
 
