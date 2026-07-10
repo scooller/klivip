@@ -280,17 +280,6 @@ export default function User({ site, activeCoupons = [] }) {
                                             onInput={(event) => registerForm.setData('name', event.target.value)}
                                         />
 
-                                        <label htmlFor="register-email" className="form-label">E-mail</label>
-                                        <input
-                                            id="register-email"
-                                            className="form-control user-phone-input user-register-input"
-                                            type="email"
-                                            autoComplete="email"
-                                            placeholder="correo@ejemplo.com"
-                                            value={registerForm.data.email}
-                                            onInput={(event) => registerForm.setData('email', event.target.value)}
-                                        />
-
                                         <label htmlFor="register-phone" className="form-label">Numero de Telefono</label>
                                         <input
                                             id="register-phone"
@@ -300,6 +289,17 @@ export default function User({ site, activeCoupons = [] }) {
                                             placeholder="+56 9 1548 2685"
                                             value={registerForm.data.phone}
                                             onInput={(event) => registerForm.setData('phone', formatPhone(event.target.value))}
+                                        />
+
+                                        <label htmlFor="register-email" className="form-label">E-mail</label>
+                                        <input
+                                            id="register-email"
+                                            className="form-control user-phone-input user-register-input"
+                                            type="email"
+                                            autoComplete="email"
+                                            placeholder="correo@ejemplo.com"
+                                            value={registerForm.data.email}
+                                            onInput={(event) => registerForm.setData('email', event.target.value)}
                                         />
 
                                         {(registerForm.data.email || registerForm.data.phone) ? (() => {
