@@ -38,7 +38,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
         const resolveSlidesPerPage = () => {
             if (window.innerWidth < 768) {
                 setGameSlidesPerPage(1);
-                setCouponSlidesPerPage(1);
+                setCouponSlidesPerPage(2);
 
                 return;
             }

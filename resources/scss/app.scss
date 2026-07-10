@@ -1134,16 +1134,26 @@ body {
     flex-wrap: wrap;
   }
 
-  /* ── Coupon pages mobile fixes ── */
+  /* ── Form inputs mobile fixes ── */
 
-  .redeem-form-card .form-control-lg {
-    font-size: 0.9rem;
-    padding: 0.5rem 0.75rem;
+  .form-control, .form-select {
+    font-size: 0.875rem;
+    padding: 0.4rem 0.75rem;
   }
 
-  .redeem-form-card .btn {
-    font-size: 0.85rem;
-    padding: 0.5rem 0.75rem;
+  .form-control-lg, .form-select-lg {
+    font-size: 0.9rem;
+    padding: 0.45rem 0.75rem;
+  }
+
+  .btn {
+    font-size: 0.875rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .btn-lg {
+    font-size: 0.9rem;
+    padding: 0.45rem 0.75rem;
   }
 
   .sweepstake-coupon-group-header h3 {
