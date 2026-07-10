@@ -758,7 +758,7 @@ body {
   transition: transform 0.15s ease;
 
   &__header {
-    font-size: 0.75rem;
+    font-size: 1.75rem;
     line-height: 1.2;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -768,8 +768,8 @@ body {
 
   &__number {
     font-size: 1rem;
-    border-top: 2px solid var(--brand-violet-300);
-    border-bottom: 2px solid var(--brand-violet-300);
+    border-top: 2px solid var(--casino-gold);
+    border-bottom: 2px solid var(--casino-gold);
     width: 80%;
 
     h2 {
@@ -853,8 +853,8 @@ body {
   }
 
   .card-body {
-    border-top: 2px solid var(--brand-violet-300);
-    border-bottom: 2px solid var(--brand-violet-300);
+    border-top: 2px solid var(--casino-gold);
+    border-bottom: 2px solid var(--casino-gold);
 
     .code {
       letter-spacing: 0.05em;
@@ -1136,12 +1136,14 @@ body {
 
   /* ── Form inputs mobile fixes ── */
 
-  .form-control, .form-select {
+  .form-control,
+  .form-select {
     font-size: 0.875rem;
     padding: 0.4rem 0.75rem;
   }
 
-  .form-control-lg, .form-select-lg {
+  .form-control-lg,
+  .form-select-lg {
     font-size: 0.9rem;
     padding: 0.45rem 0.75rem;
   }
@@ -1186,7 +1188,7 @@ body {
 
   .coupon-mini {
     &__header {
-      font-size: 0.6rem;
+      font-size: 1.6rem;
     }
 
     &__number {

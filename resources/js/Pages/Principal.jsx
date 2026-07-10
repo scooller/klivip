@@ -325,7 +325,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
                                                             number={coupon.number}
                                                             isUsed={coupon.is_used}
                                                             sweepstakeName={coupon.sweepstake_name}
-                                                            date={coupon.obtained_at ? `Cobrado: ${coupon.obtained_at}` : (coupon.draw_at ? `Sorteo: ${coupon.draw_at}` : null)}
+                                                            date={coupon.draw_at ? `Sorteo: ${coupon.draw_at}` : null}
                                                             onClick={() => setSelectedCoupon({
                                                                 ...coupon,
                                                                 sweepstake_name: coupon.sweepstake_name,

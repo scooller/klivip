@@ -48,8 +48,8 @@ export default function CouponCard({
             </div>
             <div className="card-footer pb-5">
                 <p className="mb-0">
-                    {coupon.obtained_at
-                        ? `Cobrado: ${coupon.obtained_at}`
+                    {coupon.draw_at
+                        ? `Sorteo: ${coupon.draw_at}`
                         : ''}
                 </p>
             </div>

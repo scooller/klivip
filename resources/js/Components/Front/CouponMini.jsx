@@ -28,12 +28,12 @@ export default function CouponMini({
                 }
             }}
         >
-            {sweepstakeName && <small className="coupon-mini__header fw-bold mb-1">{sweepstakeName}</small>}
+            {sweepstakeName && <div className="coupon-mini__header fw-bold mb-1">{sweepstakeName}</div>}
             <span className="coupon-mini__number text-center">Cupon<h2>{paddedNumber}</h2></span>
             {isUsed && showLabel && (
                 <small className="coupon-mini__label">Usado</small>
             )}
-            {date && <small className="coupon-mini__footer mt-1 text-muted" style={{fontSize: '0.75rem'}}>{date}</small>}
+            {date && <small className="coupon-mini__footer mt-1 text-muted" style={{ fontSize: '0.75rem' }}>{date}</small>}
         </Tag>
     );
 }

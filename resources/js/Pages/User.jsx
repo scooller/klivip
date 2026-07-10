@@ -538,7 +538,7 @@ export default function User({ site, activeCoupons = [] }) {
                                                         number={coupon.number}
                                                         isUsed={coupon.is_used}
                                                         sweepstakeName={group.sweepstake_name}
-                                                        date={coupon.obtained_at ? `Cobrado: ${coupon.obtained_at}` : (group.draw_at ? `Sorteo: ${group.draw_at}` : null)}
+                                                        date={group.draw_at ? `Sorteo: ${group.draw_at}` : null}
                                                         onClick={() => setSelectedCoupon({
                                                             ...coupon,
                                                             sweepstake_name: group.sweepstake_name,

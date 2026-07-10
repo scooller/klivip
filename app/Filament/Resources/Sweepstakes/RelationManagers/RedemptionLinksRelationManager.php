@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Filament\Resources\Sweepstakes\RelationManagers;
-use FilamentSchemasComponentsUtilitiesSet;
 
+use App\Models\QrBonus;
 use App\Models\RedemptionSource;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -60,6 +60,7 @@ class RedemptionLinksRelationManager extends RelationManager
                     ->numeric()
                     ->minValue(1)
                     ->label('Máximo de redenciones')
+                    ->default(1)
                     ->helperText('Cuántas veces se puede usar este link. Dejar vacío para sin límite'),
                 Toggle::make('is_active')
                     ->default(true)
@@ -231,6 +232,7 @@ class RedemptionLinksRelationManager extends RelationManager
                         TextInput::make('max_redemptions')
                             ->numeric()
                             ->minValue(1)
+                            ->default(1)
                             ->label('Máximo de redenciones')
                             ->helperText('Veces que se puede usar cada link. Dejar vacío para sin límite'),
                         Toggle::make('is_active')
@@ -271,11 +273,11 @@ class RedemptionLinksRelationManager extends RelationManager
                     ->form([
                         Select::make('qr_bonus_id')
                             ->label('Usar Bono QR (Plantilla)')
-                            ->options(\App\Models\QrBonus::pluck('name', 'id'))
+                            ->options(QrBonus::pluck('name', 'id'))
                             ->live()
                             ->afterStateUpdated(function (Set $set, $state) {
                                 if ($state) {
-                                    $bonus = \App\Models\QrBonus::find($state);
+                                    $bonus = QrBonus::find($state);
                                     if ($bonus) {
                                         $set('coupon_count', $bonus->coupon_count);
                                         $set('max_redemptions', $bonus->max_redemptions);
@@ -304,9 +306,9 @@ class RedemptionLinksRelationManager extends RelationManager
                     ])
                     ->action(function (array $data) {
                         $sweepstake = $this->getOwnerRecord();
-                        
+
                         $code = Str::random(12);
-                        
+
                         // Force redemption source to QR
                         $qrSource = RedemptionSource::where('code', 'qr')->first();
 
@@ -314,7 +316,7 @@ class RedemptionLinksRelationManager extends RelationManager
                             'redemption_source_id' => $qrSource ? $qrSource->id : null,
                             'code' => $code,
                             'title' => $data['batch_name'],
-                            'description' => "Generado desde admin",
+                            'description' => 'Generado desde admin',
                             'coupon_count' => $data['coupon_count'],
                             'max_redemptions' => $data['max_redemptions'],
                             'is_active' => true,

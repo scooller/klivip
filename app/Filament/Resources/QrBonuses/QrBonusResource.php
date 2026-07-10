@@ -9,9 +9,12 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class QrBonusResource extends Resource
@@ -28,21 +31,21 @@ class QrBonusResource extends Resource
     {
         return $schema
             ->components([
-                \Filament\Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->label('Nombre del Bono')
                     ->required()
                     ->maxLength(255),
-                \Filament\Forms\Components\Textarea::make('description')
+                Textarea::make('description')
                     ->label('Descripción')
                     ->maxLength(65535)
                     ->columnSpanFull(),
-                \Filament\Forms\Components\TextInput::make('coupon_count')
+                TextInput::make('coupon_count')
                     ->label('Cupones por QR')
                     ->required()
                     ->numeric()
                     ->minValue(1)
                     ->default(1),
-                \Filament\Forms\Components\TextInput::make('max_redemptions')
+                TextInput::make('max_redemptions')
                     ->label('Máximo de redenciones')
                     ->numeric()
                     ->minValue(1)
@@ -54,18 +57,20 @@ class QrBonusResource extends Resource
     {
         return $table
             ->columns([
-                \Filament\Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nombre')
                     ->searchable(),
-                \Filament\Tables\Columns\TextColumn::make('coupon_count')
+                TextColumn::make('coupon_count')
                     ->label('Cupones por QR')
                     ->numeric()
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('max_redemptions')
+                TextColumn::make('max_redemptions')
                     ->label('Max Redenciones')
                     ->numeric()
+                    ->minValue(1)
+                    ->default(1)
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Creado')
                     ->dateTime()
                     ->sortable()
