@@ -13,6 +13,7 @@ import ActionDrawer from '../Components/Front/Sections/ActionDrawer';
 import FrontFooter from '../Components/Front/FrontFooter';
 import FrontAppHeader from '../Components/Front/FrontAppHeader';
 import CouponMini from '../Components/Front/CouponMini';
+import CouponDetailModal from '../Components/Front/CouponDetailModal';
 
 const POPUP_SESSION_KEY = 'klivip_home_popup_shown';
 
@@ -27,6 +28,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [gameSlidesPerPage, setGameSlidesPerPage] = useState(3);
     const [couponSlidesPerPage, setCouponSlidesPerPage] = useState(4);
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
     const carouselRefs = useRef([]);
     const popupRef = useRef(null);
     const siteSetting = page.props.siteSetting ?? {};
@@ -324,7 +326,12 @@ export default function Principal({ site, promotions = [], games = [], banners =
                                                             isUsed={coupon.is_used}
                                                             sweepstakeName={coupon.sweepstake_name}
                                                             date={coupon.obtained_at ? `Cobrado: ${coupon.obtained_at}` : (coupon.draw_at ? `Sorteo: ${coupon.draw_at}` : null)}
-                                                            onClick={null}
+                                                            onClick={() => setSelectedCoupon({
+                                                                ...coupon,
+                                                                sweepstake_name: coupon.sweepstake_name,
+                                                                prize: coupon.prize,
+                                                                draw_at: coupon.draw_at,
+                                                            })}
                                                         />
                                                     </div>
                                                 ))}
@@ -514,6 +521,12 @@ export default function Principal({ site, promotions = [], games = [], banners =
                         </div>
                     </div>
                 )}
+
+                <CouponDetailModal
+                    coupon={selectedCoupon}
+                    open={selectedCoupon !== null}
+                    onClose={() => setSelectedCoupon(null)}
+                />
             </div>
         </>
     );

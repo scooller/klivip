@@ -5,6 +5,7 @@ import UserSessionCard from '../Components/Front/UserSessionCard';
 import UserWelcomeCard from '../Components/Front/UserWelcomeCard';
 import FrontFooter from '../Components/Front/FrontFooter';
 import CouponMini from '../Components/Front/CouponMini';
+import CouponDetailModal from '../Components/Front/CouponDetailModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faBarcode, faPersonCircleCheck, faUserPen, faUsersSlash } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
@@ -35,6 +36,7 @@ function formatPhone(rawValue) {
 }
 
 export default function User({ site, activeCoupons = [] }) {
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
     const page = usePage();
     const sharedSite = page.props.site ?? site;
     const customer = page.props.auth?.customer ?? null;
@@ -537,7 +539,12 @@ export default function User({ site, activeCoupons = [] }) {
                                                         isUsed={coupon.is_used}
                                                         sweepstakeName={group.sweepstake_name}
                                                         date={coupon.obtained_at ? `Cobrado: ${coupon.obtained_at}` : (group.draw_at ? `Sorteo: ${group.draw_at}` : null)}
-                                                        onClick={null}
+                                                        onClick={() => setSelectedCoupon({
+                                                            ...coupon,
+                                                            sweepstake_name: group.sweepstake_name,
+                                                            prize: group.prize,
+                                                            draw_at: group.draw_at,
+                                                        })}
                                                     />
                                                 </div>
                                             ))}
@@ -566,6 +573,11 @@ export default function User({ site, activeCoupons = [] }) {
                     onLogout={handleLogout}
                 />
 
+                <CouponDetailModal
+                    coupon={selectedCoupon}
+                    open={selectedCoupon !== null}
+                    onClose={() => setSelectedCoupon(null)}
+                />
             </div>
         </>
     );
