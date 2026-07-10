@@ -27,7 +27,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
     const customer = page.props.auth?.customer ?? null;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [gameSlidesPerPage, setGameSlidesPerPage] = useState(3);
-    const [couponSlidesPerPage, setCouponSlidesPerPage] = useState(4);
+    const [couponSlidesPerPage, setCouponSlidesPerPage] = useState(3);
     const [selectedCoupon, setSelectedCoupon] = useState(null);
     const carouselRefs = useRef([]);
     const popupRef = useRef(null);
@@ -51,7 +51,7 @@ export default function Principal({ site, promotions = [], games = [], banners =
             }
 
             setGameSlidesPerPage(3);
-            setCouponSlidesPerPage(4);
+            setCouponSlidesPerPage(3);
         };
 
         resolveSlidesPerPage();
