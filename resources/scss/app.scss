@@ -1015,8 +1015,11 @@ body {
 
 .react-tel-input{
     .form-control{
-        border: 1px solid var(--field-border);
-        background: linear-gradient(180deg, var(--field-bg-start), var(--field-bg-end));
+        border: 1px solid var(--field-border)!important;
+        background: linear-gradient(180deg, var(--field-bg-start), var(--field-bg-end))!important;
+        width: 100%!important;
+        font-size: 30px!important;
+        text-align: left;
     }
     .flag-dropdown{
         background-color: inherit!important;
