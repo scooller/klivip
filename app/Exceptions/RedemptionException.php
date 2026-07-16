@@ -40,4 +40,9 @@ class RedemptionException extends Exception
     {
         return new self('Esta redención ya fue anulada');
     }
+
+    public static function missingContactInfo(): self
+    {
+        return new self('Se requiere al menos un método de contacto (email o teléfono)');
+    }
 }

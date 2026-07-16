@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Exceptions\RedemptionException;
+use App\Jobs\SendCouponNotificationJob;
+use App\Models\AutomaticReward;
 use App\Models\CouponRedemption;
 use App\Models\RedemptionLink;
 use App\Models\Sweepstake;
@@ -18,7 +20,7 @@ class RedemptionService
      */
     public function redeem(
         string $linkCode,
-        string $userEmail,
+        ?string $userEmail = null,
         ?string $userPhone = null,
         ?string $userName = null,
         ?User $authenticatedUser = null,
@@ -98,7 +100,7 @@ class RedemptionService
                 'numbers' => [$startNumber, $endNumber],
             ]);
 
-            \App\Jobs\SendCouponNotificationJob::dispatch($redemption);
+            SendCouponNotificationJob::dispatch($redemption);
 
             return $redemption;
         });
@@ -108,15 +110,24 @@ class RedemptionService
      * Obtiene o crea un usuario basado en email/teléfono
      */
     protected function getOrCreateUser(
-        string $email,
+        ?string $email,
         ?string $phone,
         ?string $name
     ): User {
-        $user = User::where('email', $email)->first();
+        if (empty($email) && empty($phone)) {
+            throw RedemptionException::missingContactInfo();
+        }
+
+        $user = $email
+            ? User::where('email', $email)->first()
+            : User::where('phone', $phone)->first();
 
         if ($user) {
             if (empty($user->phone) && $phone) {
                 $user->update(['phone' => $phone]);
+            }
+            if (empty($user->email) && $email) {
+                $user->update(['email' => $email]);
             }
             if (empty($user->name) && $name) {
                 $user->update(['name' => $name]);
@@ -128,7 +139,7 @@ class RedemptionService
         return User::create([
             'email' => $email,
             'phone' => $phone,
-            'name' => $name ?? explode('@', $email)[0],
+            'name' => $name ?? ($phone ? 'Usuario '.substr($phone, -4) : 'Usuario'),
             'password' => bcrypt(str()->random(16)),
         ]);
     }
@@ -157,15 +168,18 @@ class RedemptionService
             ]);
         });
     }
-    public function grantAutomaticReward(User $user, \App\Models\AutomaticReward $reward, Sweepstake $sweepstake): ?CouponRedemption
+
+    public function grantAutomaticReward(User $user, AutomaticReward $reward, Sweepstake $sweepstake): ?CouponRedemption
     {
         if (! $sweepstake->isAvailable()) {
             Log::warning('Cannot grant automatic reward: Sweepstake is not available', ['sweepstake_id' => $sweepstake->id, 'reward_id' => $reward->id]);
+
             return null;
         }
 
         if ($sweepstake->hasUserReachedLimit($user, $reward->coupon_amount)) {
             Log::warning('Cannot grant automatic reward: User reached sweepstake limit', ['sweepstake_id' => $sweepstake->id, 'user_id' => $user->id]);
+
             return null;
         }
 
@@ -174,6 +188,7 @@ class RedemptionService
 
             if (! $lockedSweepstake->hasAvailableSlots($reward->coupon_amount)) {
                 Log::warning('Cannot grant automatic reward: Sweepstake limit reached', ['sweepstake_id' => $sweepstake->id]);
+
                 return null;
             }
 
@@ -222,7 +237,7 @@ class RedemptionService
                 'numbers' => [$startNumber, $endNumber],
             ]);
 
-            \App\Jobs\SendCouponNotificationJob::dispatch($redemption);
+            SendCouponNotificationJob::dispatch($redemption);
 
             return $redemption;
         });

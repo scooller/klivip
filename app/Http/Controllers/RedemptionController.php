@@ -78,10 +78,12 @@ class RedemptionController extends Controller
                 ],
             ]);
         } catch (RedemptionException $e) {
+            $customer = $request->user('customer');
+
             Log::warning('Coupon redemption failed', [
                 'code' => $code,
                 'error' => $e->getMessage(),
-                'user' => $request->validated('email'),
+                'user' => $customer?->email ?? $customer?->phone ?? $customer?->id ?? 'unknown',
             ]);
 
             return back()->with('error', $e->getMessage());
