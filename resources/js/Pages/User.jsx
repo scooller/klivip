@@ -274,7 +274,7 @@ export default function User({ site, activeCoupons = [] }) {
                                         inputClass="user-phone-input user-register-input"
                                         buttonClass="register-phone-flag-btn"
                                         country={'cl'}
-                                        preferredCountries={['cl', 'ar', 'pe', 'co', 'mx']}
+                                        preferredCountries={['cl', 'br', 've', 'ar', 'pe', 'co', 'mx']}
                                         value={registerForm.data.phone}
                                         onChange={(phone) => registerForm.setData('phone', phone)}
                                         placeholder="9 1548 2685"

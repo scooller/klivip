@@ -1013,6 +1013,17 @@ body {
   margin: 6px 0 0;
 }
 
+.react-tel-input{
+    .form-control{
+        border: 1px solid var(--field-border);
+        background: linear-gradient(180deg, var(--field-bg-start), var(--field-bg-end));
+    }
+    .flag-dropdown{
+        background-color: inherit!important;
+        border: none!important;
+    }
+}
+
 @media (max-width: 1090px) {
   .casino-header {
     flex-wrap: wrap;

@@ -314,7 +314,7 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                     inputClass="profile-input form-control"
                     buttonClass="profile-phone-flag-btn"
                     country={'cl'}
-                    preferredCountries={['cl', 'ar', 'pe', 'co', 'mx']}
+                    preferredCountries={['cl', 'br', 've', 'ar', 'pe', 'co', 'mx']}
                     value={form.data.phone}
                     onChange={(phone) => form.setData('phone', phone)}
                     enableSearch
