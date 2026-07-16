@@ -30,6 +30,7 @@ KliVip combina un panel administrativo en Filament con un front publico por subd
 3. Vite 8
 4. Tailwind CSS 4 (entorno)
 5. Sass
+6. react-phone-input-2 (selector de telefono internacional)
 
 ## Arquitectura De Accesos
 

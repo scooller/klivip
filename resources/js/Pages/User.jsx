@@ -8,6 +8,9 @@ import CouponMini from '../Components/Front/CouponMini';
 import CouponDetailModal from '../Components/Front/CouponDetailModal';
 import OtpVerificationModal from '../Components/Front/OtpVerificationModal';
 
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faBarcode, faPersonCircleCheck, faUserPen, faUsersSlash } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
@@ -76,7 +79,6 @@ export default function User({ site, activeCoupons = [] }) {
     const [adultMaxBirthDate, setAdultMaxBirthDate] = useState('');
 
     const [loginCountryPrefix, setLoginCountryPrefix] = useState('+56');
-    const [registerCountryPrefix, setRegisterCountryPrefix] = useState('+56');
 
     useEffect(() => {
         const date = new Date();
@@ -159,8 +161,9 @@ export default function User({ site, activeCoupons = [] }) {
 
         const isPhonePriority = Boolean(registerForm.data.phone);
         if (isPhonePriority) {
-            const formattedConfirm = formatPhone(confirmValue);
-            if (formattedConfirm !== registerForm.data.phone) {
+            const phoneDigits = String(registerForm.data.phone).replace(/\D/g, '');
+            const confirmDigits = String(confirmValue).replace(/\D/g, '');
+            if (phoneDigits !== confirmDigits) {
                 setConfirmError('El número de teléfono y la confirmación no coinciden.');
                 return;
             }
@@ -174,7 +177,7 @@ export default function User({ site, activeCoupons = [] }) {
         registerForm.transform((data) => ({
             ...data,
             email_confirmation: isPhonePriority ? '' : confirmValue,
-            phone: data.phone ? `${registerCountryPrefix} ${data.phone}` : ''
+            phone: data.phone ? `+${data.phone}` : ''
         }));
 
         registerForm.post('/usuario/register', {
@@ -280,61 +283,47 @@ export default function User({ site, activeCoupons = [] }) {
                                         className="form-control user-phone-input user-register-input"
                                         type="text"
                                         autoComplete="name"
-                                        placeholder="Carlos Silva"
+                                        placeholder="Nombre Apellido"
                                         value={registerForm.data.name}
                                         onInput={(event) => registerForm.setData('name', event.target.value)}
                                     />
 
                                     <label htmlFor="register-phone" className="form-label">Numero de Telefono</label>
-                                    <div className="input-group">
-                                        <select 
-                                            className="form-select user-phone-input" 
-                                            style={{ maxWidth: '110px', textAlign: 'center' }}
-                                            value={registerCountryPrefix}
-                                            onChange={(e) => setRegisterCountryPrefix(e.target.value)}
-                                        >
-                                            <option value="+56">🇨🇱 +56</option>
-                                            <option value="+54">🇦🇷 +54</option>
-                                            <option value="+51">🇵🇪 +51</option>
-                                            <option value="+57">🇨🇴 +57</option>
-                                            <option value="+52">🇲🇽 +52</option>
-                                        </select>
-                                        <input
-                                            id="register-phone"
-                                            className="form-control user-phone-input user-register-input"
-                                            type="text"
-                                            autoComplete="tel"
-                                            placeholder="9 1548 2685"
-                                            value={registerForm.data.phone}
-                                            onInput={(event) => registerForm.setData('phone', formatPhone(event.target.value))}
-                                        />
-                                    </div>
+                                    <PhoneInput
+                                        containerClass="register-phone-container"
+                                        inputClass="user-phone-input user-register-input"
+                                        buttonClass="register-phone-flag-btn"
+                                        country={'cl'}
+                                        preferredCountries={['cl', 'ar', 'pe', 'co', 'mx']}
+                                        value={registerForm.data.phone}
+                                        onChange={(phone) => registerForm.setData('phone', phone)}
+                                        placeholder="9 1548 2685"
+                                        enableSearch
+                                        searchPlaceholder="Buscar país"
+                                        inputProps={{
+                                            id: 'register-phone',
+                                            autoComplete: 'tel',
+                                        }}
+                                    />
 
                                     {(registerForm.data.email || registerForm.data.phone) ? (() => {
                                         const isPhonePriority = Boolean(registerForm.data.phone);
                                         const confirmLabel = isPhonePriority ? 'Confirma tu Numero de Telefono' : 'Confirma tu E-mail';
-                                        const confirmType = isPhonePriority ? 'text' : 'email';
+                                        const confirmType = isPhonePriority ? 'tel' : 'email';
                                         const confirmPlaceholder = isPhonePriority ? '9 1548 2685' : 'correo@ejemplo.com';
 
                                         return (
                                             <>
                                                 <label htmlFor="register-confirmation" className="form-label">{confirmLabel}</label>
-                                                <div className={isPhonePriority ? "input-group" : ""}>
-                                                    {isPhonePriority && (
-                                                        <span className="input-group-text user-phone-input border-end-0 bg-transparent text-white" style={{ minWidth: '110px', justifyContent: 'center' }}>
-                                                            {registerCountryPrefix}
-                                                        </span>
-                                                    )}
-                                                    <input
-                                                        id="register-confirmation"
-                                                        className="form-control user-phone-input user-register-input"
-                                                        type={confirmType}
-                                                        autoComplete="off"
-                                                        placeholder={confirmPlaceholder}
-                                                        value={confirmValue}
-                                                        onInput={(event) => setConfirmValue(isPhonePriority ? formatPhone(event.target.value) : event.target.value)}
-                                                    />
-                                                </div>
+                                                <input
+                                                    id="register-confirmation"
+                                                    className="form-control user-phone-input user-register-input"
+                                                    type={confirmType}
+                                                    autoComplete="off"
+                                                    placeholder={confirmPlaceholder}
+                                                    value={confirmValue}
+                                                    onChange={(event) => setConfirmValue(event.target.value)}
+                                                />
                                             </>
                                         );
                                     })() : null}
@@ -406,8 +395,8 @@ export default function User({ site, activeCoupons = [] }) {
                                     <label htmlFor="customer-phone-entry" className="form-label">Numero de Telefono / Email:</label>
                                     <div className="input-group">
                                         {(!loginForm.data.identifier || (!loginForm.data.identifier.includes('@') && !/[a-zA-Z]/.test(loginForm.data.identifier))) && (
-                                            <select 
-                                                className="form-select user-phone-input" 
+                                            <select
+                                                className="form-select user-phone-input"
                                                 style={{ maxWidth: '110px', textAlign: 'center' }}
                                                 value={loginCountryPrefix}
                                                 onChange={(e) => setLoginCountryPrefix(e.target.value)}

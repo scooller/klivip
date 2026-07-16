@@ -26,6 +26,29 @@ Este archivo concentra el historial de cambios del proyecto.
 - ...
 ```
 
+## 2026-07-15
+
+### Added
+- Integracion de `react-phone-input-2` para entrada de telefono internacional con selector de pais, banderas y busqueda.
+- Soporte de prefijo internacional automatico en registro y edicion de perfil (reemplaza el `select` manual de paises).
+
+### Changed
+- `User.jsx`: campo de telefono de registro migrado de `input` manual a `PhoneInput` con `country="cl"`, paises preferidos LATAM y `enableSearch`.
+- `UserSessionCard.jsx`: campo de telefono de edicion de perfil migrado de `input` manual a `PhoneInput`.
+- `handleRegisterCustomer` (`User.jsx`): normalizacion de telefono ajustada a `+{digits}` (sin doble prefijo).
+- `handleSubmit` (`UserSessionCard.jsx`): agregado `form.transform()` para normalizar telefono antes de enviar al backend.
+- Confirmacion de telefono en registro ahora compara solo digitos en lugar de strings formateados.
+
+### Fixed
+- Error critico: `this.state.phone` / `this.setState` en componente funcional `User.jsx` (causaba crash en runtime).
+- Doble prefijo de pais: `react-phone-input-2` ya incluye el codigo de pais, se elimino la sobreposicion manual con `registerCountryPrefix`.
+- Funcion `formatPhone` eliminada de `UserSessionCard.jsx` (ya no se necesita con el formateo nativo del componente).
+
+### Notes
+- Backend `normalizePhone()` extrae solo digitos y antepone `+`, por lo que el formato `+{digits}` es compatible.
+- El campo de login (`User.jsx`) permanece como `input` hibrido telefono/email por diseno.
+- Campos de solo lectura (`UserSessionCard.jsx` perfil bloqueado) y OTP no requieren `PhoneInput`.
+
 ## 2026-05-12
 
 ### Added

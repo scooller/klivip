@@ -3,31 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import BaseCard from './primitives/BaseCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBarcode, faPersonCircleCheck, faPersonWalkingDashedLineArrowRight, faRightFromBracket, faUserSlash } from '@fortawesome/free-solid-svg-icons';
-
-function formatPhone(rawValue) {
-    if (rawValue.includes('@') || /[a-zA-Z]/.test(rawValue)) {
-        return rawValue;
-    }
-
-    const digitsOnly = rawValue.replace(/\D/g, '').slice(0, 11);
-
-    if (digitsOnly.length <= 2) {
-        return digitsOnly ? `+${digitsOnly}` : '';
-    }
-
-    const country = digitsOnly.slice(0, 2);
-    const remainder = digitsOnly.slice(2);
-
-    if (remainder.length <= 1) {
-        return `+${country} ${remainder}`;
-    }
-
-    if (remainder.length <= 5) {
-        return `+${country} ${remainder[0]} ${remainder.slice(1)}`;
-    }
-
-    return `+${country} ${remainder[0]} ${remainder.slice(1, 5)} ${remainder.slice(5, 9)}`;
-}
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
     const isUnlocked = Boolean(profileUnlock?.unlocked);
@@ -118,6 +95,11 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+
+        form.transform((data) => ({
+            ...data,
+            phone: data.phone ? `+${data.phone}` : '',
+        }));
 
         form.post('/usuario/perfil', {
             preserveScroll: true,
@@ -325,13 +307,20 @@ export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
                 />
 
                 <label htmlFor="profile-phone">Numero de Telefono</label>
-                <input
-                    id="profile-phone"
-                    className="profile-input form-control"
-                    type="text"
-                    autoComplete="tel"
+                <PhoneInput
+                    containerClass="profile-phone-container"
+                    inputClass="profile-input form-control"
+                    buttonClass="profile-phone-flag-btn"
+                    country={'cl'}
+                    preferredCountries={['cl', 'ar', 'pe', 'co', 'mx']}
                     value={form.data.phone}
-                    onInput={(event) => handleFieldChange('phone', formatPhone(event.target.value))}
+                    onChange={(phone) => form.setData('phone', phone)}
+                    enableSearch
+                    searchPlaceholder="Buscar país"
+                    inputProps={{
+                        id: 'profile-phone',
+                        autoComplete: 'tel',
+                    }}
                 />
 
                 {!hideBirthDate ? (
