@@ -8,30 +8,14 @@ import CouponMini from '../Components/Front/CouponMini';
 import CouponDetailModal from '../Components/Front/CouponDetailModal';
 import OtpVerificationModal from '../Components/Front/OtpVerificationModal';
 
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
+import PhoneInputDefault from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+
+const PhoneInput = PhoneInputDefault.default ?? PhoneInputDefault;
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faBarcode, faPersonCircleCheck, faUserPen, faUsersSlash } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
-
-function formatPhone(rawValue) {
-    if (rawValue.includes('@') || /[a-zA-Z]/.test(rawValue)) {
-        return rawValue;
-    }
-
-    const digitsOnly = rawValue.replace(/\D/g, '').slice(0, 11);
-
-    if (digitsOnly.length <= 1) {
-        return digitsOnly;
-    }
-
-    if (digitsOnly.length <= 5) {
-        return `${digitsOnly[0]} ${digitsOnly.slice(1)}`;
-    }
-
-    return `${digitsOnly[0]} ${digitsOnly.slice(1, 5)} ${digitsOnly.slice(5, 9)}`;
-}
 
 export default function User({ site, activeCoupons = [] }) {
     const [selectedCoupon, setSelectedCoupon] = useState(null);
@@ -78,8 +62,6 @@ export default function User({ site, activeCoupons = [] }) {
 
     const [adultMaxBirthDate, setAdultMaxBirthDate] = useState('');
 
-    const [loginCountryPrefix, setLoginCountryPrefix] = useState('+56');
-
     useEffect(() => {
         const date = new Date();
         date.setFullYear(date.getFullYear() - 18);
@@ -98,9 +80,7 @@ export default function User({ site, activeCoupons = [] }) {
 
         loginForm.transform((data) => ({
             ...data,
-            identifier: (data.identifier && !data.identifier.includes('@') && !/[a-zA-Z]/.test(data.identifier))
-                ? `${loginCountryPrefix} ${data.identifier}`
-                : data.identifier
+            identifier: data.identifier
         }));
 
         loginForm.post('/usuario/login', {
@@ -392,34 +372,17 @@ export default function User({ site, activeCoupons = [] }) {
                                 </form>
                             ) : (
                                 <form className="user-login-form-shell d-flex flex-column gap-3" onSubmit={handleRequestOtp}>
-                                    <label htmlFor="customer-phone-entry" className="form-label">Numero de Telefono / Email:</label>
-                                    <div className="input-group">
-                                        {(!loginForm.data.identifier || (!loginForm.data.identifier.includes('@') && !/[a-zA-Z]/.test(loginForm.data.identifier))) && (
-                                            <select
-                                                className="form-select user-phone-input"
-                                                style={{ maxWidth: '110px', textAlign: 'center' }}
-                                                value={loginCountryPrefix}
-                                                onChange={(e) => setLoginCountryPrefix(e.target.value)}
-                                                disabled={loginForm.processing}
-                                            >
-                                                <option value="+56">🇨🇱 +56</option>
-                                                <option value="+54">🇦🇷 +54</option>
-                                                <option value="+51">🇵🇪 +51</option>
-                                                <option value="+57">🇨🇴 +57</option>
-                                                <option value="+52">🇲🇽 +52</option>
-                                            </select>
-                                        )}
-                                        <input
-                                            id="customer-phone-entry"
-                                            className="form-control user-phone-input"
-                                            type="text"
-                                            value={loginForm.data.identifier}
-                                            autoComplete="username"
-                                            placeholder="Telefono o email"
-                                            disabled={loginForm.processing}
-                                            onInput={(event) => loginForm.setData('identifier', formatPhone(event.target.value))}
-                                        />
-                                    </div>
+                                    <label htmlFor="customer-phone-entry" className="form-label">Telefono / Email:</label>
+                                    <input
+                                        id="customer-phone-entry"
+                                        className="form-control user-phone-input"
+                                        type="text"
+                                        value={loginForm.data.identifier}
+                                        autoComplete="username"
+                                        placeholder="Telefono o email"
+                                        disabled={loginForm.processing}
+                                        onInput={(event) => loginForm.setData('identifier', event.target.value)}
+                                    />
 
                                     {feedback && !isOtpPending && !isRegistrationOtpPending ? (
                                         <div className="alert alert-info feedback-callout" role="alert">

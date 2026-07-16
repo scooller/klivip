@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import BaseCard from './primitives/BaseCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBarcode, faPersonCircleCheck, faPersonWalkingDashedLineArrowRight, faRightFromBracket, faUserSlash } from '@fortawesome/free-solid-svg-icons';
-import PhoneInput from 'react-phone-input-2';
+import PhoneInputDefault from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+
+const PhoneInput = PhoneInputDefault.default ?? PhoneInputDefault;
 
 export default function UserSessionCard({ customer, profileUnlock, onLogout }) {
     const isUnlocked = Boolean(profileUnlock?.unlocked);
