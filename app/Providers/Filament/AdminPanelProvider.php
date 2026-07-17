@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -11,20 +12,19 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
+use FinityLabs\FinMail\FinMailPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use AchyutN\FilamentLogViewer\FilamentLogViewer;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $configuredAdminDomain = (string) env('ADMIN_DOMAIN', 'admin.klivip.test');
+        $configuredAdminDomain = (string) config('app.admin_domain', 'admin.klivip.test');
         $normalizedAdminDomain = parse_url($configuredAdminDomain, PHP_URL_HOST) ?: $configuredAdminDomain;
 
         return $panel
@@ -47,7 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentLogViewer::make(),
-                \FinityLabs\FinMail\FinMailPlugin::make(),
+                FinMailPlugin::make(),
             ])
             ->middleware([
                 EncryptCookies::class,
