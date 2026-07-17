@@ -26,6 +26,33 @@ Este archivo concentra el historial de cambios del proyecto.
 - ...
 ```
 
+## 2026-07-17
+
+### Added
+- **Sistema de mensajeria SMS completo**: plantillas, log de envios y tracking de errores en panel administrativo.
+  - Modelo `SmsTemplate` con body traducible (JSON) y tokens dinamicos.
+  - Modelo `SentSms` con estado, error, relacion polimorfica (`sendable`) y `sent_by`.
+  - Enum `SmsStatus` (Draft, Queued, Sent, Failed) con colores e iconos para Filament.
+  - Servicio `App\Services\SmsService`: envio desde template, envio directo y reenvio, con logging automatico.
+  - Recurso Filament `SmsTemplateResource` (`/sms-templates`): CRUD completo de plantillas con vista previa y conteo de envios.
+  - Recurso Filament `SentSmsResource` (`/sent-sms`): listado de mensajes, modal de detalle, accion reenviar, filtros por estado/fecha y filtro "Solo errores".
+  - Factories `SmsTemplateFactory` y `SentSmsFactory` para testing.
+  - Seeder `SmsTemplatesSeeder` con 4 templates base: cupones recibidos, OTP, desbloqueo de perfil y recordatorio de sorteo.
+  - Grupo de navegacion "Mensajeria" en el panel admin.
+- Configuracion `admin_domain` en `config/app.php`.
+
+### Changed
+- `SendCouponNotificationJob`: ahora usa `SmsService::sendFromTemplate()` en lugar de `PreludeService::sendSms()` directo, registrando cada envio en `sent_sms`.
+- `AdminPanelProvider`: lee el dominio admin desde `config('app.admin_domain')` en lugar de `env('ADMIN_DOMAIN')` directamente.
+- README: anadidas secciones "Sistema de Mensajeria", "Configuracion del Dominio Admin" y "Despliegue en Produccion".
+
+### Fixed
+- **Bug critico en produccion**: tras ejecutar `config:cache`, las llamadas directas a `env('ADMIN_DOMAIN')` devolvian `null`, causando que el dominio del panel cayera al default `admin.klivip.test` y las rutas del front (`{site}.klivip.cloud`) capturaban el trafico del admin redirigiendo a `/usuario` con 404. Solucionado moviendo la variable a `config/app.php`.
+
+### Notes
+- En produccion, siempre ejecutar `config:clear` y `route:clear` antes de `config:cache` y `route:cache` tras un deploy.
+- Migraciones `sms_templates` y `sent_sms` requieren ejecucion manual via SQL si no hay acceso a `php artisan migrate`.
+
 ## 2026-07-15
 
 ### Added

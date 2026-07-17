@@ -58,10 +58,10 @@ Los tipos de usuario estan definidos en `app/Enums/UserRole.php`:
 
 ### Capas Principales
 
-1. `Panel Admin (Filament)`: gestion interna de sitios, promociones y juegos.
+1. `Panel Admin (Filament)`: gestion interna de sitios, promociones, juegos, mensajeria.
 2. `Front Publico (Inertia + React)`: experiencia de cliente por subdominio.
 3. `Capa de Aplicacion (Laravel)`: controladores, politicas, reglas de negocio.
-4. `Persistencia (MySQL)`: entidades principales (`users`, `sites`, `games`, `promotions`).
+4. `Persistencia (MySQL)`: entidades principales (`users`, `sites`, `games`, `promotions`, `sms_templates`, `sent_sms`).
 
 ### Flujo De Autenticacion
 
@@ -75,6 +75,31 @@ Los tipos de usuario estan definidos en `app/Enums/UserRole.php`:
 2. El backend resuelve contenido del sitio (promociones/juegos/datos base).
 3. Inertia entrega props a las paginas React (`Home`, `User`).
 4. El front renderiza UI con componentes reutilizables de `resources/js/Components/Front`.
+
+## Sistema De Mensajeria
+
+### Email (FinMail)
+
+1. Templates de email editables desde panel (`FinityLabs\FinMail` plugin).
+2. Log de correos enviados con reenvio desde panel.
+3. Seeders con templates base en `database/seeders/FinMailTemplatesSeeder.php`.
+
+### SMS
+
+1. **Plantillas SMS** (`SmsTemplate`): templates con body traducible (JSON `{"es": "..."}`) y tokens para variables dinamicas.
+2. **Log de envios** (`SentSms`): registro de cada SMS enviado con tracking de estado, error y relacion polimorfica al modelo origen.
+3. **Estados** (`SmsStatus` enum): `Draft`, `Queued`, `Sent`, `Failed`.
+4. **Servicio** (`App\Services\SmsService`): envio desde template o directo, logging automatico y reenvio.
+5. **Recursos Filament** (grupo "Mensajeria"):
+   - `Plantillas SMS` (`/sms-templates`): CRUD completo con previsualizacion.
+   - `Mensajes SMS` (`/sent-sms`): listado de envios, modal de detalle, accion de reenviar y filtro de errores.
+6. **Seeder**: `database/seeders/SmsTemplatesSeeder.php` con 4 templates base (cupones recibidos, OTP, desbloqueo perfil, recordatorio de sorteo).
+
+## Configuracion Del Dominio Admin
+
+> **Importante**: El dominio del panel administrativo se configura en `.env` con la variable `ADMIN_DOMAIN` y se lee desde `config/app.php` como `admin_domain`.
+>
+> **Nunca** usar `env()` directamente en providers o servicios; tras ejecutar `config:cache`, los valores de `env()` no resueltos desde un archivo de configuracion devuelven `null`, causando que el dominio del panel no coincida y las rutas del front capturen el trafico del admin.
 
 ## Estructura Relevante
 
@@ -137,6 +162,26 @@ composer run test
 ```bash
 npm run build
 ```
+
+## Despliegue En Produccion
+
+Despues de `git pull`, si hay cambios en migraciones, seeders o configuracion:
+
+```bash
+composer install --no-dev --optimize-autoloader
+php artisan migrate --force          # o ejecutar SQL manual si no hay acceso a CLI
+php artisan db:seed --class=SmsTemplatesSeeder --force
+php artisan config:clear              # siempre clear antes de re-cachear
+php artisan route:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
+php artisan queue:restart
+npm run build
+```
+
+> **Crtitico**: Siempre ejecutar `config:clear` y `route:clear` antes de `config:cache` y `route:cache` en produccion para evitar que caches obsoletos causen redirecciones incorrectas.
 
 ## Politica De Cambios
 
