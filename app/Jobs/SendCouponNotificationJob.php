@@ -2,8 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Models\CouponRedemption;
+use App\Services\PreludeService;
+use App\Services\SmsService;
+use FinityLabs\FinMail\Mail\TemplateMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SendCouponNotificationJob implements ShouldQueue
 {
@@ -13,14 +19,13 @@ class SendCouponNotificationJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public \App\Models\CouponRedemption $redemption
-    ) {
-    }
+        public CouponRedemption $redemption
+    ) {}
 
     /**
      * Execute the job.
      */
-    public function handle(\App\Services\PreludeService $preludeService): void
+    public function handle(PreludeService $preludeService, SmsService $smsService): void
     {
         $this->redemption->loadMissing(['user', 'sweepstake']);
 
@@ -31,8 +36,8 @@ class SendCouponNotificationJob implements ShouldQueue
         // 1. Send Email (if user has email)
         if (! empty($user->email)) {
             try {
-                \Illuminate\Support\Facades\Mail::to($user->email)->send(
-                    \FinityLabs\FinMail\Mail\TemplateMail::make('coupons-received')
+                Mail::to($user->email)->send(
+                    TemplateMail::make('coupons-received')
                         ->models([
                             'name' => $user->name ?? 'Usuario',
                             'coupon_count' => $couponCount,
@@ -40,25 +45,22 @@ class SendCouponNotificationJob implements ShouldQueue
                         ])
                 );
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Failed to send coupon email via FinMail', [
+                Log::error('Failed to send coupon email via FinMail', [
                     'redemption_id' => $this->redemption->id,
                     'error' => $e->getMessage(),
                 ]);
             }
         }
 
-        // 2. Send SMS (if user has phone)
+        // 2. Send SMS via template (if user has phone)
         if (! empty($user->phone)) {
-            $message = "Klivip: Acabas de recibir {$couponCount} cupones para el sorteo '{$sweepstake->name}'. Revisa tu cuenta en klivip.test";
-            
-            try {
-                $preludeService->sendSms($user->phone, $message);
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Failed to send coupon SMS via Prelude', [
-                    'redemption_id' => $this->redemption->id,
-                    'error' => $e->getMessage(),
-                ]);
-            }
+            $smsService->sendFromTemplate('coupons-received', $user->phone, [
+                'coupon_count' => $couponCount,
+                'sweepstake_name' => $sweepstake->name,
+            ], [
+                'sendable' => $this->redemption,
+                'subject' => 'Cupones recibidos',
+            ]);
         }
     }
 }
