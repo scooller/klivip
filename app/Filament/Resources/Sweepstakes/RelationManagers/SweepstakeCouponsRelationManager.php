@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Sweepstakes\RelationManagers;
 
+use App\Models\SweepstakeCoupon;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -21,9 +22,9 @@ class SweepstakeCouponsRelationManager extends RelationManager
                 TextColumn::make('coupon_number')
                     ->label('Número')
                     ->sortable(),
-                TextColumn::make('getDisplayNumber')
-                    ->label('Display')
-                    ->searchable(),
+                TextColumn::make('display_number')
+                    ->label('Identificador')
+                    ->state(fn (SweepstakeCoupon $record): string => $record->getDisplayNumber()),
                 TextColumn::make('user.name')
                     ->label('Usuario')
                     ->searchable(),
