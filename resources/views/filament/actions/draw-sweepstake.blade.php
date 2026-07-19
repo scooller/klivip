@@ -46,11 +46,11 @@
             </button>
         </div>
 
-        <div class="relative mx-auto" style="max-width: 340px;">
-            <div class="absolute left-1/2 -top-1 z-10 -translate-x-1/2">
-                <svg width="28" height="28" viewBox="0 0 32 32" class="text-amber-600 drop-shadow">
-                    <path d="M16 28 L4 6 Q16 0 28 6 Z" fill="currentColor"/>
-                    <circle cx="16" cy="10" r="3" fill="white"/>
+        <div class="relative mx-auto" style="max-width: 340px; width: 340px;">
+            <div class="absolute z-10" style="left: 50%; top: -10px; transform: translateX(-50%);">
+                <svg width="32" height="36" viewBox="0 0 32 36" style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35));">
+                    <path d="M16 36 L2 6 Q16 -2 30 6 Z" fill="#d97706"/>
+                    <circle cx="16" cy="9" r="3.5" fill="#ffffff"/>
                 </svg>
             </div>
 
@@ -59,6 +59,7 @@
                 width="340"
                 height="340"
                 class="block mx-auto rounded-full shadow-lg bg-white dark:bg-gray-900"
+                style="width: 340px; height: 340px;"
             ></canvas>
         </div>
 
