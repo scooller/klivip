@@ -24,7 +24,7 @@ class SweepstakeCouponsRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('display_number')
                     ->label('Identificador')
-                    ->state(fn (SweepstakeCoupon $record): string => $record->getDisplayNumber()),
+                    ->state(fn(SweepstakeCoupon $record): string => $record->getDisplayNumber()),
                 TextColumn::make('user.name')
                     ->label('Usuario')
                     ->searchable(),
@@ -41,13 +41,13 @@ class SweepstakeCouponsRelationManager extends RelationManager
             ])
             ->filters([
                 Filter::make('valid')
-                    ->query(fn ($query) => $query->where('is_voided', false)->whereNull('deleted_at'))
+                    ->query(fn($query) => $query->where('is_voided', false)->whereNull('deleted_at'))
                     ->label('Solo válidos'),
                 Filter::make('voided')
-                    ->query(fn ($query) => $query->where('is_voided', true))
+                    ->query(fn($query) => $query->where('is_voided', true))
                     ->label('Solo anulados'),
                 Filter::make('unused')
-                    ->query(fn ($query) => $query->where('is_used', false))
+                    ->query(fn($query) => $query->where('is_used', false))
                     ->label('Sin usar'),
             ])
             ->defaultSort('coupon_number');

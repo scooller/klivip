@@ -11,6 +11,8 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use FinityLabs\FinMail\FinMailPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -63,5 +65,13 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+    }
+
+    public function boot(): void
+    {
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::SCRIPTS_AFTER,
+            fn(): string => '<script src="/js/sweepstake-roulette.js"></script>',
+        );
     }
 }
