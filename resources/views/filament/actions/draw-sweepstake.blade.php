@@ -61,7 +61,13 @@
                 class="block mx-auto rounded-full shadow-lg bg-white dark:bg-gray-900"
                 style="width: 340px; height: 340px;"
             ></canvas>
-            <input type="text" name="winner-preview" readonly class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm" />
+            <input
+                type="text"
+                x-ref="winnerPreview"
+                value="Presiona Girar ruleta"
+                readonly
+                class="mt-2 text-center block w-full text-lg font-bold py-2 rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
+            />
         </div>
 
         <div x-show="winners.length > 0" x-transition class="mt-2">

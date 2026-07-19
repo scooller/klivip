@@ -125,16 +125,49 @@ document.addEventListener('alpine:init', () => {
             const startTime = performance.now();
             const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
+            // Preview shuffle: muestra cupones al azar cada cierto intervalo
+            const previewEl = this.$refs.winnerPreview;
+            let lastShuffleAt = 0;
+            let lastPreviewIdx = -1;
+            const updatePreview = (forceIdx = null) => {
+                if (!previewEl) return;
+                if (forceIdx !== null) {
+                    const c = this.coupons[forceIdx];
+                    previewEl.value = c ? c.label : '';
+                    return;
+                }
+                let idx;
+                let attempts = 0;
+                do {
+                    idx = Math.floor(Math.random() * this.coupons.length);
+                    attempts++;
+                } while (idx === lastPreviewIdx && attempts < 5 && this.coupons.length > 1);
+                lastPreviewIdx = idx;
+                const c = this.coupons[idx];
+                if (c) previewEl.value = c.label;
+            };
+            updatePreview();
+
             const animate = (now) => {
                 const elapsed = now - startTime;
                 const t = Math.min(elapsed / duration, 1);
                 const eased = easeOutCubic(t);
                 const angle = startAngle + delta * eased;
                 this.drawWheel([], angle);
+
+                // Preview: actualiza con menor frecuencia a medida que desacelera
+                // Intervalo dinamico: rapido al inicio, lento al final
+                const interval = 50 + Math.pow(t, 3) * 350; // 50ms -> 400ms
+                if (t < 1 && elapsed - lastShuffleAt >= interval) {
+                    updatePreview();
+                    lastShuffleAt = elapsed;
+                }
+
                 if (t < 1) {
                     requestAnimationFrame(animate);
                 } else {
                     this.currentAngle = finalAngle;
+                    updatePreview(targetIndex);
                     this.revealWinners(winnerIds);
                 }
             };
