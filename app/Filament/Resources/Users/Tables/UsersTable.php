@@ -18,8 +18,13 @@ class UsersTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
-                    ->searchable(),
+                    ->label('Email')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('phone')
+                    ->label('Teléfono')
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('role')
                     ->badge()
                     ->formatStateUsing(function ($state): string {
@@ -35,9 +40,22 @@ class UsersTable
                     ->badge()
                     ->separator(',')
                     ->searchable(),
-                TextColumn::make('email_verified_at')
+                TextColumn::make('validSweepstakeCoupons_count')
+                    ->label('Cupones')
+                    ->counts('validSweepstakeCoupons')
+                    ->sortable()
+                    ->alignEnd(),
+                TextColumn::make('last_login_at')
+                    ->label('Último login')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('Nunca')
+                    ->toggleable(),
+                TextColumn::make('email_verified_at')
+                    ->label('Email verificado')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

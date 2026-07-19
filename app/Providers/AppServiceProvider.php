@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Listeners\RewardEventSubscriber;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        \Illuminate\Support\Facades\Event::subscribe(\App\Listeners\RewardEventSubscriber::class);
+        Event::subscribe(RewardEventSubscriber::class);
+
+        // Track last login time for all auth guards (customer + admin)
+        Event::listen(
+            Login::class,
+            function (Login $event): void {
+                if (method_exists($event->user, 'forceFill')) {
+                    $event->user->forceFill(['last_login_at' => now()])->save();
+                }
+            }
+        );
     }
 }

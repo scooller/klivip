@@ -28,7 +28,17 @@ Este archivo concentra el historial de cambios del proyecto.
 
 ## 2026-07-19
 
-### Added
+### Added (v1.3.1)
+- **Columnas en panel admin**:
+  - Listado de **Users**: anadidas columnas Telefono, Cupones (count de validSweepstakeCoupons) y Ultimo login (timestamp).
+  - Listado de **Sites**: anadidas columnas Sorteos (count de sweepstakes) y Usuarios (count de users).
+- **Tracking de ultimo login**: columna `last_login_at` en tabla `users` con listener del evento `Illuminate\Auth\Events\Login` que registra el timestamp en cualquier guard (customer + admin).
+
+### Changed (v1.3.1)
+- `UsersTable`: email label simplificado a "Email", telefonos y cupones como columnas toggleable.
+- `SitesTable`: columnas de conteo usando `->counts()` para evitar N+1.
+
+### Added (v1.3.0)
 - **Sistema de Sorteos (Draws)**: modulo completo para realizar sorteos de cupones con ruleta animada, registro de ganadores y notificaciones.
   - Migracion `sweepstake_draws` + pivot `sweepstake_draw_coupon` con constraints unicas por (draw, coupon) y (draw, position).
   - Modelo `SweepstakeDraw` con relaciones `sweepstake`, `drawnBy` (User) y `winners` (BelongsToMany SweepstakeCoupon con pivot position/user_id, ordenado por position).

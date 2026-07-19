@@ -23,6 +23,18 @@ class SitesTable
                 TextColumn::make('slug')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('sweepstakes_count')
+                    ->label('Sorteos')
+                    ->counts('sweepstakes')
+                    ->sortable()
+                    ->toggleable()
+                    ->alignEnd(),
+                TextColumn::make('users_count')
+                    ->label('Usuarios')
+                    ->counts('users')
+                    ->sortable()
+                    ->toggleable()
+                    ->alignEnd(),
                 IconColumn::make('is_active')
                     ->boolean()
                     ->sortable(),

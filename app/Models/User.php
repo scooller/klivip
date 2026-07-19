@@ -16,7 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'phone', 'birth_date', 'avatar_path', 'password', 'role'])]
+#[Fillable(['name', 'email', 'phone', 'birth_date', 'avatar_path', 'password', 'role', 'last_login_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -35,6 +35,7 @@ class User extends Authenticatable implements FilamentUser
             'birth_date' => 'date',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'last_login_at' => 'datetime',
         ];
     }
 
