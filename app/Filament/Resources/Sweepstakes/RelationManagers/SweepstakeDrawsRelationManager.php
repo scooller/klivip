@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Sweepstakes\RelationManagers;
 
+use App\Filament\Exports\SweepstakeDrawWinnersExport;
 use App\Filament\Resources\Sweepstakes\Schemas\SweepstakeDrawInfolist;
 use App\Services\SweepstakeDrawService;
 use Filament\Actions\Action;
@@ -12,6 +13,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 
 class SweepstakeDrawsRelationManager extends RelationManager
 {
@@ -47,13 +49,13 @@ class SweepstakeDrawsRelationManager extends RelationManager
             ->defaultSort('drawn_at', 'desc')
             ->recordActions([
                 ViewAction::make()
-                    ->infolist(fn (Schema $schema): Schema => SweepstakeDrawInfolist::configure($schema))
+                    ->infolist(fn(Schema $schema): Schema => SweepstakeDrawInfolist::configure($schema))
                     ->modalWidth('2xl'),
                 Action::make('notify')
                     ->label('Notificar')
                     ->icon('heroicon-o-bell-alert')
                     ->color('warning')
-                    ->visible(fn ($record): bool => ! $record->notified && $record->winners()->exists())
+                    ->visible(fn($record): bool => ! $record->notified && $record->winners()->exists())
                     ->requiresConfirmation()
                     ->modalHeading('Enviar notificaciones a ganadores')
                     ->modalDescription('Se despachará un job en cola para enviar email y SMS a cada ganador con contacto registrado.')
@@ -66,6 +68,20 @@ class SweepstakeDrawsRelationManager extends RelationManager
                             ->body($ok ? 'Los ganadores serán notificados en breve.' : 'Revisa los logs para más detalle.')
                             ->{$ok ? 'success' : 'danger'}()
                             ->send();
+                    }),
+                Action::make('export_csv')
+                    ->label('Exportar CSV')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->visible(fn($record): bool => $record->winners()->exists())
+                    ->action(function ($record) {
+                        $export = SweepstakeDrawWinnersExport::forDraw($record->id);
+                        $fileName = $export->fileName();
+                        $export->store($fileName, 'public');
+
+                        return response()
+                            ->download(Storage::disk('public')->path($fileName))
+                            ->deleteFileAfterSend(true);
                     }),
             ])
             ->headerActions([
