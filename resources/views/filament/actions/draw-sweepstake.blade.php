@@ -40,14 +40,8 @@
                 x-bind:class="spinning ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-600'"
                 class="inline-flex items-center gap-2 rounded-md bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow transition shrink-0"
             >
-                <svg x-show="!spinning" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348H19.5m0 0H23m-3.5 0V5.981m0 3.367A8.985 8.985 0 0 1 12 21c-4.97 0-9-4.03-9-9 0-1.56.398-3.032 1.1-4.313"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.977 14.652H4.5m0 0H1m3.5 0v3.367m0-3.367A8.985 8.985 0 0 1 12 3c4.97 0 9 4.03 9 9 0 1.56-.398 3.032-1.1 4.313"/>
-                </svg>
-                <svg x-show="spinning" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348H19.5m0 0H23m-3.5 0V5.981m0 3.367A8.985 8.985 0 0 1 12 21c-4.97 0-9-4.03-9-9 0-1.56.398-3.032 1.1-4.313"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.977 14.652H4.5m0 0H1m3.5 0v3.367m0-3.367A8.985 8.985 0 0 1 12 3c4.97 0 9 4.03 9 9 0 1.56-.398 3.032-1.1 4.313"/>
-                </svg>
+                <x-heroicon-o-arrow-path x-show="!spinning" class="w-4 h-4" />
+                <x-heroicon-o-arrow-path x-show="spinning" class="animate-spin w-4 h-4" />
                 <span x-text="spinning ? 'Girando…' : 'Girar ruleta'"></span>
             </button>
         </div>
