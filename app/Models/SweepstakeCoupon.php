@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SweepstakeCoupon extends Model
@@ -60,6 +61,18 @@ class SweepstakeCoupon extends Model
     public function usedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'used_by');
+    }
+
+    /**
+     * Sorteos en los que este cupón resultó ganador.
+     *
+     * @return BelongsToMany<SweepstakeDraw>
+     */
+    public function draws(): BelongsToMany
+    {
+        return $this->belongsToMany(SweepstakeDraw::class, 'sweepstake_draw_coupon')
+            ->withPivot(['position', 'user_id'])
+            ->withTimestamps();
     }
 
     public function scopeValid(Builder $query): Builder

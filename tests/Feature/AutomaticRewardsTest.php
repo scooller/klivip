@@ -19,6 +19,7 @@ class AutomaticRewardsTest extends TestCase
         $sweepstake = Sweepstake::factory()->started()->create([
             'is_active' => true,
             'is_published' => true,
+            'max_coupons_per_user' => null, // sin límite por usuario para el test
         ]);
 
         $reward = AutomaticReward::create([
@@ -46,7 +47,7 @@ class AutomaticRewardsTest extends TestCase
             'automatic_reward_id' => $reward->id,
             'user_id' => $user->id,
         ]);
-        
+
         $this->assertDatabaseCount('sweepstake_coupons', 5);
     }
 }

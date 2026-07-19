@@ -58,6 +58,21 @@ class SmsTemplatesSeeder extends Seeder
                 'sender_name' => 'Klivip',
                 'is_active' => true,
             ],
+            [
+                'key' => 'prize-won',
+                'name' => ['es' => 'Ganador de Sorteo'],
+                'category' => 'transactional',
+                'body' => ['es' => 'Klivip: ¡Felicidades {{ name }}! Tu cupon {{ coupon_number }} GANO en el sorteo \'{{ sweepstake_name }}\'. Premio: {{ prize }}. Pronto te contactaremos.'],
+                'token_schema' => [
+                    'name' => 'string',
+                    'sweepstake_name' => 'string',
+                    'prize' => 'string',
+                    'coupon_number' => 'string',
+                    'position' => 'int',
+                ],
+                'sender_name' => 'Klivip',
+                'is_active' => true,
+            ],
         ];
 
         foreach ($templates as $data) {

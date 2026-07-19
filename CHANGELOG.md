@@ -26,6 +26,38 @@ Este archivo concentra el historial de cambios del proyecto.
 - ...
 ```
 
+## 2026-07-19
+
+### Added
+- **Sistema de Sorteos (Draws)**: modulo completo para realizar sorteos de cupones con ruleta animada, registro de ganadores y notificaciones.
+  - Migracion `sweepstake_draws` + pivot `sweepstake_draw_coupon` con constraints unicas por (draw, coupon) y (draw, position).
+  - Modelo `SweepstakeDraw` con relaciones `sweepstake`, `drawnBy` (User) y `winners` (BelongsToMany SweepstakeCoupon con pivot position/user_id, ordenado por position).
+  - Modelo `Sweepstake::draws()` (HasMany) y `Sweepstake::getEligibleCouponsForDraw()` que retorna cupones validos con user cargado.
+  - Modelo `SweepstakeCoupon::draws()` (BelongsToMany inversa).
+  - Servicio `App\Services\SweepstakeDrawService`: seleccion crypto-safe via `Collection::random()` (random_int), marca cupones como usados, envoltura en DB::transaction, idempotencia de notificaciones con flag `force`.
+  - Job `NotifySweepstakeWinnersJob` (queue, tries=3, timeout=120): envia email via FinMail template `prize-won` y SMS via `SmsService::sendFromTemplate()`, con try/catch por canal.
+  - Action Filament `DrawSweepstakeAction`: modal con ruleta canvas + Alpine.js, selector de ganadores, toggle de notificacion y notas.
+  - Blade `draw-sweepstake.blade.php`: ruleta circular con animacion easeOutCubic (4500ms), colores alternos, puntero SVG y revelado de ganadores.
+  - RelationManager `SweepstakeDrawsRelationManager`: historial de sorteos con columnas, vista de detalle (infolist) y accion de notificar.
+  - Infolist `SweepstakeDrawInfolist`: detalle del sorteo + lista de ganadores con posicion, numero de cupon y datos del usuario.
+  - Plantillas `prize-won` en `FinMailTemplatesSeeder` y `SmsTemplatesSeeder`.
+  - Factory `SweepstakeDrawFactory` para testing.
+  - **32 tests** en `SweepstakeDrawTest` cubriendo servicio, multiples sorteos, notificaciones, job, modelos, relaciones, constraints y cascade.
+
+### Changed
+- `SweepstakeResource::getRelations()`: anade `SweepstakeDrawsRelationManager`.
+- `ViewSweepstake::getHeaderActions()`: anade `DrawSweepstakeAction` como primera accion.
+- `SendCouponNotificationJob`: el envio SMS ahora se envuelve en try/catch (igual que el email) para evitar rollback de transaccion si el canal SMS falla.
+
+### Fixed
+- **Bug de robustez en `SendCouponNotificationJob`**: el envio SMS no tenia try/catch, lo que podia causar rollback de la transaccion padre en `grantAutomaticReward()` si el SMS fallaba, perdiendo los cupones concedidos.
+- **Flaky test `AutomaticRewardsTest`**: el factory generaba `max_coupons_per_user` aleatorio entre 1-10; cuando era < 5, el reward de 5 cupones era rechazado por limite. Fix: setear `max_coupons_per_user => null` en el test.
+
+### Notes
+- El universo de cupones elegibles para sorteo son los `validCoupons()` (no voided, no soft-deleted, no usados previamente).
+- La seleccion de ganadores es backend (crypto-safe con `random_int`), no client-side.
+- Las notificaciones son idempotentes: `dispatchNotifications()` no re-despacha salvo que se pase `force: true`.
+
 ## 2026-07-17
 
 ### Added

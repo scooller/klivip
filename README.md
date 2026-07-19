@@ -95,6 +95,24 @@ Los tipos de usuario estan definidos en `app/Enums/UserRole.php`:
    - `Mensajes SMS` (`/sent-sms`): listado de envios, modal de detalle, accion de reenviar y filtro de errores.
 6. **Seeder**: `database/seeders/SmsTemplatesSeeder.php` con 4 templates base (cupones recibidos, OTP, desbloqueo perfil, recordatorio de sorteo).
 
+## Sistema De Sorteos (Draws)
+
+### Funcionalidad
+
+1. **Sorteo de cupones**: desde la vista de una sweepstake, el boton "Sortear" abre un modal con ruleta animada (canvas + Alpine.js).
+2. **Seleccion de ganadores**: el admin elige cuantos ganadores (1..N); la seleccion es **backend** con `Collection::random()` (crypto-safe, usa `random_int`).
+3. **Universo de cupones elegibles**: cupones `validCoupons()` (no voided, no soft-deleted, no usados previamente).
+4. **Historial**: cada sorteo queda registrado en `sweepstake_draws` + pivot `sweepstake_draw_coupon` con posicion del ganador.
+5. **Notificaciones**: envio de email (`prize-won` via FinMail) y SMS (`prize-won` via SmsService) a los ganadores, idempotente con flag `force`.
+
+### Componentes
+
+1. **Servicio** (`App\Services\SweepstakeDrawService`): logica de draw + dispatch de notificaciones.
+2. **Job** (`App\Jobs\NotifySweepstakeWinnersJob`): cola, tries=3, try/catch por canal.
+3. **Action Filament** (`DrawSweepstakeAction`): modal con ruleta + formulario (ganadores, notas, toggle notificar).
+4. **RelationManager** (`SweepstakeDrawsRelationManager`): tab "Sorteos realizados" en la vista de sweepstake.
+5. **Infolist** (`SweepstakeDrawInfolist`): detalle del sorteo + lista de ganadores.
+
 ## Configuracion Del Dominio Admin
 
 > **Importante**: El dominio del panel administrativo se configura en `.env` con la variable `ADMIN_DOMAIN` y se lee desde `config/app.php` como `admin_domain`.

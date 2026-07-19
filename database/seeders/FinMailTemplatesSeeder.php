@@ -12,14 +12,14 @@ class FinMailTemplatesSeeder extends Seeder
      */
     public function run(): void
     {
-        $content = <<<HTML
+        $content = <<<'HTML'
         <h2>¡Hola {{ name }}!</h2>
         <p>Queríamos avisarte que has recibido <strong>{{ coupon_count }}</strong> cupones para el sorteo <strong>{{ sweepstake_name }}</strong>.</p>
         <p>¡Mucha suerte en el sorteo!</p>
         <p>El equipo de Klivip</p>
         HTML;
 
-        $template = \FinityLabs\FinMail\Models\EmailTemplate::updateOrCreate(
+        $template = EmailTemplate::updateOrCreate(
             ['key' => 'coupons-received'],
             [
                 'name' => ['es' => 'Cupones Recibidos'],
@@ -77,6 +77,22 @@ class FinMailTemplatesSeeder extends Seeder
                 'token_schema' => [
                     'unlock_url' => 'string',
                     'site_name' => 'string',
+                ],
+                'is_active' => true,
+            ],
+            [
+                'key' => 'prize-won',
+                'name' => ['es' => 'Ganador de Sorteo'],
+                'category' => 'transactional',
+                'subject' => ['es' => '¡Felicidades {{ name }}, ganaste en {{ sweepstake_name }}!'],
+                'preheader' => ['es' => 'Tu cupón resultó ganador.'],
+                'body' => ['es' => '<h2>¡Hola {{ name }}!</h2><p>¡Tenemos una gran noticia! Tu cupón <strong>{{ coupon_number }}</strong> resultó ganador en el sorteo <strong>{{ sweepstake_name }}</strong>.</p><p>Premio: {{ prize }}</p>{{ position }}<p>Pronto nos pondremos en contacto para la entrega del premio.</p><p>¡Gracias por participar!</p><p>El equipo de Klivip</p>'],
+                'token_schema' => [
+                    'name' => 'string',
+                    'sweepstake_name' => 'string',
+                    'prize' => 'string',
+                    'coupon_number' => 'string',
+                    'position' => 'int',
                 ],
                 'is_active' => true,
             ],

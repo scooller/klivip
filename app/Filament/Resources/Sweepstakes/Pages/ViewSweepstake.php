@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Sweepstakes\Pages;
 
 use App\Filament\Exports\SweepstakeCouponsExport;
+use App\Filament\Resources\Sweepstakes\Actions\DrawSweepstakeAction;
 use App\Filament\Resources\Sweepstakes\SweepstakeResource;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -16,6 +17,7 @@ class ViewSweepstake extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            DrawSweepstakeAction::make(),
             Action::make('export_csv')
                 ->label('Exportar cupones a CSV')
                 ->icon('heroicon-o-arrow-down-tray')

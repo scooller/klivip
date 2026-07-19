@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class Sweepstake extends Model
 {
@@ -78,6 +79,25 @@ class Sweepstake extends Model
         return $this->hasMany(SweepstakeCoupon::class)
             ->where('is_voided', false)
             ->whereNull('deleted_at');
+    }
+
+    public function draws(): HasMany
+    {
+        return $this->hasMany(SweepstakeDraw::class);
+    }
+
+    /**
+     * Devuelve la colección de cupones válidos listos para sortear,
+     * cargando la relación user para mostrar/auditar el ganador.
+     *
+     * @return Collection<int, SweepstakeCoupon>
+     */
+    public function getEligibleCouponsForDraw(): Collection
+    {
+        return $this->validCoupons()
+            ->with('user')
+            ->orderBy('coupon_number')
+            ->get();
     }
 
     // Scopes

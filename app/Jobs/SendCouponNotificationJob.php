@@ -54,13 +54,20 @@ class SendCouponNotificationJob implements ShouldQueue
 
         // 2. Send SMS via template (if user has phone)
         if (! empty($user->phone)) {
-            $smsService->sendFromTemplate('coupons-received', $user->phone, [
-                'coupon_count' => $couponCount,
-                'sweepstake_name' => $sweepstake->name,
-            ], [
-                'sendable' => $this->redemption,
-                'subject' => 'Cupones recibidos',
-            ]);
+            try {
+                $smsService->sendFromTemplate('coupons-received', $user->phone, [
+                    'coupon_count' => $couponCount,
+                    'sweepstake_name' => $sweepstake->name,
+                ], [
+                    'sendable' => $this->redemption,
+                    'subject' => 'Cupones recibidos',
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Failed to send coupon SMS', [
+                    'redemption_id' => $this->redemption->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
     }
 }

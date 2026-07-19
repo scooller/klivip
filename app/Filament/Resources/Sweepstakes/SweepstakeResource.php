@@ -45,6 +45,8 @@ class SweepstakeResource extends Resource
         return [
             RelationManagers\RedemptionLinksRelationManager::class,
             RelationManagers\CouponRedemptionsRelationManager::class,
+            RelationManagers\SweepstakeCouponsRelationManager::class,
+            RelationManagers\SweepstakeDrawsRelationManager::class,
         ];
     }
 
