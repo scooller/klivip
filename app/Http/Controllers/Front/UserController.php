@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Enums\UserRole;
+use App\Events\CustomerProfileUpdated;
 use App\Http\Controllers\Controller;
 use App\Models\Site;
 use App\Models\SiteSetting;
@@ -10,9 +11,11 @@ use App\Models\SweepstakeCoupon;
 use App\Models\User;
 use App\Notifications\FrontProfileUnlockLinkNotification;
 use App\Notifications\FrontProfileUnlockOtpNotification;
+use App\Services\PreludeService;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -105,7 +108,7 @@ class UserController extends Controller
             'avatar_path' => $avatarPath,
         ]);
 
-        event(new \App\Events\CustomerProfileUpdated($customer));
+        event(new CustomerProfileUpdated($customer));
 
         $request->session()->forget(self::PROFILE_UNLOCK_SESSION_KEY);
 
@@ -141,7 +144,7 @@ class UserController extends Controller
         return redirect('/')->with('customer_profile_status', 'deleted');
     }
 
-    public function requestProfileUnlockOtp(Request $request, \App\Services\PreludeService $preludeService): RedirectResponse
+    public function requestProfileUnlockOtp(Request $request, PreludeService $preludeService): RedirectResponse
     {
         $customer = Auth::guard('customer')->user();
 
@@ -170,9 +173,10 @@ class UserController extends Controller
 
         if ($customer->phone) {
             $verificationId = $preludeService->sendSmsVerification($customer->phone);
-            
-            if (!$verificationId) {
+
+            if (! $verificationId) {
                 RateLimiter::clear($requestKey);
+
                 return back()->withErrors([
                     'profile_unlock' => 'No se pudo enviar el SMS de desbloqueo. Intenta nuevamente.',
                 ]);
@@ -200,7 +204,7 @@ class UserController extends Controller
         return back()->with('customer_profile_unlock_status', 'otp_sent');
     }
 
-    public function verifyProfileUnlockOtp(Request $request, \App\Services\PreludeService $preludeService): RedirectResponse
+    public function verifyProfileUnlockOtp(Request $request, PreludeService $preludeService): RedirectResponse
     {
         if (! (bool) SiteSetting::get('enable_profile_unlock_otp', true)) {
             return back()->withErrors([
@@ -224,7 +228,7 @@ class UserController extends Controller
 
         if ($customer->phone) {
             $isValid = $preludeService->validateSmsVerification($customer->phone, $payload['otp_code']);
-            if (!$isValid) {
+            if (! $isValid) {
                 return back()->withErrors([
                     'profile_unlock_otp' => 'El codigo SMS no es valido o ya expiro.',
                 ]);
@@ -390,13 +394,13 @@ class UserController extends Controller
 
         $groupedCoupons = collect($recentCoupons)
             ->groupBy('sweepstake_slug')
-            ->map(fn (\Illuminate\Support\Collection $items): array => [
+            ->map(fn(Collection $items): array => [
                 'sweepstake_name' => $items->first()['sweepstake_name'],
                 'sweepstake_slug' => $items->first()['sweepstake_slug'],
                 'prize' => $items->first()['prize'],
                 'draw_at' => $items->first()['draw_at'],
                 'draw_at_date' => $items->first()['draw_at_date'],
-                'coupons' => $items->map(fn (array $c): array => [
+                'coupons' => $items->map(fn(array $c): array => [
                     'id' => $c['id'],
                     'number' => $c['number'],
                     'is_used' => $c['is_used'],
@@ -467,8 +471,8 @@ class UserController extends Controller
             : $this->maskEmail($customer->email);
 
         $phone = $isUnlocked
-            ? (string) $customer->phone
-            : $this->maskPhone((string) $customer->phone);
+            ? $customer->phone
+            : $this->maskPhone($customer->phone);
 
         $birthDate = $isUnlocked
             ? $customer->birth_date?->format('Y-m-d')
@@ -534,8 +538,12 @@ class UserController extends Controller
         return $site;
     }
 
-    private function maskEmail(string $email): string
+    private function maskEmail(?string $email): ?string
     {
+        if ($email === null || $email === '') {
+            return null;
+        }
+
         if (! str_contains($email, '@')) {
             return mb_substr($email, 0, 3) . str_repeat('*', max(mb_strlen($email) - 3, 3));
         }
@@ -547,10 +555,10 @@ class UserController extends Controller
         return sprintf('%s%s@%s', $visibleLocal, str_repeat('*', $hiddenLocalLength), $domainPart);
     }
 
-    private function maskPhone(string $phone): string
+    private function maskPhone(?string $phone): ?string
     {
-        if ($phone === '') {
-            return '';
+        if ($phone === null || $phone === '') {
+            return null;
         }
 
         $visiblePrefix = mb_substr($phone, 0, 3);
